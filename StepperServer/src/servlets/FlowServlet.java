@@ -4,6 +4,7 @@ import DTO.FlowDetails.FlowDetails;
 import StepperEngine.Flow.FlowBuildExceptions.FlowBuildException;
 import StepperEngine.Stepper;
 import StepperEngine.StepperReader.Exception.ReaderException;
+import StepperEngine.StepperReader.XMLReadClasses.Flow;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import jakarta.servlet.ServletException;
@@ -20,17 +21,38 @@ import java.util.List;
 @WebServlet(name = "getFlowsFromEngine", urlPatterns = {"/flows"})
 public class FlowServlet extends HttpServlet {
 
+    private final static String FLOW_PARAMETER_NAME = "flow_name";
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         Stepper stepper = StepperUtils.getStepper(getServletContext());
+        String flowName = req.getParameter(FLOW_PARAMETER_NAME);
+        if(flowName != null){
+            doGetForSpecificFlow(resp, stepper, flowName);
+        }
+        else{
+            doGetForAllFlows(resp, stepper);
+        }
+    }
 
+    private void doGetForAllFlows(HttpServletResponse resp, Stepper stepper) throws IOException {
         List<FlowDetails> flowDetailsList = stepper.getFlowsDetails();
+        sendResponse(flowDetailsList, flowDetailsList.getClass(), resp);
+    }
+
+    private void sendResponse(Object obj, Class<?> expectedClass, HttpServletResponse response) throws IOException {
         Gson gson = new Gson();
-        String jsonResponse = gson.toJson(flowDetailsList, new TypeToken<List<FlowDetails>>() {
-        }.getType());
-        resp.setContentType("application/json");
-        resp.setCharacterEncoding("UTF-8");
-        resp.getWriter().write(jsonResponse);
+        String jsonResponse = gson.toJson(obj, expectedClass);
+        response.getWriter().write(jsonResponse);
+    }
+    private void doGetForSpecificFlow(HttpServletResponse resp, Stepper stepper, String flowName) throws IOException {
+        FlowDetails flowDetails = stepper.getFlowsDetailsByName(flowName);
+        if(flowDetails == null){
+            ServletUtils.sendBadRequest(resp, String.format("flow %s is not exist", flowName));
+        }
+        else{
+            sendResponse(flowDetails, FlowDetails.class, resp);
+        }
     }
 
     @Override
