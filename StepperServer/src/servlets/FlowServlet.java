@@ -11,10 +11,10 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import utils.ServletUtils;
 import utils.StepperUtils;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.List;
 
 @WebServlet(name = "getFlowsFromEngine", urlPatterns = {"/flows"})
@@ -36,15 +36,18 @@ public class FlowServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Stepper stepper = StepperUtils.getStepper(getServletContext());
-        Object filePath = req.getParameter("new_flows");
+        String filePath = req.getParameter("new_flows");
         if(filePath!= null){
             try {
-                stepper.load((String) filePath);
+                synchronized (stepper) { // to prevent multiple threads accessing the load method.
+                    stepper.load(filePath);
+                }
             } catch (ReaderException | FlowBuildException e) {
-                resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                resp.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
+                ServletUtils.sendBadRequest(resp, e.getMessage());
             }
         }
         resp.getWriter().write("loaded successfully");
     }
+
+
 }
