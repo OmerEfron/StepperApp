@@ -14,12 +14,16 @@ import StepperEngine.Flow.execute.FlowExecution;
 
 import StepperEngine.Flow.execute.runner.FlowExecutor;
 
+import StepperEngine.StepperReader.Exception.ReaderException;
 import StepperEngine.StepperReader.XMLReadClasses.Continuation;
 import StepperEngine.StepperReader.XMLReadClasses.ContinuationMapping;
 import StepperEngine.StepperReader.XMLReadClasses.Flow;
 import StepperEngine.StepperReader.XMLReadClasses.TheStepper;
+import StepperEngine.StepperReader.api.StepperReader;
+import StepperEngine.StepperReader.impl.StepperReaderFromXml;
 
 
+import java.io.FileInputStream;
 import java.io.Serializable;
 import java.util.*;
 import java.util.concurrent.*;
@@ -51,6 +55,12 @@ public class Stepper implements Serializable {
 
     public Stepper() {
 
+    }
+
+    public void load(String filePath) throws ReaderException, FlowBuildException {
+        StepperReader reader = new StepperReaderFromXml();
+        TheStepper theStepper = reader.read(filePath);
+        newFlows(theStepper);
     }
 
     public void newFlows(TheStepper stepper) throws FlowBuildException {
