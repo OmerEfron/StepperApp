@@ -51,7 +51,7 @@ public class FlowServlet extends HttpServlet {
             ServletUtils.sendBadRequest(resp, String.format("flow %s is not exist", flowName));
         }
         else{
-            sendResponse(flowDetails, FlowDetails.class, resp);
+            sendResponse(flowDetails, flowDetails.getClass(), resp);
         }
     }
 
