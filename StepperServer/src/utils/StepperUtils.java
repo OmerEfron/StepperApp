@@ -11,12 +11,12 @@ public class StepperUtils {
     private static final Object stepperLock = new Object();
 
     public static Stepper getStepper(ServletContext servletContext){
-        Object stepper;
+        Stepper stepper;
         synchronized (stepperLock){
-            if((stepper = servletContext.getAttribute(STEPPER_ATTRIBUTE_NAME)) == null){
+            if(servletContext.getAttribute(STEPPER_ATTRIBUTE_NAME) == null){
                 stepper = new Stepper();
                 servletContext.setAttribute(STEPPER_ATTRIBUTE_NAME,stepper);
-                Stepper stepper1 = (Stepper) stepper;
+                Stepper stepper1 = stepper;
                 try {
                     stepper1.load("C:\\Users\\Gil\\Desktop\\StepperApplication\\StepperServer\\ex2 (1).xml");
                 } catch (ReaderException | FlowBuildException e) {
@@ -24,6 +24,6 @@ public class StepperUtils {
                 }
             }
         }
-        return (Stepper) stepper;
+        return (Stepper) servletContext.getAttribute(STEPPER_ATTRIBUTE_NAME);
     }
 }
