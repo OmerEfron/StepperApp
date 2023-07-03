@@ -166,7 +166,7 @@ public class Stepper implements Serializable {
         return flowExecution.getUUID();
 
     }
-        public List<String> getFlowNames() {
+    public List<String> getFlowNames() {
         return flowNames;
     }
 
@@ -178,7 +178,7 @@ public class Stepper implements Serializable {
         }
     }
 
-    public String checkForDuplicatesOutputsInFlow(Flow flow) {
+    private String checkForDuplicatesOutputsInFlow(Flow flow) {
         Set<String> uniqueOutputs = new HashSet<>();
         for (String output : flow.getFlowOutput().split(",")) {
             if (!uniqueOutputs.add(output))
@@ -285,7 +285,7 @@ public class Stepper implements Serializable {
     public double getExecutionPartialStatus(String uuid) {
         synchronized (this) {
             FlowExecution flowExecution = getFlowExecutionByUuid(uuid);
-            return (double) (flowExecution.getNumOfStepsExecuted() / flowExecution.getNumOfSteps());
+            return flowExecution.getNumOfStepsExecuted() / flowExecution.getNumOfSteps();
         }
     }
 
