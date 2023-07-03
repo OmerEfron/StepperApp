@@ -16,6 +16,7 @@ import utils.ServletUtils;
 import utils.StepperUtils;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 @WebServlet(name = "getFlowsFromEngine", urlPatterns = {"/flows"})
@@ -52,11 +53,11 @@ public class FlowServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Stepper stepper = StepperUtils.getStepper(getServletContext());
-        String filePath = req.getParameter("new_flows");
-        if(filePath!= null){
+        InputStream inputStream = req.getInputStream();
+        if(inputStream != null){
             try {
                 synchronized (stepper) { // to prevent multiple threads accessing the load method.
-                    stepper.load(filePath);
+                    stepper.load(inputStream);
                 }
             } catch (ReaderException | FlowBuildException e) {
                 ServletUtils.sendBadRequest(resp, e.getMessage());
