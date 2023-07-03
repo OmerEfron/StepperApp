@@ -22,11 +22,11 @@ public class StatsServlet extends HttpServlet {
             doGetForSpecificFlow(flowName, resp, stepper);
         }
         else{
-            doGetForAllFlows(flowName, resp, stepper);
+            doGetForAllFlows(resp, stepper);
         }
     }
 
-    private void doGetForAllFlows(String flowName, HttpServletResponse resp, Stepper stepper) {
+    private void doGetForAllFlows(HttpServletResponse resp, Stepper stepper) {
 
     }
 
