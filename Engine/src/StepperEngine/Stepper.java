@@ -23,6 +23,7 @@ import StepperEngine.StepperReader.api.StepperReader;
 import StepperEngine.StepperReader.impl.StepperReaderFromXml;
 
 
+import java.io.InputStream;
 import java.io.Serializable;
 import java.util.*;
 import java.util.concurrent.*;
@@ -63,7 +64,11 @@ public class Stepper implements Serializable {
         newFlows(theStepper);
     }
 
-
+    public void load(InputStream inputStream) throws ReaderException, FlowBuildException{
+        StepperReader reader = new StepperReaderFromXml();
+        TheStepper theStepper = reader.read(inputStream);
+        newFlows(theStepper);
+    }
 
     public void newFlows(TheStepper stepper) throws FlowBuildException {
         List<FlowDefinition> newFlows = new ArrayList<>();
