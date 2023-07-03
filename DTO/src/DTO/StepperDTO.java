@@ -49,13 +49,8 @@ public class StepperDTO {
     public List<FlowDetails> getFlowsDetailsList() {
         return stepper.getFlowsDetails();
     }
+    
 
-    public boolean hasFlowName(String name){
-        return stepper.isFlowExist(name);
-    }
-    public Optional<FlowExecution> getFlowExecution(String name){
-        return Optional.ofNullable(stepper.getFlowExecution(name));
-    }
 
     public Stepper getStepper(){
         return stepper;

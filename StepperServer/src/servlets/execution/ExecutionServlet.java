@@ -1,4 +1,4 @@
-package servlets;
+package servlets.execution;
 
 import StepperEngine.Flow.execute.ExecutionNotReadyException;
 import StepperEngine.Stepper;
@@ -13,7 +13,6 @@ import utils.StepperUtils;
 
 import java.io.IOException;
 import java.util.Map;
-import java.util.UUID;
 
 @WebServlet(name = "executionServlet", urlPatterns = "/execution")
 public class ExecutionServlet extends HttpServlet {

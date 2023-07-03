@@ -62,9 +62,7 @@ public class BodyController {
         flowDefinitionController.setDataByFlowName(flowDetails);
     }
 
-    public Optional<StepperEngine.Flow.execute.FlowExecution> getFlowExecution(String flowName){
-        return mainController.getFlowExecution(flowName);
-    }
+
 
     public void goToExecuteFlowTab(FlowDetails flow) {
         flowExecutionController.setFlowToExecute(flow);

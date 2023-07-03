@@ -174,7 +174,7 @@ public class FlowExecution {
     void executeFlowTask(String uuid) {
         synchronized (this) {
             Stepper stepper = bodyController.getStepper();
-            while (!stepper.getExecutionStatus(uuid)) {
+            while (!stepper.isExecutionEnded(uuid)) {
                 Platform.runLater(() -> executionProgressBar.setProgress(stepper.getExecutionPartialStatus(uuid)));
                 try {
                     Thread.sleep(300);

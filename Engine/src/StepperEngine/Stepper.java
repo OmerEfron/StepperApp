@@ -23,7 +23,6 @@ import StepperEngine.StepperReader.api.StepperReader;
 import StepperEngine.StepperReader.impl.StepperReaderFromXml;
 
 
-import java.io.FileInputStream;
 import java.io.Serializable;
 import java.util.*;
 import java.util.concurrent.*;
@@ -46,6 +45,7 @@ public class Stepper implements Serializable {
     private Map<String, FlowDetails> flowDetailsMap=new HashMap<>();
     private final Map<String, FlowExecution> executionsMap = new HashMap<>();
     private final Map<String, List<FlowExecution>> executionsPerFlow = new HashMap<>();
+    private final Map<String, List<FlowExecutionData>> flowExecutionDataMap = new HashMap<>(); // flow name to his executions
 
     private ExecutorService executorService;
     private List<FlowExecutionDataImpl> flowExecutionDataList=new ArrayList<>();
@@ -97,6 +97,10 @@ public class Stepper implements Serializable {
         }
     }
 
+    public Map<String, List<FlowExecutionData>> getFlowExecutionDataMap() {
+        return flowExecutionDataMap;
+    }
+
     /***
      * The function checks that the continuity setting is correct(steps names ,inputs names,outputs names)
      * @throws FlowBuildException
@@ -145,13 +149,7 @@ public class Stepper implements Serializable {
         }
     }
 
-    public boolean isFlowExist(String name) {
-        return flowNames.contains(name);
-    }
 
-    public List<String> getContinuationList (String flowName){
-        return continuationMap.get(flowName);
-    }
 
     public String applyContinuation(String pastFlowUUID,String continuationFlow) {
         FlowExecution pastFlow=executionsMap.get(pastFlowUUID);
@@ -171,15 +169,6 @@ public class Stepper implements Serializable {
         public List<String> getFlowNames() {
         return flowNames;
     }
-
-    public Integer getNumOfFlows() {
-        return flows.size();
-    }
-
-    public Map<Integer, String> getFlowsByNumber() {
-        return flowsByNumber;
-    }
-
 
     private void checkForDuplicateOutputs(TheStepper stepper) throws FlowBuildException {
         String duplicateOutput;
@@ -216,13 +205,6 @@ public class Stepper implements Serializable {
         return null;
     }
 
-    public FlowExecution getFlowExecution(String flowName) {
-        if (!isFlowExist(flowName)) {
-            return null;
-        }
-        return new FlowExecution(flowsMap.get(flowName));
-    }
-
 
 
     public void executeFlow(String uuid) throws ExecutionNotReadyException {
@@ -231,8 +213,10 @@ public class Stepper implements Serializable {
             FlowExecution flowExecution = executionsMap.get(uuid);
             if (flowExecution.isCanBeExecuted()) {
                 executorService.submit(() -> {
-                    exectionTask(flowExecutor, flowExecution);
-                    flowExecutionDataList.add(new FlowExecutionDataImpl(flowExecution));
+                    executionTask(flowExecutor, flowExecution);
+                    FlowExecutionDataImpl executionData = new FlowExecutionDataImpl(flowExecution);
+                    flowExecutionDataList.add(executionData);
+                    flowExecutionDataMap.computeIfAbsent(executionData.getFlowName(), key -> new ArrayList<>()).add(executionData);
                 });
 
             } else
@@ -241,7 +225,7 @@ public class Stepper implements Serializable {
         }
     }
 
-    private void exectionTask(FlowExecutor flowExecutor, FlowExecution flowExecution) {
+    private void executionTask(FlowExecutor flowExecutor, FlowExecution flowExecution) {
         flowExecutor.executeFlow(flowExecution);
         executionsPerFlow.computeIfAbsent(
                 flowExecution.getFlowDefinition().getName(),
@@ -255,15 +239,6 @@ public class Stepper implements Serializable {
         return new ArrayList<>(flowDetailsMap.values());
     }
 
-    public FlowDetails buildShowFlow(String flowName) {
-        return new FlowDetailsImpl(flowsMap.get(flowName));
-    }
-
-    public String getNamesOfFlowsToPrint() {
-        return IntStream.range(0, flows.size())
-                .mapToObj(i -> (i + 1) + "." + flows.get(i).getName() + (i == flows.size() - 1 ? "" : "\n"))
-                .collect(Collectors.joining());
-    }
 
     public boolean addFreeInputToExecution(String uuid, String dataName, Object value) {
         FlowExecution flowExecution = executionsMap.get(uuid);
@@ -299,7 +274,7 @@ public class Stepper implements Serializable {
         }
     }
 
-    public boolean getExecutionStatus(String uuid) {
+    public boolean isExecutionEnded(String uuid) {
         FlowExecution flowExecution = getFlowExecutionByUuid(uuid);
         if (flowExecution != null) {
             return flowExecution.hasExecuted();

@@ -53,9 +53,6 @@ public class AppController {
         }
     }
 
-    public Optional<FlowExecution> getFlowExecution(String name){
-        return stepperDTO.getFlowExecution(name);
-    }
 
     public Stepper getStepper() {
         return stepper;
