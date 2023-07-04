@@ -1,11 +1,10 @@
 package DataPresenter.impl;
 
-import DTO.FlowExecutionData.impl.IOData;
+import DTO.FlowExecutionData.IOData;
 import DataPresenter.api.DataPresenterAbstractClass;
 
 import StepperEngine.DataDefinitions.List.StringListDataDef;
 import javafx.geometry.Insets;
-import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
 

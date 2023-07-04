@@ -1,7 +1,7 @@
 package JavaFx.Body;
 
 import DTO.FlowDetails.FlowDetails;
-import DTO.FlowExecutionData.impl.FlowExecutionDataImpl;
+import DTO.FlowExecutionData.FlowExecutionData;
 import JavaFx.AppController;
 
 import JavaFx.Body.ExecutionData.ExecutionData;
@@ -85,12 +85,12 @@ public class BodyController {
         flowStatsController.initStats(flowNames);
     }
 
-    public ExecutionData getFlowExecutionData(FlowExecutionDataImpl flow){
+    public ExecutionData getFlowExecutionData(FlowExecutionData flow){
         if(!executionDataMap.containsKey(flow.getUniqueExecutionId()))
             executionDataMap.put(flow.getUniqueExecutionId(),new FlowExecutionDataImpUI(flow));
         return executionDataMap.get(flow.getUniqueExecutionId());
     }
-    public Node getStepExecutionData(FlowExecutionDataImpl flow, String stepName){
+    public Node getStepExecutionData(FlowExecutionData flow, String stepName){
         return executionDataMap.get(flow.getUniqueExecutionId()).getStepVbox(stepName);
     }
     public ImageView getExecutionStatusImage(String status){
@@ -116,7 +116,7 @@ public class BodyController {
     public String continuationFlow(String uuidFlow,String flowToContinue){
         return mainController.getStepper().applyContinuation(uuidFlow,flowToContinue);
     }
-    public void rerunFlow(FlowExecutionDataImpl flow){
+    public void rerunFlow(FlowExecutionData flow){
         bodyComponent.getSelectionModel().select(flowExecutionTab);
         flowExecutionController.runFlowAgain(getStepper().getFlowsDetailsByName(flow.getFlowName()),mainController.getStepper().reRunFlow(flow.getUniqueExecutionId()));
     }

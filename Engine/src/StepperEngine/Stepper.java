@@ -1,11 +1,8 @@
 package StepperEngine;
 
-import DTO.ExecutionsStatistics.api.FlowExecutionStatsDefinition;
-import DTO.ExecutionsStatistics.impl.FlowExecutionStatsImpl;
+import DTO.ExecutionsStatistics.FlowExecutionStats;
 import DTO.FlowDetails.FlowDetails;
-import DTO.FlowDetails.FlowDetailsImpl;
-import DTO.FlowExecutionData.api.FlowExecutionData;
-import DTO.FlowExecutionData.impl.FlowExecutionDataImpl;
+import DTO.FlowExecutionData.FlowExecutionData;
 import StepperEngine.Flow.FlowBuildExceptions.FlowBuildException;
 import StepperEngine.Flow.api.FlowDefinitionImpl;
 import StepperEngine.Flow.api.FlowDefinition;
@@ -49,7 +46,7 @@ public class Stepper implements Serializable {
     private final Map<String, List<FlowExecutionData>> flowExecutionDataMap = new HashMap<>(); // flow name to his executions
 
     private ExecutorService executorService;
-    private List<FlowExecutionDataImpl> flowExecutionDataList=new ArrayList<>();
+    private List<FlowExecutionData> flowExecutionDataList=new ArrayList<>();
 
 
 
@@ -95,7 +92,7 @@ public class Stepper implements Serializable {
                 .map(FlowDefinition::getName)
                 .collect(Collectors.toList());
         for(FlowDefinition flow :flows){
-            flowDetailsMap.put(flow.getName(),new FlowDetailsImpl(flow));
+            flowDetailsMap.put(flow.getName(),new FlowDetails(flow));
         }
         try {
             checkContinuation();
@@ -221,7 +218,7 @@ public class Stepper implements Serializable {
             if (flowExecution.isCanBeExecuted()) {
                 executorService.submit(() -> {
                     executionTask(flowExecutor, flowExecution);
-                    FlowExecutionDataImpl executionData = new FlowExecutionDataImpl(flowExecution);
+                    FlowExecutionData executionData = new FlowExecutionData(flowExecution);
                     flowExecutionDataList.add(executionData);
                     flowExecutionDataMap.computeIfAbsent(executionData.getFlowName(), key -> new ArrayList<>()).add(executionData);
                 });
@@ -296,7 +293,7 @@ public class Stepper implements Serializable {
         }
     }
 
-    public List<FlowExecutionDataImpl> getFlowExecutionDataList() {
+    public List<FlowExecutionData> getFlowExecutionDataList() {
         return flowExecutionDataList;
     }
 
@@ -304,14 +301,14 @@ public class Stepper implements Serializable {
         FlowExecution flowExecution = executionsMap.get(uuid);
         if(flowExecution!=null){
             if(flowExecution.hasExecuted())
-                return new FlowExecutionDataImpl(flowExecution);
+                return new FlowExecutionData(flowExecution);
         }
         return null;
     }
 
-    public FlowExecutionStatsDefinition getFlowExecutionsStats(String flowName) {
+    public FlowExecutionStats getFlowExecutionsStats(String flowName) {
         synchronized (this) {
-            return new FlowExecutionStatsImpl(flowsMap.get(flowName), executionsPerFlow.get(flowName));
+            return new FlowExecutionStats(flowsMap.get(flowName), executionsPerFlow.get(flowName));
         }
     }
 

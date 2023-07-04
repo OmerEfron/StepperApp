@@ -1,6 +1,6 @@
 package DataPresenter;
 
-import DTO.FlowExecutionData.impl.IOData;
+import DTO.FlowExecutionData.IOData;
 import DataPresenter.api.DataPresenter;
 import DataPresenter.impl.ListFilePresenter;
 import DataPresenter.impl.ListStringPresenter;
@@ -12,7 +12,6 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
 
-import java.util.List;
 import java.util.Set;
 
 public class DataPresentationImpl implements DataPresentation {

@@ -2,10 +2,10 @@ package JavaFx.Body.FlowStats;
 
 
 
-import DTO.ExecutionsStatistics.api.FlowExecutionStatsDefinition;
-import DTO.ExecutionsStatistics.api.StepExecutionStats;
 
-import java.util.ArrayList;
+import DTO.ExecutionsStatistics.FlowExecutionStats;
+import DTO.ExecutionsStatistics.StepExecutionStats;
+
 import java.util.List;
 
 public class FlowStatsTableRow {
@@ -17,7 +17,7 @@ public class FlowStatsTableRow {
 
     private final List<StepExecutionStats> stepExecutionStatisticsList;
 
-    public FlowStatsTableRow(FlowExecutionStatsDefinition flowExecutionStats) {
+    public FlowStatsTableRow(FlowExecutionStats flowExecutionStats) {
         this.flowName = flowExecutionStats.getFlowName();
         this.numOfExecutions = flowExecutionStats.getNumOfExecutions();
         this.avgTimeOfExecutions = flowExecutionStats.getAvgTimeOfExecutions();

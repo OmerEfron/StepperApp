@@ -1,7 +1,7 @@
 package StepperEngine.Flow.execute.StepData;
 
 
-import DTO.FlowExecutionData.impl.IOData;
+import DTO.FlowExecutionData.IOData;
 import StepperEngine.Flow.api.StepUsageDecleration;
 import StepperEngine.Step.api.DataDefinitionsDeclaration;
 import StepperEngine.Step.api.StepStatus;

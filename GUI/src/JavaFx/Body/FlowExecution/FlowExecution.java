@@ -3,8 +3,7 @@ package JavaFx.Body.FlowExecution;
 
 import DTO.FlowDetails.FlowDetails;
 import DTO.FlowDetails.StepDetails.FlowIODetails.Input;
-import DTO.FlowExecutionData.api.FlowExecutionData;
-import DTO.FlowExecutionData.impl.FlowExecutionDataImpl;
+import DTO.FlowExecutionData.FlowExecutionData;
 import JavaFx.Body.BodyController;
 
 import StepperEngine.DataDefinitions.Enumeration.ZipEnumerator;
@@ -93,7 +92,7 @@ public class FlowExecution {
     private BodyController bodyController;
     private FlowDetails flowDetails;
     private FlowExecutionData flowExecutionData;
-    private FlowExecutionDataImpl flowExecutionDataImp;
+    private FlowExecutionData flowExecutionDataImp;
 
     private String lastFlowRunningUuid;
     private String currFlowExecutionUuid;
@@ -186,7 +185,7 @@ public class FlowExecution {
 
         Platform.runLater(() ->{
             executionProgressBar.setProgress(1);
-            flowExecutionDataImp=new FlowExecutionDataImpl(bodyController.getStepper().getFlowExecutionByUuid(uuid));
+            flowExecutionDataImp=new FlowExecutionData(bodyController.getStepper().getFlowExecutionByUuid(uuid));
             flowExecutionData =flowExecutionDataImp ;
             bodyController.updateStats(flowExecutionData.getFlowName());
             cleanUpExecutionDetails();

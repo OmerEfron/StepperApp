@@ -1,6 +1,6 @@
 package servlets;
 
-import DTO.ExecutionsStatistics.api.FlowExecutionStatsDefinition;
+import DTO.ExecutionsStatistics.FlowExecutionStats;
 import StepperEngine.Stepper;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -11,7 +11,7 @@ import utils.ServletUtils;
 import utils.StepperUtils;
 
 import java.io.IOException;
-import java.util.List;
+
 @WebServlet(name = "getStatsFromEngine", urlPatterns = "/stats")
 public class StatsServlet extends HttpServlet {
 
@@ -33,7 +33,7 @@ public class StatsServlet extends HttpServlet {
 
     private void doGetForSpecificFlow(String flowName, HttpServletResponse resp, Stepper stepper) throws IOException {
 
-        FlowExecutionStatsDefinition executionStats = stepper.getFlowExecutionsStats(flowName);
+        FlowExecutionStats executionStats = stepper.getFlowExecutionsStats(flowName);
         if(executionStats != null){
             ServletUtils.sendResponse(executionStats, executionStats.getClass(), resp);
         }

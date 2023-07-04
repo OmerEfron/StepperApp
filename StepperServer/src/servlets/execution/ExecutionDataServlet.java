@@ -1,7 +1,6 @@
 package servlets.execution;
 
-import DTO.FlowExecutionData.api.FlowExecutionData;
-import DTO.FlowExecutionData.impl.FlowExecutionDataImpl;
+import DTO.FlowExecutionData.FlowExecutionData;
 import StepperEngine.Stepper;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -32,7 +31,7 @@ public class ExecutionDataServlet extends HttpServlet {
             ServletUtils.sendResponse(flowExecutionDataList, flowExecutionDataList.getClass(), resp);
         }
         else{
-            List<FlowExecutionDataImpl> flowExecutionDataList = stepper.getFlowExecutionDataList();
+            List<FlowExecutionData> flowExecutionDataList = stepper.getFlowExecutionDataList();
             ServletUtils.sendResponse(flowExecutionDataList, flowExecutionDataList.getClass(), resp);
         }
     }

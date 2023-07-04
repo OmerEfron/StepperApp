@@ -1,7 +1,8 @@
 package JavaFx.Body.FlowStats;
 
 
-import DTO.ExecutionsStatistics.api.StepExecutionStats;
+
+import DTO.ExecutionsStatistics.StepExecutionStats;
 
 public class StepStatsTableRow {
 
