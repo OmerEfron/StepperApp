@@ -3,17 +3,13 @@ package DTO;
 import DTO.FlowDetails.FlowDetails;
 import StepperEngine.Flow.FlowBuildExceptions.FlowBuildException;
 
-import StepperEngine.Flow.execute.FlowExecution;
 import StepperEngine.Stepper;
 import StepperEngine.StepperReader.Exception.ReaderException;
 import StepperEngine.StepperReader.XMLReadClasses.TheStepper;
 import StepperEngine.StepperReader.impl.StepperReaderFromXml;
 
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
 public class StepperDTO {
     private Stepper stepper = new Stepper();

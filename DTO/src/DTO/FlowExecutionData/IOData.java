@@ -1,4 +1,4 @@
-package DTO.FlowExecutionData.impl;
+package DTO.FlowExecutionData;
 
 import java.io.Serializable;
 

@@ -1,6 +1,6 @@
 package DTO.FlowDetails.StepDetails.FlowIODetails;
 
-public class Output extends FlowIODetailsImpl {
+public class Output extends FlowIODetails {
 
     private final String stepRelated;
     private final String connectedToStep;

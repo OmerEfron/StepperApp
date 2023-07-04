@@ -1,6 +1,5 @@
-package DTO.FlowExecutionData.impl;
+package DTO.FlowExecutionData;
 
-import DTO.FlowExecutionData.api.FlowExecutionData;
 import StepperEngine.Flow.execute.FlowExecution;
 import StepperEngine.Flow.execute.FlowStatus;
 import StepperEngine.Flow.execute.StepData.StepExecuteData;
@@ -14,7 +13,7 @@ import java.util.stream.Collectors;
  * the data is for presentation only and is not related directly to the main objects that the flow has created,
  * nor the flow itself.
  */
-public class FlowExecutionDataImpl implements FlowExecutionData, Serializable {
+public class FlowExecutionData implements Serializable {
     private final String flowName;
     private final String uuid;
     private final String executionTime;
@@ -30,7 +29,7 @@ public class FlowExecutionDataImpl implements FlowExecutionData, Serializable {
     private final boolean hasContinuation;
     private final Set<IOData> formalOutputs;
 
-    public FlowExecutionDataImpl(FlowExecution flowExecution){
+    public FlowExecutionData(FlowExecution flowExecution){
         flowName = flowExecution.getFlowDefinition().getName();
         uuid = flowExecution.getUUID();
         executionTime = flowExecution.getTotalTimeInFormat();
@@ -63,18 +62,16 @@ public class FlowExecutionDataImpl implements FlowExecutionData, Serializable {
      */
     public static Optional<FlowExecutionData> newInstance(FlowExecution flowExecution) {
         if (flowExecution.hasExecuted()) {
-            return Optional.of(new FlowExecutionDataImpl(flowExecution));
+            return Optional.of(new FlowExecutionData(flowExecution));
         } else {
             return Optional.empty();
         }
     }
 
-    @Override
     public Map<String, IOData> getOutputsMap() {
         return outputsMap;
     }
 
-    @Override
     public Map<String, IOData> getFreeInputsMap() {
         return freeInputsMap;
     }
@@ -155,47 +152,46 @@ public class FlowExecutionDataImpl implements FlowExecutionData, Serializable {
                 });
     }
 
-    @Override
+
     public Set<IOData> getFreeInputs() {
         return freeInputs;
     }
 
-    @Override
+
     public String getFlowName() {
         return flowName;
     }
 
-    @Override
+
     public String getUniqueExecutionId() {
         return uuid;
     }
 
-    @Override
+
     public String getExecutionTime() {
         return executionTime;
     }
 
-    @Override
+
     public String getFlowExecutionFinalResult() {
         return executionResult;
     }
 
-    @Override
     public Long getFlowExecutionDuration() {
         return executionDuration;
     }
 
-    @Override
+
     public Set<IOData> getOutputs() {
         return outputs;
     }
 
-    @Override
+
     public Set<IOData> getFormalOutputs() {
         return formalOutputs;
     }
 
-    @Override
+
     public StepExecuteData getStepData(String stepName) {
         return stepExecuteDataMap.get(stepName);
     }

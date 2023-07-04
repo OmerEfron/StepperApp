@@ -1,8 +1,7 @@
-package DTO.ExecutionsStatistics.impl;
+package DTO.ExecutionsStatistics;
 
 
-import DTO.ExecutionsStatistics.api.FlowExecutionStatsDefinition;
-import DTO.ExecutionsStatistics.api.StepExecutionStats;
+
 import StepperEngine.Flow.api.FlowDefinition;
 import StepperEngine.Flow.api.StepUsageDecleration;
 import StepperEngine.Flow.execute.FlowExecution;
@@ -13,7 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class FlowExecutionStatsImpl implements FlowExecutionStatsDefinition {
+public class FlowExecutionStats {
 
     private final String flowName;
 
@@ -24,7 +23,7 @@ public class FlowExecutionStatsImpl implements FlowExecutionStatsDefinition {
 
     private final Map<String, StepExecutionStats> stepExecutionStatsMap = new HashMap<>();
 
-    public FlowExecutionStatsImpl(FlowDefinition flowDefinition, List<FlowExecution> flowExecutions) {
+    public FlowExecutionStats(FlowDefinition flowDefinition, List<FlowExecution> flowExecutions) {
         this.flowName = flowDefinition.getName();
         this.numOfExecutions = flowExecutions != null ? flowExecutions.size() : 0;
         if(numOfExecutions!= 0)
@@ -51,7 +50,7 @@ public class FlowExecutionStatsImpl implements FlowExecutionStatsDefinition {
                 }
             }
             long stepAvgTimeOfExecutions = stepNumOfExecutions > 0 ? stepTotalTimeOfExecutions/stepNumOfExecutions : 0;
-            StepExecutionStatsImpl stepExecutionStats = new StepExecutionStatsImpl(stepName, numOfExecutions, stepAvgTimeOfExecutions);
+            StepExecutionStats stepExecutionStats = new StepExecutionStats(stepName, numOfExecutions, stepAvgTimeOfExecutions);
             stepExecutionStatisticsList.add(stepExecutionStats);
             stepExecutionStatsMap.put(stepName, stepExecutionStats);
         }
@@ -59,27 +58,26 @@ public class FlowExecutionStatsImpl implements FlowExecutionStatsDefinition {
 
 
 
-    @Override
+
     public Integer getNumOfExecutions() {
         return numOfExecutions;
     }
 
-    @Override
     public Long getAvgTimeOfExecutions() {
         return avgTimeOfExecutions;
     }
 
-    @Override
+
     public String getFlowName() {
         return flowName;
     }
 
-    @Override
+
     public List<StepExecutionStats> getStepExecutionsStats() {
         return stepExecutionStatisticsList;
     }
 
-    @Override
+
     public StepExecutionStats getStepExecutionStats(String stepName) {
         return stepExecutionStatsMap.get(stepName);
     }

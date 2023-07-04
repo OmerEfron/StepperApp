@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class Input extends FlowIODetailsImpl{
+public class Input extends FlowIODetails {
 
     private final String necessity;
     private final String relatedStepsString;

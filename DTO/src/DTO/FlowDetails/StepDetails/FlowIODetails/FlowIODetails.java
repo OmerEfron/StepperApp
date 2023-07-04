@@ -3,7 +3,7 @@ package DTO.FlowDetails.StepDetails.FlowIODetails;
 /**
  * holds details of a single input/output in a certain flow.
  */
-public class FlowIODetailsImpl {
+public class FlowIODetails {
 
     private final String dataName;
 
@@ -12,7 +12,7 @@ public class FlowIODetailsImpl {
 
 
 
-    public FlowIODetailsImpl(String dataName, String typeName,String fullQualifideName) {
+    public FlowIODetails(String dataName, String typeName, String fullQualifideName) {
         this.dataName = dataName;
         this.typeName = typeName;
         this.fullQualifideName = fullQualifideName;
