@@ -1,4 +1,4 @@
-package ClientUtils;
+package Utils;
 
 import com.google.gson.Gson;
 

@@ -1,8 +1,9 @@
 package JavaFx.Body;
 
-import ClientUtils.ClientUtils;
-import ClientUtils.Constants;
-import ClientUtils.Requester.flow.FlowRequestImpl;
+import JavaFx.ClientUtils;
+import Utils.Utils;
+import Utils.Constants;
+import Requester.flow.FlowRequestImpl;
 import DTO.FlowDetails.FlowDetails;
 import DTO.FlowExecutionData.FlowExecutionData;
 import JavaFx.AppController;
@@ -140,7 +141,7 @@ public class BodyController {
                 .build()
                 .toString();
 
-        ClientUtils.runAsync(new FlowRequestImpl().getAllFlowRequest(), new Callback() {
+        Utils.runAsync(new FlowRequestImpl().getAllFlowRequest(), new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 System.out.println("error");
@@ -155,7 +156,7 @@ public class BodyController {
                     System.out.println(flowDetails.getFlowName());
                 }
             }
-        });
+        }, ClientUtils.HTTP_CLIENT);
     }
 
 }

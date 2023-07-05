@@ -1,6 +1,6 @@
-package ClientUtils.Requester.execution;
+package Requester.execution;
 
-import ClientUtils.Constants;
+import Utils.Constants;
 import okhttp3.HttpUrl;
 import okhttp3.Request;
 import okhttp3.RequestBody;
