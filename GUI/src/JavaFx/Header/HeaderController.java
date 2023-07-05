@@ -30,10 +30,9 @@ public class HeaderController {
 
     @FXML
     private Button classicSytleButton;
-
-
     @FXML
     private Label filePathLabel;
+
     public void setMainController(AppController mainController) {
         this.mainController = mainController;
     }

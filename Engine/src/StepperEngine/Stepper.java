@@ -23,7 +23,9 @@ import StepperEngine.StepperReader.api.StepperReader;
 import StepperEngine.StepperReader.impl.StepperReaderFromXml;
 
 
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.InputStream;
 import java.io.Serializable;
 import java.util.*;
 import java.util.concurrent.*;
@@ -60,6 +62,11 @@ public class Stepper implements Serializable {
     public void load(String filePath) throws ReaderException, FlowBuildException {
         StepperReader reader = new StepperReaderFromXml();
         TheStepper theStepper = reader.read(filePath);
+        newFlows(theStepper);
+    }
+    public void load2(InputStream inputStream, String filePath) throws ReaderException, FlowBuildException {
+        StepperReader reader = new StepperReaderFromXml();
+        TheStepper theStepper = reader.read2(inputStream,filePath);
         newFlows(theStepper);
     }
 

@@ -111,7 +111,7 @@ public class FlowStats {
         stepStatsTableView.getItems().clear();
         XYChart.Series<String, Number> flowSeries = new XYChart.Series<>();
         for(String flowName:flowNames){
-            FlowExecutionStatsDefinition flowExecutionStats = adminBodyController.getStepper().getFlowExecutionsStats(flowName);
+            FlowExecutionStatsDefinition flowExecutionStats = adminBodyController.getFlowExecutionsStats(flowName);
             flowStatsTableView.getItems().add(new FlowStatsTableRow(flowExecutionStats));
             flowSeries.getData().add(new XYChart.Data<>(flowName, 0));
         }

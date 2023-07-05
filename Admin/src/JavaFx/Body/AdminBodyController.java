@@ -1,5 +1,6 @@
 package JavaFx.Body;
 
+import DTO.ExecutionsStatistics.api.FlowExecutionStatsDefinition;
 import DTO.FlowDetails.FlowDetails;
 import DTO.FlowExecutionData.impl.FlowExecutionDataImpl;
 import JavaFx.AppController;
@@ -109,6 +110,10 @@ public class AdminBodyController {
 
     public String continuationFlow(String uuidFlow,String flowToContinue){
         return mainController.getStepper().applyContinuation(uuidFlow,flowToContinue);
+    }
+
+    public FlowExecutionStatsDefinition getFlowExecutionsStats(String flowName) {
+        return mainController.getFlowExecutionsStats(flowName);
     }
    /* public void setFlowDetailsList(List<FlowDetails> flowDetails){
         flowDefinitionController.setDataByFlowName(flowDetails);
