@@ -193,7 +193,7 @@ public class FlowExecution {
         MainExecutionDataVbox.getChildren().add(bodyController.getFlowExecutionData(flowExecutionDataImp).getVbox());
         TreeItem root = new TreeItem(flowExecutionDataImp.getFlowName(), bodyController.getExecutionStatusImage(flowExecutionDataImp.getExecutionResult()));
         StepsTreeVIew.setRoot(root);
-        for (StepExecuteData step : flowExecutionDataImp.getStepExecuteDataList()) {
+        for (DTO.FlowExecutionData.StepExecuteData step : flowExecutionDataImp.getStepExecuteDataList()) {
             TreeItem<String> childItem = new TreeItem<>(step.getFinalName(), bodyController.getExecutionStatusImage(step.getStepStatus().toString()));
             root.getChildren().add(childItem);
         }

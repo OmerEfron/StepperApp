@@ -17,8 +17,10 @@ public class ExecutionStatusServlet extends HttpServlet {
 
 
     private static final String UUID_PARAMETER = "uuid";
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+
 
         Stepper stepper = StepperUtils.getStepper(getServletContext());
         try {

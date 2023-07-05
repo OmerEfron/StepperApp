@@ -3,6 +3,7 @@ package DTO;
 import DTO.FlowDetails.FlowDetails;
 import StepperEngine.Flow.FlowBuildExceptions.FlowBuildException;
 
+import StepperEngine.Flow.execute.FlowExecution;
 import StepperEngine.Stepper;
 import StepperEngine.StepperReader.Exception.ReaderException;
 import StepperEngine.StepperReader.XMLReadClasses.TheStepper;
@@ -10,6 +11,7 @@ import StepperEngine.StepperReader.impl.StepperReaderFromXml;
 
 
 import java.util.List;
+import java.util.Optional;
 
 public class StepperDTO {
     private Stepper stepper = new Stepper();
@@ -45,9 +47,11 @@ public class StepperDTO {
     public List<FlowDetails> getFlowsDetailsList() {
         return stepper.getFlowsDetails();
     }
-    
 
 
+    public Optional<FlowExecution> getFlowExecution(String name){
+        return Optional.ofNullable(stepper.getFlowExecution(name));
+    }
     public Stepper getStepper(){
         return stepper;
     }

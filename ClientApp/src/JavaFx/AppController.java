@@ -23,10 +23,9 @@ public class AppController {
     private Stepper stepper;
     @FXML
     public void initialize() {
-
         headerComponentController.setMainController(this);
         bodyComponentController.setMainController(this);
-   //     loadFile("C:\\Users\\Gil\\Desktop\\StepperClone\\ex2 (1).xml");
+
     }
     public boolean loadFile(String filePath) {
         try {

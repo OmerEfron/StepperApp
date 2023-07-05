@@ -2,6 +2,7 @@ package JavaFx.Body;
 
 import ClientUtils.ClientUtils;
 import ClientUtils.Constants;
+import ClientUtils.Requester.FlowRequestImpl;
 import DTO.FlowDetails.FlowDetails;
 import DTO.FlowExecutionData.FlowExecutionData;
 import JavaFx.AppController;
@@ -56,7 +57,7 @@ public class BodyController {
         flowHistoryController.setMainController(this);
 
         bodyComponent.getSelectionModel().selectedItemProperty().addListener((observable, oldTab, newTab) -> {
-            if (newTab != null && newTab == flowHistoryTab && getStepper() != null) {
+            if (newTab != null && newTab == flowHistoryTab) {
                 // Update the TableView with information
                 flowHistoryController.setFlowsExecutionTable();
             }
@@ -122,6 +123,11 @@ public class BodyController {
         bodyComponent.getSelectionModel().select(flowExecutionTab);
         flowExecutionController.runFlowAgain(getStepper().getFlowsDetailsByName(flow.getFlowName()),mainController.getStepper().reRunFlow(flow.getUniqueExecutionId()));
     }
+
+    public void rerunFlow2(FlowExecutionData flow){
+        bodyComponent.getSelectionModel().select(flowExecutionTab);
+        flowExecutionController.runFlowAgain(getStepper().getFlowsDetailsByName(flow.getFlowName()),mainController.getStepper().reRunFlow(flow.getUniqueExecutionId()));
+    }
     public void applyContinuationFromHistoryTab(String pastFlowUUID,String flowToContinue){
         bodyComponent.getSelectionModel().select(flowExecutionTab);
         flowExecutionController.applyContinuation(pastFlowUUID,flowToContinue);
@@ -134,7 +140,7 @@ public class BodyController {
                 .build()
                 .toString();
 
-        ClientUtils.runAsync(flowsUrl, new Callback() {
+        ClientUtils.runAsync(new FlowRequestImpl().getAllFlowRequest(), new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 System.out.println("error");
