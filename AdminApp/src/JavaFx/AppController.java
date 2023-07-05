@@ -1,7 +1,6 @@
 package JavaFx;
 
-import DTO.ExecutionsStatistics.api.FlowExecutionStatsDefinition;
-import DTO.ExecutionsStatistics.impl.FlowExecutionStatsImpl;
+import DTO.ExecutionsStatistics.FlowExecutionStats;
 import DTO.StepperDTO;
 import JavaFx.Body.AdminBodyController;
 import JavaFx.Header.HeaderController;
@@ -27,6 +26,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static Util.Constans.FLOW_EXECUTION_STATS;
+
 
 public class AppController {
     @FXML private VBox headerComponent;
@@ -46,21 +47,6 @@ public class AppController {
     }
 
     public void loadFile(String filePath,File selectedFile) throws IOException {
-        final String[] fromBody = new String[1];
-        HttpClientUtil.runSync(Constans.TEST, new Callback() {
-            @Override
-            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                System.out.println("Fail");
-            }
-
-            @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                System.out.println("from response");
-                fromBody[0] =response.body().string();
-            }
-        });
-        System.out.println(fromBody[0]);
-        System.out.println("from main");
         HttpClientUtil.runSyncFileUpload(selectedFile, new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
@@ -92,7 +78,6 @@ public class AppController {
             }
         });
         updateStats();
-        System.out.println(isStepperIn);
     }
 
     private void updateStats()  {
@@ -114,7 +99,7 @@ public class AppController {
                 }
             });
         } catch (IOException e) {
-            throw new RuntimeException(e);
+             failureMessage(e.getMessage());
         }
         bodyComponentController.initStats(flowNames[0]);
 
@@ -143,9 +128,8 @@ public class AppController {
 
     }
 
-    public FlowExecutionStatsDefinition getFlowExecutionsStats(String flowName) {
-        final FlowExecutionStatsDefinition[] flowExecutionStatsDefinition = new FlowExecutionStatsDefinition[1];
-
+    public FlowExecutionStats getFlowExecutionsStats(String flowName) {
+        final FlowExecutionStats[] flowExecutionStats = new FlowExecutionStats[1];
         String finalUrl = HttpUrl
                 .parse(Constans.FLOW_STATS)
                 .newBuilder()
@@ -160,20 +144,15 @@ public class AppController {
                 @Override
                 public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                     try {
-                        flowExecutionStatsDefinition[0] = Constans.GSON_INSTANCE.fromJson(response.body().string(), flowExecutionStatsDefinition[0].getClass());
-                        System.out.println("from response flow stats afte");
+                        flowExecutionStats[0] = Constans.GSON_INSTANCE.fromJson(response.body().string(), FLOW_EXECUTION_STATS.getClass());
                     } catch (IOException e) {
-                        System.out.println("from run time 1 flow stats");
-                        System.out.println(e.getMessage());
+                        failureMessage(e.getMessage());
                     }
                 }
             });
         } catch (IOException e) {
-            System.out.println("from run time 1 flow stats");
-            System.out.println(e.getMessage());
+            failureMessage(e.getMessage());
         }
-        System.out.println("from main flow stats");
-        return flowExecutionStatsDefinition[0];
-
+        return flowExecutionStats[0];
     }
 }

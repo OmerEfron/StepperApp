@@ -1,7 +1,7 @@
 package JavaFx.Body.ExecutionData;
 
-import DTO.FlowExecutionData.impl.FlowExecutionDataImpl;
-import DTO.FlowExecutionData.impl.IOData;
+import DTO.FlowExecutionData.FlowExecutionData;
+import DTO.FlowExecutionData.IOData;
 import DataPresenter.DataPresentation;
 import DataPresenter.DataPresentationImpl;
 import JavaFx.Body.ExecutionData.Step.StepExecutionDataImpUI;
@@ -26,7 +26,7 @@ import java.util.Map;
 
 
 public class FlowExecutionDataImpUI implements ExecutionData{
-    private FlowExecutionDataImpl flow;
+    private FlowExecutionData flow;
     private VBox flowVbox =new VBox();
     private HBox name;
     private HBox UUID;
@@ -38,7 +38,7 @@ public class FlowExecutionDataImpUI implements ExecutionData{
     private Map<String,ExecutionData> stepsData=new HashMap<>();
     private DataPresentation dataPresentation=new DataPresentationImpl();
     private Map<String, StepExecutionDataImpUI> stepsMap=new HashMap<>();
-    public FlowExecutionDataImpUI(FlowExecutionDataImpl flow) {
+    public FlowExecutionDataImpUI(FlowExecutionData flow) {
         this.flow = flow;
         this.name=setTwoLabels("Flow Name :", flow.getFlowName());
         this.UUID=setTwoLabels("UUID :", flow.getUniqueExecutionId());
@@ -80,7 +80,7 @@ public class FlowExecutionDataImpUI implements ExecutionData{
         return hBox;
     }
 
-    public TableView<IOData> getFreeInputTable(FlowExecutionDataImpl flowExecutionData) {
+    public TableView<IOData> getFreeInputTable(FlowExecutionData flowExecutionData) {
         TableView<IOData> tableView=new TableView<>();
         TableColumn<IOData, String> freeInputName=new TableColumn<>("Name");
         TableColumn<IOData, String> freeInputType=new TableColumn<>("Type");
@@ -123,7 +123,7 @@ public class FlowExecutionDataImpUI implements ExecutionData{
         return maxLength;
     }
 
-    public HBox getFreeInputs(FlowExecutionDataImpl flowExecutionData) {
+    public HBox getFreeInputs(FlowExecutionData flowExecutionData) {
         HBox hBox=new HBox();
         Label freeInputsLabel=new Label("Free inputs:");
         hBox.getChildren().add(freeInputsLabel);

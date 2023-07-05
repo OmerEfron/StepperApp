@@ -32,8 +32,8 @@ public class StatsServlet extends HttpServlet {
     }
 
     private void doGetForSpecificFlow(String flowName, HttpServletResponse resp, Stepper stepper) throws IOException {
-
         FlowExecutionStats executionStats = stepper.getFlowExecutionsStats(flowName);
+
         if(executionStats != null){
             ServletUtils.sendResponse(executionStats, executionStats.getClass(), resp);
         }

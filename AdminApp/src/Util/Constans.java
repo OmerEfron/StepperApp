@@ -1,5 +1,6 @@
 package Util;
 
+import DTO.ExecutionsStatistics.FlowExecutionStats;
 import com.google.gson.Gson;
 
 public class Constans {
@@ -9,6 +10,8 @@ public class Constans {
     public final static String FLOW_STATS=BASE_URL+"/stats";
     public final static String TEST=BASE_URL+"/test";
     public final static String FLOW_NAME_PARAMETER="flow_name";
+    public final static FlowExecutionStats FLOW_EXECUTION_STATS= new FlowExecutionStats();
+
 
     // GSON instance
     public final static Gson GSON_INSTANCE = new Gson();

@@ -1,7 +1,8 @@
 package DataPresenter.api;
 
 
-import DTO.FlowExecutionData.impl.IOData;
+
+import DTO.FlowExecutionData.IOData;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Label;

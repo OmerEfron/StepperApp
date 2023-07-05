@@ -1,8 +1,7 @@
 package JavaFx.Body;
 
-import DTO.ExecutionsStatistics.api.FlowExecutionStatsDefinition;
-import DTO.FlowDetails.FlowDetails;
-import DTO.FlowExecutionData.impl.FlowExecutionDataImpl;
+import DTO.ExecutionsStatistics.FlowExecutionStats;
+import DTO.FlowExecutionData.FlowExecutionData;
 import JavaFx.AppController;
 
 import JavaFx.Body.ExecutionData.ExecutionData;
@@ -80,12 +79,12 @@ public class AdminBodyController {
         flowStatsController.initStats(flowNames);
     }
 
-    public ExecutionData getFlowExecutionData(FlowExecutionDataImpl flow){
+    public ExecutionData getFlowExecutionData(FlowExecutionData flow){
         if(!executionDataMap.containsKey(flow.getUniqueExecutionId()))
             executionDataMap.put(flow.getUniqueExecutionId(),new FlowExecutionDataImpUI(flow));
         return executionDataMap.get(flow.getUniqueExecutionId());
     }
-    public Node getStepExecutionData(FlowExecutionDataImpl flow, String stepName){
+    public Node getStepExecutionData(FlowExecutionData flow, String stepName){
         return executionDataMap.get(flow.getUniqueExecutionId()).getStepVbox(stepName);
     }
     public ImageView getExecutionStatusImage(String status){
@@ -112,7 +111,7 @@ public class AdminBodyController {
         return mainController.getStepper().applyContinuation(uuidFlow,flowToContinue);
     }
 
-    public FlowExecutionStatsDefinition getFlowExecutionsStats(String flowName) {
+    public FlowExecutionStats getFlowExecutionsStats(String flowName) {
         return mainController.getFlowExecutionsStats(flowName);
     }
    /* public void setFlowDetailsList(List<FlowDetails> flowDetails){

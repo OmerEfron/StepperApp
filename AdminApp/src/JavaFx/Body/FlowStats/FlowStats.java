@@ -1,7 +1,8 @@
 package JavaFx.Body.FlowStats;
 
-import DTO.ExecutionsStatistics.api.FlowExecutionStatsDefinition;
-import DTO.ExecutionsStatistics.api.StepExecutionStats;
+import DTO.ExecutionsStatistics.FlowExecutionStats;
+
+import DTO.ExecutionsStatistics.StepExecutionStats;
 import JavaFx.Body.AdminBodyController;
 
 import javafx.beans.value.ChangeListener;
@@ -111,7 +112,7 @@ public class FlowStats {
         stepStatsTableView.getItems().clear();
         XYChart.Series<String, Number> flowSeries = new XYChart.Series<>();
         for(String flowName:flowNames){
-            FlowExecutionStatsDefinition flowExecutionStats = adminBodyController.getFlowExecutionsStats(flowName);
+            FlowExecutionStats flowExecutionStats = adminBodyController.getFlowExecutionsStats(flowName);
             flowStatsTableView.getItems().add(new FlowStatsTableRow(flowExecutionStats));
             flowSeries.getData().add(new XYChart.Data<>(flowName, 0));
         }
@@ -121,7 +122,7 @@ public class FlowStats {
 
     public void setStepStatsTableView(String flowName){
         stepStatsTableView.getItems().clear();
-        FlowExecutionStatsDefinition flowExecutionsStats = adminBodyController.getStepper().getFlowExecutionsStats(flowName);
+        FlowExecutionStats flowExecutionsStats = adminBodyController.getStepper().getFlowExecutionsStats(flowName);
         flowExecutionsStats.getStepExecutionsStats().forEach(step -> {
             StepStatsTableRow stepStatsTableRow = new StepStatsTableRow(step);
             stepStatsTableView.getItems().add(stepStatsTableRow);
@@ -141,7 +142,7 @@ public class FlowStats {
     public void setStepChart(String flowName){
         stepBarChart.getData().clear();
         stepBarChart.layout();
-        FlowExecutionStatsDefinition flowExecutionStats = adminBodyController.getStepper().getFlowExecutionsStats(flowName);
+        FlowExecutionStats flowExecutionStats = adminBodyController.getStepper().getFlowExecutionsStats(flowName);
         XYChart.Series<String, Number> stepSeries = new XYChart.Series<>();
         for(StepExecutionStats step: flowExecutionStats.getStepExecutionsStats()){
             stepSeries.getData().add(new XYChart.Data<>(step.getStepName(), step.getAvgTimeOfExecutions()));

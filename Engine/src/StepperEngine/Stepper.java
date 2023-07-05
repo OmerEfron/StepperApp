@@ -95,7 +95,7 @@ public class Stepper implements Serializable {
                 .map(FlowDefinition::getName)
                 .collect(Collectors.toList());
         for(FlowDefinition flow :flows){
-            flowDetailsMap.put(flow.getName(),new FlowDetailsImpl(flow));
+            flowDetailsMap.put(flow.getName(),new FlowDetails(flow));
         }
         try {
             checkContinuation();
@@ -268,9 +268,7 @@ public class Stepper implements Serializable {
         return new ArrayList<>(flowDetailsMap.values());
     }
 
-    public FlowDetails buildShowFlow(String flowName) {
-        return new FlowDetailsImpl(flowsMap.get(flowName));
-    }
+
 
     public String getNamesOfFlowsToPrint() {
         return IntStream.range(0, flows.size())

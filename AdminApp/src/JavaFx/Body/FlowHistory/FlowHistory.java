@@ -1,6 +1,7 @@
 package JavaFx.Body.FlowHistory;
 
-import DTO.FlowExecutionData.impl.FlowExecutionDataImpl;
+
+import DTO.FlowExecutionData.FlowExecutionData;
 import JavaFx.Body.AdminBodyController;
 
 
@@ -27,10 +28,10 @@ import java.util.stream.Collectors;
 
 public class FlowHistory {
 
-    @FXML private TableView<FlowExecutionDataImpl> flowsExecutionTable;
-    @FXML private TableColumn<FlowExecutionDataImpl, String> flowsExecutionsNamesCol;
-    @FXML private TableColumn<FlowExecutionDataImpl, String> flowsExecutionsTimeCol;
-    @FXML private TableColumn<FlowExecutionDataImpl, String> flowsExecutionsStatusCol;
+    @FXML private TableView<FlowExecutionData> flowsExecutionTable;
+    @FXML private TableColumn<FlowExecutionData, String> flowsExecutionsNamesCol;
+    @FXML private TableColumn<FlowExecutionData, String> flowsExecutionsTimeCol;
+    @FXML private TableColumn<FlowExecutionData, String> flowsExecutionsStatusCol;
     @FXML private ComboBox<String> filterChoose;
     @FXML private Label filterSelectionLabel;
     @FXML private ImageView resetTable;
@@ -100,30 +101,30 @@ public class FlowHistory {
     }
     public void setFlowsExecutionTable() {
         if (!adminBodyController.getStepper().getFlowExecutionDataList().isEmpty()) {
-            flowsExecutionsNamesCol.setCellValueFactory(new PropertyValueFactory<FlowExecutionDataImpl, String>("flowName"));
-            flowsExecutionsTimeCol.setCellValueFactory(new PropertyValueFactory<FlowExecutionDataImpl, String>("formattedStartTime"));
-            flowsExecutionsStatusCol.setCellValueFactory(new PropertyValueFactory<FlowExecutionDataImpl, String>("executionResult"));
+            flowsExecutionsNamesCol.setCellValueFactory(new PropertyValueFactory<FlowExecutionData, String>("flowName"));
+            flowsExecutionsTimeCol.setCellValueFactory(new PropertyValueFactory<FlowExecutionData, String>("formattedStartTime"));
+            flowsExecutionsStatusCol.setCellValueFactory(new PropertyValueFactory<FlowExecutionData, String>("executionResult"));
             setAligmentToFlowsExecutionCols();
             setItemsInFlowsExecutionTable(FXCollections.observableList(adminBodyController.getStepper().getFlowExecutionDataList()));
             filterChoose.setItems(FXCollections.observableList(getOptionList()));
         }
     }
 
-    private void setItemsInFlowsExecutionTable(ObservableList<FlowExecutionDataImpl> data) {
+    private void setItemsInFlowsExecutionTable(ObservableList<FlowExecutionData> data) {
         flowsExecutionTable.setItems(data);
     }
 
     private List<String>  getOptionList() {
         return adminBodyController.getStepper().getFlowExecutionDataList()
                 .stream()
-                .map(FlowExecutionDataImpl::getExecutionResult)
+                .map(FlowExecutionData::getExecutionResult)
                 .filter(name -> !name.isEmpty())
                 .distinct()
                 .collect(Collectors.toList());
     }
 
     private void setAligmentToFlowsExecutionCols() {
-        flowsExecutionsNamesCol.setCellFactory(column -> new TableCell<FlowExecutionDataImpl, String>() {
+        flowsExecutionsNamesCol.setCellFactory(column -> new TableCell<FlowExecutionData, String>() {
             @Override
             protected void updateItem(String item, boolean empty) {
                 super.updateItem(item, empty);
@@ -132,7 +133,7 @@ public class FlowHistory {
             }
         });
 
-        flowsExecutionsTimeCol.setCellFactory(column -> new TableCell<FlowExecutionDataImpl, String>() {
+        flowsExecutionsTimeCol.setCellFactory(column -> new TableCell<FlowExecutionData, String>() {
             @Override
             protected void updateItem(String item, boolean empty) {
                 super.updateItem(item, empty);
@@ -141,7 +142,7 @@ public class FlowHistory {
             }
         });
 
-        flowsExecutionsStatusCol.setCellFactory(column -> new TableCell<FlowExecutionDataImpl, String>() {
+        flowsExecutionsStatusCol.setCellFactory(column -> new TableCell<FlowExecutionData, String>() {
             @Override
             protected void updateItem(String item, boolean empty) {
                 super.updateItem(item, empty);
@@ -154,7 +155,7 @@ public class FlowHistory {
     @FXML
     void setFlowExecutionDetails(MouseEvent event) {
         if(event.getClickCount()==2){
-            FlowExecutionDataImpl selectedItem = flowsExecutionTable.getSelectionModel().getSelectedItem();
+            FlowExecutionData selectedItem = flowsExecutionTable.getSelectionModel().getSelectedItem();
             CentralFlowName.setText("Flow Selected :"+selectedItem.getFlowName());
             MainExecutionDataVbox.getChildren().clear();
             MainExecutionDataVbox.getChildren().add(adminBodyController.getFlowExecutionData(selectedItem).getVbox());
