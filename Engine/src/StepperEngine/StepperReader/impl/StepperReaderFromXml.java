@@ -37,4 +37,16 @@ public class StepperReaderFromXml implements StepperReader {
             throw new RuntimeException(e);
         }
     }
+    @Override
+    public TheStepper read2(InputStream inputStream,String filePath) throws ReaderException {
+        try {
+            JAXBContext jaxbContext = JAXBContext.newInstance("generated");
+            Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+            STStepper stStepper = (STStepper) unmarshaller.unmarshal(inputStream);
+            return new TheStepper(stStepper);
+        } catch ( JAXBException e) {
+            System.out.println(e.getMessage());
+            throw new ReaderException("Cannot read file",filePath);
+        }
+    }
 }
