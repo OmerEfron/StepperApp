@@ -12,27 +12,25 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../StepperServer/web/WEB-INF/lib/slf4j-api-2.0.6.jar!/" />
-          <root url="jar://$MODULE_DIR$/../StepperServer/web/WEB-INF/lib/okio-2.8.0.jar!/" />
-          <root url="jar://$MODULE_DIR$/../StepperServer/web/WEB-INF/lib/okhttp-4.9.1.jar!/" />
-          <root url="jar://$MODULE_DIR$/../StepperServer/web/WEB-INF/lib/kotlin-stdlib-1.4.10.jar!/" />
-          <root url="jar://$MODULE_DIR$/../StepperServer/web/WEB-INF/lib/json-smart-2.4.8.jar!/" />
-          <root url="jar://$MODULE_DIR$/../StepperServer/web/WEB-INF/lib/json-path-2.7.0.jar!/" />
-          <root url="jar://$MODULE_DIR$/../StepperServer/web/WEB-INF/lib/gson-2.8.8.jar!/" />
-          <root url="jar://$MODULE_DIR$/../StepperServer/web/WEB-INF/lib/annotations-13.0.jar!/" />
-          <root url="jar://$MODULE_DIR$/../StepperServer/web/WEB-INF/lib/accessors-smart-2.4.8.jar!/" />
-          <root url="file://$MODULE_DIR$/.." />
+          <root url="file://$MODULE_DIR$/../lib/okHttp" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+        <jarDirectory url="file://$MODULE_DIR$/../lib/okHttp" recursive="false" />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../lib/accessors-smart-2.4.8.jar!/" />
+          <root url="jar://$MODULE_DIR$/../lib/gson-2.8.8.jar!/" />
+          <root url="jar://$MODULE_DIR$/../lib/json-path-2.7.0.jar!/" />
+          <root url="jar://$MODULE_DIR$/../lib/json-smart-2.4.8.jar!/" />
+          <root url="jar://$MODULE_DIR$/../lib/slf4j-api-2.0.6.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar://$MODULE_DIR$/../StepperServer/web/WEB-INF/lib/gson-2.8.8-sources.jar!/" />
-          <root url="file://$MODULE_DIR$/../AdminApp/src" />
-          <root url="file://$MODULE_DIR$/src" />
-          <root url="file://$MODULE_DIR$/../ClientApp/src" />
-          <root url="file://$MODULE_DIR$/../DTO/src" />
-          <root url="file://$MODULE_DIR$/../Engine/src" />
-          <root url="file://$MODULE_DIR$/../GUI/src" />
-          <root url="file://$MODULE_DIR$/../StepperServer/src" />
+          <root url="jar://$MODULE_DIR$/../lib/gson-2.8.8-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
