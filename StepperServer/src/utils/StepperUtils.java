@@ -15,6 +15,11 @@ public class StepperUtils {
         synchronized (stepperLock){
             if(servletContext.getAttribute(STEPPER_ATTRIBUTE_NAME) == null){
                 stepper = new Stepper();
+                try {
+                    stepper.load("C:\\Users\\Gil\\Desktop\\StepperApp2\\ex2.xml");
+                } catch (ReaderException | FlowBuildException e) {
+                    throw new RuntimeException(e);
+                }
                 servletContext.setAttribute(STEPPER_ATTRIBUTE_NAME,stepper);
             }
         }

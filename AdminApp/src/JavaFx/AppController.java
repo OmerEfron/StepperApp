@@ -70,11 +70,12 @@ public class AppController {
                                 }
                             }
                     );
-                }else
-                    isStepperIn=true;
-                    Platform.runLater(()->{
+                }else {
+                    isStepperIn = true;
+                    Platform.runLater(() -> {
                         headerComponentController.updateFilePathLabel(filePath);
                     });
+                }
             }
         });
         updateStats();

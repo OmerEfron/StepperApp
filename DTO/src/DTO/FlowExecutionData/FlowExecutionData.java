@@ -2,7 +2,6 @@ package DTO.FlowExecutionData;
 
 import StepperEngine.Flow.execute.FlowExecution;
 import StepperEngine.Flow.execute.FlowStatus;
-import StepperEngine.Flow.execute.StepData.StepExecuteData;
 
 import java.io.Serializable;
 import java.util.*;
@@ -35,7 +34,14 @@ public class FlowExecutionData implements Serializable {
         executionTime = flowExecution.getTotalTimeInFormat();
         executionDuration = flowExecution.getTotalTime().toMillis();
         executionResult = FlowStatus.getAsString(flowExecution.getFlowExecutionResult());
-        stepExecuteDataList = flowExecution.getStepsData();
+        stepExecuteDataList = flowExecution.getStepsData().stream()
+                .map(step -> {
+                    try {
+                        return new StepExecuteData(step);
+                    } catch (IllegalAccessException e) {
+                        throw new RuntimeException(e);
+                    }
+                }).collect(Collectors.toList());
         stepExecuteDataMap = stepExecuteDataList.stream()
                         .collect(Collectors.toMap(StepExecuteData::getFinalName, data->data));
         setFreeInputs(flowExecution);
