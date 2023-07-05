@@ -2,7 +2,7 @@ package JavaFx.Body;
 
 import ClientUtils.ClientUtils;
 import ClientUtils.Constants;
-import ClientUtils.Requester.FlowRequestImpl;
+import ClientUtils.Requester.flow.FlowRequestImpl;
 import DTO.FlowDetails.FlowDetails;
 import DTO.FlowExecutionData.FlowExecutionData;
 import JavaFx.AppController;

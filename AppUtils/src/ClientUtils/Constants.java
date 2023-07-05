@@ -15,6 +15,7 @@ public class Constants {
     public static final String READY_URL = "/execution/ready";
     public static final String EXECUTION_STATUS_URL = "/execution/status";
     public static final String STATS_URL = "/stats";
+    public static final String UPLOAD_FILE_URL = "/upload-file";
 
 
 }
