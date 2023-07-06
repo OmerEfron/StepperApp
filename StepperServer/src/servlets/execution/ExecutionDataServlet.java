@@ -13,10 +13,11 @@ import utils.StepperUtils;
 import java.io.IOException;
 import java.util.List;
 
+import static utils.ServletUtils.UUID_PARAMETER;
+
 @WebServlet(name = "executionDataServlet", urlPatterns = "/execution/data")
 public class ExecutionDataServlet extends HttpServlet {
 
-    private static final String UUID_PARAMETER = "uuid";
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Stepper stepper = StepperUtils.getStepper(getServletContext());

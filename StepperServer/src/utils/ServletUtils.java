@@ -13,6 +13,7 @@ import java.util.Map;
 public class ServletUtils {
 
     public final static String FLOW_NAME_PARAMETER = "flow_name";
+    public final static String UUID_PARAMETER = "uuid";
 
 
     public static void sendBadRequest(HttpServletResponse response, String message) throws IOException {

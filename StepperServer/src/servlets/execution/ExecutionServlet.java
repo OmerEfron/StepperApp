@@ -59,13 +59,12 @@ public class ExecutionServlet extends HttpServlet {
         Stepper stepper = StepperUtils.getStepper(getServletContext());
         Map<String, String> paramMap = null;
         try {
-            paramMap = ServletUtils.getParamMap(req, UUID_PARAMETER, FREE_INPUT_PARAMETER, FREE_INPUT_DATA_PARAMETER);
+            paramMap = ServletUtils.getParamMap(req, UUID_PARAMETER, FREE_INPUT_PARAMETER);
+            Object obj = req.getParameter(FREE_INPUT_DATA_PARAMETER);
+            Boolean result = stepper.addFreeInputToExecution(paramMap.get(UUID_PARAMETER), paramMap.get(FREE_INPUT_PARAMETER), obj);
+            ServletUtils.sendResponse(result, result.getClass(), resp);
         }catch (MissingParamException e){
             ServletUtils.sendBadRequest(resp, ServletUtils.getMissingParameterMessage(e.getMissingParamName()));
-        }
-        if(paramMap != null) {
-            Boolean result = stepper.addFreeInputToExecution(paramMap.get(UUID_PARAMETER), paramMap.get(FREE_INPUT_PARAMETER), paramMap.get(FREE_INPUT_DATA_PARAMETER));
-            ServletUtils.sendResponse(result, result.getClass(), resp);
         }
     }
 }

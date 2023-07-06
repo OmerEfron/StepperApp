@@ -10,10 +10,13 @@ import utils.ServletUtils;
 import utils.StepperUtils;
 
 import java.io.IOException;
+
+import static utils.ServletUtils.UUID_PARAMETER;
+
 @WebServlet(urlPatterns = "/execution/ready")
 public class ExecutionReadyToExecutedServlet extends HttpServlet {
 
-    public static final String UUID_PARAMETER = "uuid";
+
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
