@@ -10,8 +10,10 @@ public class ExecutionRequestImpl implements ExecutionRequest {
     private static final String EXECUTION_URL = Constants.BASE_URL + Constants.EXECUTE_FLOW_URL;
     private static final String READY_URL = Constants.BASE_URL + Constants.READY_URL;
     private static final String STATUS_URL = Constants.BASE_URL + Constants.EXECUTION_STATUS_URL;
-
+    private static final String RERUN_URL = Constants.BASE_URL + Constants.EXECUTION_RERUN_URL;
     private static final String DATA_URL = Constants.BASE_URL + Constants.EXECUTION_DATA_URL;
+
+    private static final String CONTINUATION_URL = Constants.BASE_URL + Constants.CONTINUATION_URL;
     @Override
     public Request isExecutionReadyRequest(String uuid) {
         return getStatusRequest(READY_URL, uuid);
@@ -71,12 +73,29 @@ public class ExecutionRequestImpl implements ExecutionRequest {
         return getRequest(DATA_URL, "uuid", uuid);
     }
 
+    @Override
+    public Request rerunRequest(String uuid) {
+        return getRequest(RERUN_URL, "uuid", uuid);
+    }
+
     private static Request getRequest(String executionUrl, String paramName, String paramValue) {
         HttpUrl.Builder urlBuilder = HttpUrl.parse(executionUrl).newBuilder();
         urlBuilder.addQueryParameter(paramName, paramValue);
         String url = urlBuilder.build().toString();
         return new Request.Builder()
                 .url(url)
+                .build();
+    }
+
+    @Override
+    public Request continuationRequest(String uuid, String flowToContinue) {
+        HttpUrl.Builder urlBuilder = HttpUrl.parse(CONTINUATION_URL).newBuilder();
+        urlBuilder.addQueryParameter("uuid", uuid)
+                .addQueryParameter("flow_name", flowToContinue);
+        String url = urlBuilder.build().toString();
+        return new Request.Builder()
+                .url(url)
+                .put(RequestBody.create(null, new byte[0]))
                 .build();
     }
 }

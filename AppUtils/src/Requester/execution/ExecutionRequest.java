@@ -10,4 +10,6 @@ public interface ExecutionRequest {
     Request executionStatusRequest(String uuid);
     Request flowExecutionsRequest(String flowName);
     Request executionRequest(String uuid);
+    Request rerunRequest(String uuid);
+    Request continuationRequest(String uuid, String flowToContinue);
 }

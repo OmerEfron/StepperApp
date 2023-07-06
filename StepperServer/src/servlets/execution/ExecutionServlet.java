@@ -1,7 +1,9 @@
 package servlets.execution;
 
+import DTO.DataAndType;
 import StepperEngine.Flow.execute.ExecutionNotReadyException;
 import StepperEngine.Stepper;
+import com.google.gson.Gson;
 import exceptions.MissingParamException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -11,6 +13,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import utils.ServletUtils;
 import utils.StepperUtils;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.Map;
 
@@ -59,9 +62,18 @@ public class ExecutionServlet extends HttpServlet {
         Stepper stepper = StepperUtils.getStepper(getServletContext());
         Map<String, String> paramMap = null;
         try {
-            paramMap = ServletUtils.getParamMap(req, UUID_PARAMETER, FREE_INPUT_PARAMETER);
-            Object obj = req.getParameter(FREE_INPUT_DATA_PARAMETER);
-            Boolean result = stepper.addFreeInputToExecution(paramMap.get(UUID_PARAMETER), paramMap.get(FREE_INPUT_PARAMETER), obj);
+            paramMap = ServletUtils.getParamMap(req, UUID_PARAMETER, FREE_INPUT_PARAMETER, FREE_INPUT_DATA_PARAMETER);
+            String dataParam = paramMap.get(FREE_INPUT_DATA_PARAMETER);
+            Boolean result;
+            try{
+                result = stepper.addFreeInputToExecution(paramMap.get(UUID_PARAMETER), paramMap.get(FREE_INPUT_PARAMETER), Integer.valueOf(dataParam));
+            }catch (NumberFormatException e){
+                try {
+                    result = stepper.addFreeInputToExecution(paramMap.get(UUID_PARAMETER), paramMap.get(FREE_INPUT_PARAMETER), Double.valueOf(dataParam));
+                }catch (NumberFormatException e1){
+                    result = stepper.addFreeInputToExecution(paramMap.get(UUID_PARAMETER), paramMap.get(FREE_INPUT_PARAMETER), dataParam);
+                }
+            }
             ServletUtils.sendResponse(result, result.getClass(), resp);
         }catch (MissingParamException e){
             ServletUtils.sendBadRequest(resp, ServletUtils.getMissingParameterMessage(e.getMissingParamName()));

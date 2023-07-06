@@ -1,6 +1,8 @@
 package utils;
 
+import DTO.DataAndType;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import exceptions.MissingParamException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -14,6 +16,14 @@ public class ServletUtils {
 
     public final static String FLOW_NAME_PARAMETER = "flow_name";
     public final static String UUID_PARAMETER = "uuid";
+
+    public final static Gson GSON_INSTANCE;
+
+    static {
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        gsonBuilder.registerTypeAdapter(DataAndType.class, new DataAndType.DataAndTypeAdapter());
+        GSON_INSTANCE = gsonBuilder.create();
+    }
 
 
     public static void sendBadRequest(HttpServletResponse response, String message) throws IOException {

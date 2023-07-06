@@ -2,6 +2,7 @@ package JavaFx.Body;
 
 import JavaFx.ClientUtils;
 import Refresher.FlowListRefresher;
+import Requester.execution.ExecutionRequestImpl;
 import Utils.Utils;
 import Utils.Constants;
 import Requester.flow.FlowRequestImpl;
@@ -43,14 +44,13 @@ public class BodyController {
     @FXML private Tab flowHistoryTab;
     @FXML private FlowHistory flowHistoryController;
     @FXML private Tab flowStatsTab;
-
     private TimerTask flowsRefresher;
     private Timer timer;
-
 
     private Map<String, ExecutionData> executionDataMap=new HashMap<>();
     private Map<String, Map<String,ExecutionData>> executionStepsInFLow=new HashMap<>();
     private AppController mainController;
+
 
 
     @FXML
@@ -95,7 +95,6 @@ public class BodyController {
         flowHistoryController.setFlowsExecutionTable();
     }
 
-
     public ExecutionData getFlowExecutionData(FlowExecutionData flow){
         if(!executionDataMap.containsKey(flow.getUniqueExecutionId()))
             executionDataMap.put(flow.getUniqueExecutionId(),new FlowExecutionDataImpUI(flow));
@@ -104,6 +103,7 @@ public class BodyController {
     public Node getStepExecutionData(FlowExecutionData flow, String stepName){
         return executionDataMap.get(flow.getUniqueExecutionId()).getStepVbox(stepName);
     }
+
     public ImageView getExecutionStatusImage(String status){
         ImageView imageView ;
 
@@ -123,13 +123,16 @@ public class BodyController {
         return imageView;
 
     }
-
     public String continuationFlow(String uuidFlow,String flowToContinue){
-        return mainController.getStepper().applyContinuation(uuidFlow,flowToContinue);
+        return Utils.runSync(new ExecutionRequestImpl().continuationRequest(uuidFlow, flowToContinue), String.class, ClientUtils.HTTP_CLIENT);
+//        return mainController.getStepper().applyContinuation(uuidFlow,flowToContinue);
     }
     public void rerunFlow(FlowExecutionData flow){
         bodyComponent.getSelectionModel().select(flowExecutionTab);
-        flowExecutionController.runFlowAgain(getStepper().getFlowsDetailsByName(flow.getFlowName()),mainController.getStepper().reRunFlow(flow.getUniqueExecutionId()));
+        //flowExecutionController.runFlowAgain(getStepper().getFlowsDetailsByName(flow.getFlowName()),mainController.getStepper().reRunFlow(flow.getUniqueExecutionId()));
+        FlowDetails flowDetails = Utils.runSync(new FlowRequestImpl().getFlowRequest(flow.getFlowName()), FlowDetails.class, ClientUtils.HTTP_CLIENT);
+        String uuid = Utils.runSync(new ExecutionRequestImpl().rerunRequest(flow.getUniqueExecutionId()), String.class, ClientUtils.HTTP_CLIENT);
+        flowExecutionController.runFlowAgain(flowDetails, uuid);
     }
 
     public void applyContinuationFromHistoryTab(String pastFlowUUID,String flowToContinue){
