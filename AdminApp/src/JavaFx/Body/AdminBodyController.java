@@ -46,7 +46,7 @@ public class AdminBodyController {
         flowStatsController.setMainController(this);
 
         bodyComponent.getSelectionModel().selectedItemProperty().addListener((observable, oldTab, newTab) -> {
-            if (newTab != null && newTab == flowHistoryTab && getStepper() != null) {
+            if (newTab != null && newTab == flowHistoryTab && isStepperIn()) {
                 // Update the TableView with information
                 flowHistoryController.setFlowsExecutionTable();
             }
@@ -57,16 +57,12 @@ public class AdminBodyController {
     }
 
 
-
-    public Optional<StepperEngine.Flow.execute.FlowExecution> getFlowExecution(String flowName){
-        return mainController.getFlowExecution(flowName);
-    }
-
-
     public void updateStats(String flowName){
         flowStatsController.updateStats(flowName);
     }
-
+    public boolean isStepperIn(){
+        return mainController.isStepperIn();
+    }
     public Stepper getStepper(){
         return mainController.getStepper();
     }

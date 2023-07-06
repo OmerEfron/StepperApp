@@ -34,7 +34,7 @@ public class AppController {
     @FXML private TabPane bodyComponent;
     @FXML HeaderController headerComponentController;
     @FXML AdminBodyController bodyComponentController;
-
+//
     private final StepperDTO stepperDTO=new StepperDTO();
     private Stepper stepper;
     boolean isStepperIn=false;
@@ -105,10 +105,6 @@ public class AppController {
 
     }
 
-    private void updateStepperIn(){
-        isStepperIn=true;
-    }
-
     private static void failureMessage(String message) {
         Alert alert = new Alert(Alert.AlertType.WARNING);
         alert.setTitle("Invalid Stepper");
@@ -117,15 +113,12 @@ public class AppController {
         alert.showAndWait();
     }
 
-    public Optional<FlowExecution> getFlowExecution(String name){
-        return stepperDTO.getFlowExecution(name);
+    public boolean isStepperIn() {
+        return isStepperIn;
     }
 
     public Stepper getStepper() {
         return stepper;
-    }
-    public void changeCSS(){
-
     }
 
     public FlowExecutionStats getFlowExecutionsStats(String flowName) {
