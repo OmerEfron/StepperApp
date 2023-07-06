@@ -10,11 +10,11 @@
           <element id="module-output" name="DTO" />
         </element>
         <element id="directory" name="lib">
-          <element id="file-copy" path="$PROJECT_DIR$/StepperServer/web/WEB-INF/okHttp/okio-2.8.0.jar" />
-          <element id="file-copy" path="$PROJECT_DIR$/StepperServer/web/WEB-INF/okHttp/okhttp-4.9.1.jar" />
-          <element id="file-copy" path="$PROJECT_DIR$/StepperServer/web/WEB-INF/okHttp/annotations-13.0.jar" />
-          <element id="file-copy" path="$PROJECT_DIR$/StepperServer/web/WEB-INF/okHttp/kotlin-stdlib-1.4.10.jar" />
-          <element id="file-copy" path="$PROJECT_DIR$/StepperServer/web/WEB-INF/okHttp/kotlin-stdlib-common-1.4.10.jar" />
+          <element id="file-copy" path="$PROJECT_DIR$/StepperServer/web/WEB-INF/lib/okHttp/okio-2.8.0.jar" />
+          <element id="file-copy" path="$PROJECT_DIR$/StepperServer/web/WEB-INF/lib/okHttp/okhttp-4.9.1.jar" />
+          <element id="file-copy" path="$PROJECT_DIR$/StepperServer/web/WEB-INF/lib/okHttp/annotations-13.0.jar" />
+          <element id="file-copy" path="$PROJECT_DIR$/StepperServer/web/WEB-INF/lib/okHttp/kotlin-stdlib-1.4.10.jar" />
+          <element id="file-copy" path="$PROJECT_DIR$/StepperServer/web/WEB-INF/lib/okHttp/kotlin-stdlib-common-1.4.10.jar" />
           <element id="file-copy" path="$PROJECT_DIR$/StepperServer/web/WEB-INF/lib/gson-2.8.8.jar" />
           <element id="file-copy" path="$PROJECT_DIR$/StepperServer/web/WEB-INF/lib/json-path-2.7.0.jar" />
           <element id="file-copy" path="$PROJECT_DIR$/StepperServer/web/WEB-INF/lib/slf4j-api-2.0.6.jar" />

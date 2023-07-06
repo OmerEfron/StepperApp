@@ -12,24 +12,18 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="file://$MODULE_DIR$/../StepperServer/web/WEB-INF/lib" />
+          <root url="file://$MODULE_DIR$/../lib/okHttp" />
+          <root url="jar://$MODULE_DIR$/../lib/accessors-smart-2.4.8.jar!/" />
+          <root url="jar://$MODULE_DIR$/../lib/gson-2.8.8.jar!/" />
+          <root url="jar://$MODULE_DIR$/../lib/json-path-2.7.0.jar!/" />
+          <root url="jar://$MODULE_DIR$/../lib/json-smart-2.4.8.jar!/" />
+          <root url="jar://$MODULE_DIR$/../lib/slf4j-api-2.0.6.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="file://$MODULE_DIR$/../StepperServer/web/WEB-INF/lib" />
+          <root url="jar://$MODULE_DIR$/../lib/gson-2.8.8-sources.jar!/" />
         </SOURCES>
-        <jarDirectory url="file://$MODULE_DIR$/../StepperServer/web/WEB-INF/lib" recursive="false" />
-        <jarDirectory url="file://$MODULE_DIR$/../StepperServer/web/WEB-INF/lib" recursive="false" type="SOURCES" />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="file://$MODULE_DIR$/../StepperServer/web/WEB-INF/okHttp" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-        <jarDirectory url="file://$MODULE_DIR$/../StepperServer/web/WEB-INF/okHttp" recursive="false" />
+        <jarDirectory url="file://$MODULE_DIR$/../lib/okHttp" recursive="false" />
       </library>
     </orderEntry>
   </component>

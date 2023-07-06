@@ -47,21 +47,4 @@ public class FlowServlet extends HttpServlet {
         }
     }
 
-//    @Override
-//    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-//        Stepper stepper = StepperUtils.getStepper(getServletContext());
-//        String filePath = req.getParameter("new_flows");
-//        if(filePath!= null){
-//            try {
-//                synchronized (stepper) { // to prevent multiple threads accessing the load method.
-//                    stepper.load(filePath);
-//                }
-//            } catch (ReaderException | FlowBuildException e) {
-//                ServletUtils.sendBadRequest(resp, e.getMessage());
-//            }
-//        }
-//        resp.getWriter().write("loaded successfully");
-//    }
-
-
 }

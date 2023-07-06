@@ -1,8 +1,8 @@
 package JavaFx.Body.ExecutionData.Step;
 
+import DTO.FlowExecutionData.StepExecuteData;
 import DataPresenter.DataPresentation;
 import DataPresenter.DataPresentationImpl;
-import StepperEngine.Flow.execute.StepData.StepExecuteData;
 import javafx.collections.FXCollections;
 import javafx.scene.control.Label;
 import javafx.scene.control.Separator;
@@ -28,7 +28,7 @@ public class StepExecutionDataImpUI {
     private HBox logs;
     private DataPresentation dataPresentation=new DataPresentationImpl();
 
-    public StepExecutionDataImpUI(StepExecuteData step) {
+    public StepExecutionDataImpUI(DTO.FlowExecutionData.StepExecuteData step) {
         this.step=step;
         this.name=setTwoLabels("Step Name :",step.getFinalName());
         this.startTime=setTwoLabels("Start time : ",step.getFormattedStartTime());

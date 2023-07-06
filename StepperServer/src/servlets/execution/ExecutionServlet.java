@@ -1,7 +1,9 @@
 package servlets.execution;
 
+import DTO.DataAndType;
 import StepperEngine.Flow.execute.ExecutionNotReadyException;
 import StepperEngine.Stepper;
+import com.google.gson.Gson;
 import exceptions.MissingParamException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -11,6 +13,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import utils.ServletUtils;
 import utils.StepperUtils;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.Map;
 
@@ -41,11 +44,16 @@ public class ExecutionServlet extends HttpServlet {
         // execute a flow. gets a parameter the UUID of the execution.
         Stepper stepper = StepperUtils.getStepper(getServletContext());
         String uuid = req.getParameter(UUID_PARAMETER);
-        try {
-            stepper.executeFlow(uuid);
-            ServletUtils.sendResponse(MISSING_PARAMETER_MESSAGE, MISSING_PARAMETER_MESSAGE.getClass(), resp);
-        } catch (ExecutionNotReadyException e) {
-            ServletUtils.sendBadRequest(resp, e.getMessage());
+        if(uuid != null) {
+            try {
+                stepper.executeFlow(uuid);
+                ServletUtils.sendResponse(Boolean.TRUE, Boolean.class, resp);
+            } catch (ExecutionNotReadyException e) {
+                ServletUtils.sendBadRequest(resp, e.getMessage());
+            }
+        }
+        else{
+            ServletUtils.sendBadRequest(resp, ServletUtils.getMissingParameterMessage(UUID_PARAMETER));
         }
     }
 
@@ -55,18 +63,20 @@ public class ExecutionServlet extends HttpServlet {
         Map<String, String> paramMap = null;
         try {
             paramMap = ServletUtils.getParamMap(req, UUID_PARAMETER, FREE_INPUT_PARAMETER, FREE_INPUT_DATA_PARAMETER);
+            String dataParam = paramMap.get(FREE_INPUT_DATA_PARAMETER);
+            Boolean result;
+            try{
+                result = stepper.addFreeInputToExecution(paramMap.get(UUID_PARAMETER), paramMap.get(FREE_INPUT_PARAMETER), Integer.valueOf(dataParam));
+            }catch (NumberFormatException e){
+                try {
+                    result = stepper.addFreeInputToExecution(paramMap.get(UUID_PARAMETER), paramMap.get(FREE_INPUT_PARAMETER), Double.valueOf(dataParam));
+                }catch (NumberFormatException e1){
+                    result = stepper.addFreeInputToExecution(paramMap.get(UUID_PARAMETER), paramMap.get(FREE_INPUT_PARAMETER), dataParam);
+                }
+            }
+            ServletUtils.sendResponse(result, result.getClass(), resp);
         }catch (MissingParamException e){
             ServletUtils.sendBadRequest(resp, ServletUtils.getMissingParameterMessage(e.getMissingParamName()));
-        }
-        if(paramMap != null) {
-            boolean result = stepper.addFreeInputToExecution(paramMap.get(UUID_PARAMETER), paramMap.get(FREE_INPUT_PARAMETER), paramMap.get(FREE_INPUT_DATA_PARAMETER));
-            if (result) {
-                String successMessage = String.format("input %s added successfully", paramMap.get(FREE_INPUT_PARAMETER));
-                ServletUtils.sendResponse(successMessage, successMessage.getClass(), resp);
-            } else {
-                ServletUtils.sendBadRequest(resp, String.format("cannot populate input %s with %s", paramMap.get(FREE_INPUT_PARAMETER),
-                        paramMap.get(FREE_INPUT_DATA_PARAMETER)));
-            }
         }
     }
 }
