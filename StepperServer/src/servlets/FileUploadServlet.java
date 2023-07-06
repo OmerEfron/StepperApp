@@ -28,7 +28,6 @@ public class FileUploadServlet extends HttpServlet {
         InputStream inputStream=null ;
         String filePath=null;
         for (Part part : parts) {
-            // Add the input stream of each part to the list
             if(part.getName().equals("file"))
                 inputStream=part.getInputStream();
             else

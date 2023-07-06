@@ -12,19 +12,16 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="file://$MODULE_DIR$/../lib/okHttp" />
-          <root url="jar://$MODULE_DIR$/../lib/accessors-smart-2.4.8.jar!/" />
-          <root url="jar://$MODULE_DIR$/../lib/gson-2.8.8.jar!/" />
-          <root url="jar://$MODULE_DIR$/../lib/json-path-2.7.0.jar!/" />
-          <root url="jar://$MODULE_DIR$/../lib/json-smart-2.4.8.jar!/" />
-          <root url="jar://$MODULE_DIR$/../lib/slf4j-api-2.0.6.jar!/" />
+          <root url="file://$MODULE_DIR$/../lib" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar://$MODULE_DIR$/../lib/gson-2.8.8-sources.jar!/" />
+          <root url="file://$MODULE_DIR$/../lib" />
         </SOURCES>
-        <jarDirectory url="file://$MODULE_DIR$/../lib/okHttp" recursive="false" />
+        <jarDirectory url="file://$MODULE_DIR$/../lib" recursive="false" />
+        <jarDirectory url="file://$MODULE_DIR$/../lib" recursive="false" type="SOURCES" />
       </library>
     </orderEntry>
+    <orderEntry type="module" module-name="AppUtils" />
   </component>
 </module>

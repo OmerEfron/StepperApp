@@ -4,6 +4,9 @@ import DTO.DataAndType;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Constants {
 
     public static final Gson GSON_INSTANCE;
@@ -26,5 +29,7 @@ public class Constants {
     public static final String CONTINUATION_URL = "/execution/continue";
     public static final String STATS_URL = "/stats";
     public static final String UPLOAD_FILE_URL = "/upload-file";
+    public final static String FLOWS_NAMES ="/flows_names";
+    public static final List<String> STRING_LIST_INSTANCE = new ArrayList<>();
 
 }
