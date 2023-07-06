@@ -6,6 +6,7 @@ import DTO.FlowDetails.StepDetails.FlowIODetails.Output;
 import JavaFx.Body.BodyController;
 import JavaFx.Body.FlowDefinition.Tabels.FlowDefinitionTable;
 import JavaFx.Body.FlowDefinition.Tabels.StepDetailsTable;
+import javafx.beans.property.ObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -61,6 +62,8 @@ public class FlowDefinition {
     @FXML private TableColumn<Output, String> stepOutputsToInput;
 
     private List<FlowDetails> flowDetails;
+    private FlowDetails currSelectedFlow;
+
     private Map<String ,ChoiceBox<String>> stepsSelectionMap=new HashMap<>();
     private ObservableList<FlowDefinitionTable> flowDefinitionTableObservableList;
     private Map<String,ObservableList<StepDetailsTable>> stepsTableData =new HashMap<>();
@@ -69,17 +72,17 @@ public class FlowDefinition {
     private Map<String,ObservableList<Output>> outputsData=new HashMap<>();
     private BodyController bodyController;
 
+
     @FXML
     void executeFlow(ActionEvent event) {
-        //FlowDetails currFlow = flowDetails.get(flowTable.getSelectionModel().getSelectedIndex());
-        bodyController.getFlows();
-       //bodyController.goToExecuteFlowTab(currFlow);
+        bodyController.goToExecuteFlowTab(currSelectedFlow);
     }
 
     @FXML
     void tableMouseClick(MouseEvent event) {
         if(event.getClickCount()==2) {
             FlowDetails currFlow = flowDetails.get(flowTable.getSelectionModel().getSelectedIndex());
+            currSelectedFlow = currFlow;
             setDataByFlowName(currFlow);
             createFormalOutputsList(currFlow);
             createStepTable(currFlow);
@@ -95,7 +98,7 @@ public class FlowDefinition {
      * @param event
      */
     public void setSelectedStepTables(ActionEvent event){
-        FlowDetails currFlow = flowDetails.get(flowTable.getSelectionModel().getSelectedIndex());
+        FlowDetails currFlow = currSelectedFlow;
         int stepIndex=stepsNames.get(currFlow.getFlowName()).indexOf(stepsSelection.getValue());
         if(stepIndex>=0) {
             ObservableList<Input> currStepInputs = stepsTableData.get(currFlow.getFlowName()).get(stepIndex).getInputs();

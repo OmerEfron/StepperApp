@@ -16,42 +16,18 @@ public class HeaderController {
     private AppController mainController;
     @FXML
     private VBox headerComponent;
-
-    @FXML
-    private Button loadButton;
     @FXML
     private Button greenSytle;
-
     @FXML
     private Button seaSytle;
-
     @FXML
     private Button classicSytleButton;
 
-
-    @FXML
-    private Label filePathLabel;
     public void setMainController(AppController mainController) {
         this.mainController = mainController;
     }
-    @FXML
-    private void handleLoadButtonClick() {
 
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Select a File");
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("XML Files", "*.xml"));
 
-        Stage stage = (Stage) loadButton.getScene().getWindow();
-        // Show the file chooser dialog
-        java.io.File selectedFile = fileChooser.showOpenDialog(stage);
-
-        if (selectedFile != null) {
-            String filePath = selectedFile.getPath();
-            if(mainController.loadFile(filePath))
-                filePathLabel.setText(filePath);
-        }
-
-    }
     @FXML
     void classicSytleButton(ActionEvent event) {
         BorderPane root = (BorderPane) classicSytleButton.getScene().getRoot();

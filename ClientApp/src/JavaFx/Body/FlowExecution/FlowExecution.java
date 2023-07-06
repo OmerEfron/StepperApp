@@ -4,12 +4,16 @@ package JavaFx.Body.FlowExecution;
 import DTO.FlowDetails.FlowDetails;
 import DTO.FlowDetails.StepDetails.FlowIODetails.Input;
 import DTO.FlowExecutionData.FlowExecutionData;
+import DTO.FlowExecutionData.IOData;
 import JavaFx.Body.BodyController;
+import JavaFx.ClientUtils;
+import Requester.execution.ExecutionRequestImpl;
+import Requester.flow.FlowRequestImpl;
 import StepperEngine.DataDefinitions.Enumeration.ZipEnumerator;
-import StepperEngine.Flow.execute.ExecutionNotReadyException;
 import StepperEngine.Flow.execute.StepData.StepExecuteData;
 import StepperEngine.Step.api.DataNecessity;
-import StepperEngine.Stepper;
+import Utils.Constants;
+import Utils.Utils;
 import javafx.animation.FadeTransition;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -30,10 +34,16 @@ import javafx.scene.paint.Color;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.util.Duration;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Response;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.EnumSet;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class FlowExecution {
@@ -82,7 +92,56 @@ public class FlowExecution {
     @FXML private Button rerunButton;
 
 
+    private final Callback executeCallback = new Callback() {
+        @Override
+        public void onFailure(@NotNull Call call, @NotNull IOException e) {
+            System.out.println("execute request didn't deliverd");
+        }
 
+        @Override
+        public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+            if(response.isSuccessful()){
+                System.out.println("execution finished");
+            }else{
+                System.out.println(response.body().string());
+            }
+        }
+    };
+    private final Callback setFlowDetailsCallback = new Callback() {
+        @Override
+        public void onFailure(@NotNull Call call, @NotNull IOException e) {
+            System.out.println("cannot go to server");
+        }
+
+        @Override
+        public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+            if(response.isSuccessful()){
+                flowDetails = Constants.GSON_INSTANCE.fromJson(response.body().string(), FlowDetails.class);
+                updateFlowExecutionData();
+            }
+            else {
+                System.out.println(response.body().string());
+            }
+        }
+    };
+    private final Callback getNewExecutionCallback = new Callback() {
+        @Override
+        public void onFailure(@NotNull Call call, @NotNull IOException e) {
+            System.out.println("connection failed");
+        }
+
+        @Override
+        public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+            Platform.runLater(() -> {
+                try {
+                    currFlowExecutionUuid = Constants.GSON_INSTANCE.fromJson(response.body().string(), String.class);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+
+            });
+        }
+    };
     private BodyController bodyController;
     private FlowDetails flowDetails;
     private FlowExecutionData flowExecutionData;
@@ -107,6 +166,7 @@ public class FlowExecution {
         String flowToContinue=continuationChoiceBox.getValue();
         applyContinuation(flowExecutionData.getUniqueExecutionId(),flowToContinue);
     }
+
     @FXML
     void rerunFlow(ActionEvent event) {
         bodyController.rerunFlow(flowExecutionDataImp);
@@ -115,8 +175,7 @@ public class FlowExecution {
 
     public void applyContinuation(String UUID,String flowToContinue) {
         currFlowExecutionUuid=bodyController.continuationFlow(UUID, flowToContinue);
-        flowDetails=bodyController.getStepper().getFlowsDetailsByName(flowToContinue);
-        updateFlowExecutionData();
+        Utils.runAsync(new FlowRequestImpl().getFlowRequest(flowToContinue), setFlowDetailsCallback, ClientUtils.HTTP_CLIENT);
     }
 
     public void runFlowAgain(FlowDetails flow, String UUID){
@@ -128,11 +187,13 @@ public class FlowExecution {
     private void updateFlowExecutionData() {
         cleanUpScreen();
         setFreeInputsDisplay();
-        Map<String, Object> allData = bodyController.getStepper().getFlowExecutionByUuid(currFlowExecutionUuid).getFreeInputsValue();
+        FlowExecutionData flowToRerunExecutionData = Utils.runSync(new ExecutionRequestImpl().executionRequest(currFlowExecutionUuid), FlowExecutionData.class, ClientUtils.HTTP_CLIENT);
+        Map<String, IOData> prevExecuteDataMap = flowToRerunExecutionData.getFreeInputs().stream()
+                .collect(Collectors.toMap(IOData::getFullQualifiedName, Function.identity()));
         for(Input input:flowDetails.getFreeInputs()){
-            if(allData.containsKey(input.getFullQualifideName())) {
-                addNewValue(input, allData.get(input.getFullQualifideName()).toString());
-                addInputToTable(input, allData.get(input.getFullQualifideName()).toString());
+            if(prevExecuteDataMap.containsKey(input.getFullQualifideName())) {
+                addNewValue(input, prevExecuteDataMap.get(input.getFullQualifideName()).toString());
+                addInputToTable(input, prevExecuteDataMap.get(input.getFullQualifideName()).toString());
             }
         }
         CentralFlowName.setText(flowDetails.getFlowName());
@@ -145,32 +206,28 @@ public class FlowExecution {
     @FXML
     void executeFlow(MouseEvent event) {
         if(flowExecutionButtonImage.opacityProperty().get() == 1) {
-            try {
-                executionProgressBar.setProgress(0);
-                bodyController.getStepper().executeFlow(currFlowExecutionUuid);
-                initExecuteButton();
-                new Thread(new Runnable() {
-                    String uuid = currFlowExecutionUuid;
-                    @Override
-                    public void run() {
-                        executeFlowTask(uuid);
-                    }
-                }).start();
-                lastFlowRunningUuid = currFlowExecutionUuid;
-            } catch (ExecutionNotReadyException e) {
-                throw new RuntimeException(e.getMessage());
-            }
+            executionProgressBar.setProgress(0);
+            initExecuteButton();
+            Utils.runAsync(new ExecutionRequestImpl().executeRequest(currFlowExecutionUuid), executeCallback, ClientUtils.HTTP_CLIENT);
+            new Thread(new Runnable() {
+                String uuid = currFlowExecutionUuid;
+                @Override
+                public void run() {
+                    executeFlowTask(uuid);
+                }
+            }).start();
+            lastFlowRunningUuid = currFlowExecutionUuid;
         }
     }
 
-
     void executeFlowTask(String uuid) {
         synchronized (this) {
-            Stepper stepper = bodyController.getStepper();
-            while (!stepper.isExecutionEnded(uuid)) {
-                Platform.runLater(() -> executionProgressBar.setProgress(stepper.getExecutionPartialStatus(uuid)));
+            Boolean isEnded = Utils.runSync(new ExecutionRequestImpl().executionStatusRequest(uuid), Boolean.class, ClientUtils.HTTP_CLIENT);
+            while (!isEnded) {
+                System.out.println("not ended...");
                 try {
                     Thread.sleep(300);
+                    isEnded = Utils.runSync(new ExecutionRequestImpl().executionStatusRequest(uuid), Boolean.class, ClientUtils.HTTP_CLIENT);
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
@@ -179,8 +236,8 @@ public class FlowExecution {
 
         Platform.runLater(() ->{
             executionProgressBar.setProgress(1);
-            flowExecutionDataImp=new FlowExecutionData(bodyController.getStepper().getFlowExecutionByUuid(uuid));
-            flowExecutionData =flowExecutionDataImp ;
+            flowExecutionData = Utils.runSync(new ExecutionRequestImpl().executionRequest(uuid), FlowExecutionData.class, ClientUtils.HTTP_CLIENT);
+            flowExecutionDataImp=flowExecutionData;
             cleanUpExecutionDetails();
             setExecutionDetails();
             makeRerunButtonEnabled();
@@ -200,6 +257,7 @@ public class FlowExecution {
         bodyController.updateFlowHistory();
         setContinuation();
     }
+
     @FXML
     void setStepData(MouseEvent event) {
         TreeItem<String> selectedItem = StepsTreeVIew.getSelectionModel().getSelectedItem();
@@ -221,7 +279,6 @@ public class FlowExecution {
         freeInputsGridPane.add(new Label("Is madantory?"), INPUT_MANDATORY_COLUMN, 0);
         freeInputsGridPane.add(new Label(), INPUT_DATA_DISPLAY_COLUMN, 0);
     }
-
     private void initButtons() {
         initExecuteButton();
         initContinuationButton();
@@ -232,15 +289,16 @@ public class FlowExecution {
         rerunButton.opacityProperty().set(0.2);
         rerunButton.cursorProperty().set(Cursor.DISAPPEAR);
     }
+
     private void makeRerunButtonEnabled(){
         rerunButton.opacityProperty().set(1);
         rerunButton.cursorProperty().set(Cursor.HAND);
     }
-
     private void initContinuationButton() {
         continuationButtonImage.opacityProperty().set(0.2);
         continuationButtonImage.cursorProperty().set(Cursor.DISAPPEAR);
     }
+
     private void makeContinuationButtonEnabled() {
         continuationButtonImage.opacityProperty().set(1);
         continuationButtonImage.cursorProperty().set(Cursor.HAND);
@@ -263,10 +321,9 @@ public class FlowExecution {
     public void setFlowToExecute(FlowDetails flow){
         cleanUpScreen();
         flowDetails = flow;
-        currFlowExecutionUuid = bodyController.getStepper().createNewExecution(flow.getFlowName());
-        //setFlowDetails();
-        CentralFlowName.setText(flow.getFlowName());
+        CentralFlowName.setText(flowDetails.getFlowName());
         setFreeInputsDisplay();
+        Utils.runAsync(new ExecutionRequestImpl().createExecuteRequest(flow.getFlowName()), getNewExecutionCallback, ClientUtils.HTTP_CLIENT);
     }
 
 
@@ -414,20 +471,21 @@ public class FlowExecution {
 
 
 
-
-
     private boolean addNewValue(Input input, String value) {
         try {
-            boolean result = bodyController.getStepper().addFreeInputToExecution(currFlowExecutionUuid, input.getDataName(),
-                    convertValue(value, input.getTypeName()));
-            if(result && bodyController.getStepper().getExecutionReadyToBeExecuteStatus(currFlowExecutionUuid)){
+            //TODO the server should get Object as value, and than here need to convert the value to the right object.
+            Boolean result = Utils.runSync(new ExecutionRequestImpl().addFreeInputRequest(currFlowExecutionUuid, input.getDataName(), value),
+                    Boolean.class, ClientUtils.HTTP_CLIENT);
+            if(Boolean.TRUE.equals(result) && Boolean.TRUE.equals(Utils.runSync(new ExecutionRequestImpl().isExecutionReadyRequest(currFlowExecutionUuid), Boolean.class, ClientUtils.HTTP_CLIENT))){
                 makeExecutionButtonEnabled();
             }
-            return result;
+            return Boolean.TRUE.equals(result);
         }catch (NumberFormatException e){
             return false;
         }
     }
+
+
 
     public Object convertValue(String value, String type){
         if (type.equals("Number")) {

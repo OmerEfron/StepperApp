@@ -17,5 +17,4 @@ public class Constants {
     public static final String STATS_URL = "/stats";
     public static final String UPLOAD_FILE_URL = "/upload-file";
 
-
 }

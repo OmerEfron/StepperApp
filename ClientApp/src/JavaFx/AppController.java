@@ -27,22 +27,6 @@ public class AppController {
         bodyComponentController.setMainController(this);
 
     }
-    public boolean loadFile(String filePath) {
-        try {
-
-            stepperDTO.load(filePath);
-            bodyComponentController.setFlowDetailsList(stepperDTO.getFlowsDetailsList());
-            stepper = stepperDTO.getStepper();
-            return true;
-        }catch (ReaderException | FlowBuildException | RuntimeException e ) {
-            Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setTitle("Invalid Stepper");
-            alert.setHeaderText(null);
-            alert.setContentText(e.getMessage());
-            alert.showAndWait();
-            return false;
-        }
-    }
     public Stepper getStepper() {
         return stepper;
     }

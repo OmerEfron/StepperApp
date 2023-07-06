@@ -1,6 +1,7 @@
 package JavaFx.Body;
 
 import JavaFx.ClientUtils;
+import Refresher.FlowListRefresher;
 import Utils.Utils;
 import Utils.Constants;
 import Requester.flow.FlowRequestImpl;
@@ -30,9 +31,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class BodyController {
 
@@ -44,6 +43,9 @@ public class BodyController {
     @FXML private Tab flowHistoryTab;
     @FXML private FlowHistory flowHistoryController;
     @FXML private Tab flowStatsTab;
+
+    private TimerTask flowsRefresher;
+    private Timer timer;
 
 
     private Map<String, ExecutionData> executionDataMap=new HashMap<>();
@@ -57,13 +59,18 @@ public class BodyController {
         flowExecutionController.setMainController(this);
         flowHistoryController.setMainController(this);
 
-        bodyComponent.getSelectionModel().selectedItemProperty().addListener((observable, oldTab, newTab) -> {
-            if (newTab != null && newTab == flowHistoryTab) {
-                // Update the TableView with information
-                flowHistoryController.setFlowsExecutionTable();
-            }
-        });
+        flowsRefresher();
+
     }
+
+    public void flowsRefresher(){
+        flowsRefresher = new FlowListRefresher(this::setFlowDetailsList);
+        timer = new Timer();
+        timer.schedule(flowsRefresher, 2000, 2000);
+    }
+
+
+
     public void setMainController(AppController mainController) {
         this.mainController = mainController;
     }
@@ -125,38 +132,10 @@ public class BodyController {
         flowExecutionController.runFlowAgain(getStepper().getFlowsDetailsByName(flow.getFlowName()),mainController.getStepper().reRunFlow(flow.getUniqueExecutionId()));
     }
 
-    public void rerunFlow2(FlowExecutionData flow){
-        bodyComponent.getSelectionModel().select(flowExecutionTab);
-        flowExecutionController.runFlowAgain(getStepper().getFlowsDetailsByName(flow.getFlowName()),mainController.getStepper().reRunFlow(flow.getUniqueExecutionId()));
-    }
     public void applyContinuationFromHistoryTab(String pastFlowUUID,String flowToContinue){
         bodyComponent.getSelectionModel().select(flowExecutionTab);
         flowExecutionController.applyContinuation(pastFlowUUID,flowToContinue);
     }
 
-    public void getFlows(){
-        String flowsUrl = HttpUrl
-                .parse(Constants.BASE_URL + Constants.FLOW_URL)
-                .newBuilder()
-                .build()
-                .toString();
-
-        Utils.runAsync(new FlowRequestImpl().getAllFlowRequest(), new Callback() {
-            @Override
-            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                System.out.println("error");
-            }
-
-            @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                Gson gson = Constants.GSON_INSTANCE;
-                Type listType = new TypeToken<List<FlowDetails>>() {}.getType();
-                List<FlowDetails> flowDetailsList = gson.fromJson(response.body().string(), listType);
-                for(FlowDetails flowDetails: flowDetailsList){
-                    System.out.println(flowDetails.getFlowName());
-                }
-            }
-        }, ClientUtils.HTTP_CLIENT);
-    }
 
 }

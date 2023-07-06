@@ -17,7 +17,7 @@ public class FlowRequestImpl implements FlowRequest {
 
 
     @Override
-    public Request getFlow(String flowName) {
+    public Request getFlowRequest(String flowName) {
         HttpUrl.Builder urlBuilder = HttpUrl.parse(FLOW_URL).newBuilder();
         urlBuilder.addQueryParameter("flow_name", flowName);
         String url = urlBuilder.build().toString();
