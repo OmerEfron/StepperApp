@@ -11,6 +11,7 @@ import JavaFx.Body.FlowStats.FlowStats;
 
 import JavaFx.Body.RolesManagement.RolesManagement;
 import JavaFx.Body.UserManagement.UserManagement;
+import Refresher.FlowExecutionListRefresher;
 import StepperEngine.Step.api.StepStatus;
 import StepperEngine.Stepper;
 import javafx.fxml.FXML;
@@ -36,7 +37,8 @@ public class AdminBodyController {
     private Map<String, ExecutionData> executionDataMap=new HashMap<>();
     private Map<String, Map<String,ExecutionData>> executionStepsInFLow=new HashMap<>();
     private AppController mainController;
-
+    private TimerTask flowExecutionsRefresher;
+    private Timer timer;
 
     @FXML
     public void initialize(){
@@ -51,6 +53,7 @@ public class AdminBodyController {
                 flowHistoryController.setFlowsExecutionTable();
             }
         });
+        flowsHistoryRefresher();
     }
     public void setMainController(AppController mainController) {
         this.mainController = mainController;
@@ -110,6 +113,15 @@ public class AdminBodyController {
     public FlowExecutionStats getFlowExecutionsStats(String flowName) {
         return mainController.getFlowExecutionsStats(flowName);
     }
+    public void flowsHistoryRefresher(){
+        flowExecutionsRefresher = new FlowExecutionListRefresher(this::setFlowExecutionDetailsList);
+        timer = new Timer();
+        timer.schedule(flowExecutionsRefresher, 2000, 2000);
+    }
+    public void setFlowExecutionDetailsList(List<FlowExecutionData> flowExecutionDataList){
+        flowHistoryController.setFlowExecutionDataList(flowExecutionDataList);
+    }
+
    /* public void setFlowDetailsList(List<FlowDetails> flowDetails){
         flowDefinitionController.setDataByFlowName(flowDetails);
     }

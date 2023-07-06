@@ -22,6 +22,8 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 import javafx.event.ActionEvent;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -41,6 +43,8 @@ public class FlowHistory {
     @FXML private VBox filterVbox;
     private BooleanProperty booleanProperty=new SimpleBooleanProperty();
     private AdminBodyController adminBodyController;
+    private List<FlowExecutionData> flowExecutionDataList=new ArrayList<>();
+
 
     public void setMainController(AdminBodyController adminBodyController) {
         this.adminBodyController = adminBodyController;
@@ -50,8 +54,8 @@ public class FlowHistory {
     void initialize(){
         filterChoose.setOnAction(event -> {
             String selectedOption = filterChoose.getValue();
-            setItemsInFlowsExecutionTable(FXCollections.observableList(adminBodyController.getStepper().getFlowExecutionDataList()
-                    .stream().filter(flowExecutionData -> flowExecutionData.getExecutionResult().equals(selectedOption)).collect(Collectors.toList())));
+            setItemsInFlowsExecutionTable(FXCollections.observableList(flowExecutionDataList.stream().filter
+                    (flowExecutionData -> flowExecutionData.getExecutionResult().equals(selectedOption)).collect(Collectors.toList())));
             booleanProperty.set(true);
             resetTable.opacityProperty().set(1);
             resetTable.cursorProperty().set(Cursor.HAND);
@@ -65,27 +69,21 @@ public class FlowHistory {
         );
         disaperRestFilterButton();
     }
-
-
-
+    public void setFlowExecutionDataList(List<FlowExecutionData> flowExecutionDataList) {
+        this.flowExecutionDataList = flowExecutionDataList;
+    }
 
     private void disaperRestFilterButton() {
         resetTable.opacityProperty().set(0.2);
         resetTable.cursorProperty().set(Cursor.DISAPPEAR);
     }
 
-//    @FXML
-//    void rerunFlow(ActionEvent event) {
-//        adminBodyController.rerunFlow(flowsExecutionTable.getSelectionModel().getSelectedItem());
-//    }
-
-
     @FXML
     void restTableFilter(MouseEvent event) {
         if(resetTable.cursorProperty().get().equals(Cursor.HAND)) {
             restTable();
             filterChoose.getSelectionModel().clearSelection();
-            setItemsInFlowsExecutionTable(FXCollections.observableList(adminBodyController.getStepper().getFlowExecutionDataList()));
+            setItemsInFlowsExecutionTable(FXCollections.observableList(flowExecutionDataList));
             booleanProperty.set(false);
             disaperRestFilterButton();
         }
@@ -100,12 +98,12 @@ public class FlowHistory {
         transition.play();
     }
     public void setFlowsExecutionTable() {
-        if (!adminBodyController.getStepper().getFlowExecutionDataList().isEmpty()) {
+        if (!flowExecutionDataList.isEmpty()) {
             flowsExecutionsNamesCol.setCellValueFactory(new PropertyValueFactory<FlowExecutionData, String>("flowName"));
             flowsExecutionsTimeCol.setCellValueFactory(new PropertyValueFactory<FlowExecutionData, String>("formattedStartTime"));
             flowsExecutionsStatusCol.setCellValueFactory(new PropertyValueFactory<FlowExecutionData, String>("executionResult"));
             setAligmentToFlowsExecutionCols();
-            setItemsInFlowsExecutionTable(FXCollections.observableList(adminBodyController.getStepper().getFlowExecutionDataList()));
+            setItemsInFlowsExecutionTable(FXCollections.observableList(flowExecutionDataList));
             filterChoose.setItems(FXCollections.observableList(getOptionList()));
         }
     }
@@ -115,7 +113,7 @@ public class FlowHistory {
     }
 
     private List<String>  getOptionList() {
-        return adminBodyController.getStepper().getFlowExecutionDataList()
+        return flowExecutionDataList
                 .stream()
                 .map(FlowExecutionData::getExecutionResult)
                 .filter(name -> !name.isEmpty())

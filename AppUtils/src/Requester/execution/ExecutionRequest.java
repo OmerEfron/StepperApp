@@ -12,4 +12,5 @@ public interface ExecutionRequest {
     Request executionRequest(String uuid);
     Request rerunRequest(String uuid);
     Request continuationRequest(String uuid, String flowToContinue);
+    Request executionDataList();
 }

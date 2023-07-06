@@ -1,8 +1,8 @@
 package Refresher;
 
-import DTO.FlowDetails.FlowDetails;
-import JavaFx.ClientUtils;
-import Requester.flow.FlowRequestImpl;
+import DTO.FlowExecutionData.FlowExecutionData;
+import JavaFx.AdminUtils;
+import Requester.execution.ExecutionRequestImpl;
 import Utils.Utils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -11,26 +11,24 @@ import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
 import org.jetbrains.annotations.NotNull;
-
+import Utils.*;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.TimerTask;
 import java.util.function.Consumer;
 
-import Utils.*;
+public class FlowExecutionListRefresher extends TimerTask {
 
-public class FlowListRefresher extends TimerTask {
+    private final Consumer<List<FlowExecutionData>> consumer;
 
-    private final Consumer<List<FlowDetails>> consumer;
-
-    public FlowListRefresher(Consumer<List<FlowDetails>> consumer) {
+    public FlowExecutionListRefresher(Consumer<List<FlowExecutionData>> consumer) {
         this.consumer = consumer;
     }
 
     @Override
     public void run() {
-        Utils.runAsync(new FlowRequestImpl().getAllFlowRequest(),
+        Utils.runAsync(new ExecutionRequestImpl().executionDataList(),
                 new Callback() {
                     @Override
                     public void onFailure(@NotNull Call call, @NotNull IOException e) {
@@ -39,13 +37,12 @@ public class FlowListRefresher extends TimerTask {
 
                     @Override
                     public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                        Gson gson = Constants.GSON_INSTANCE;
-                        Type listType = new TypeToken<List<FlowDetails>>() {}.getType();
-
-                        List<FlowDetails> flowDetailsList = gson.fromJson(response.body().string(), listType);
-                        Platform.runLater(() -> consumer.accept(flowDetailsList));
+                        Gson gson= Constants.GSON_INSTANCE;
+                        Type listType = new TypeToken<List<FlowExecutionData>>() {}.getType();
+                        List<FlowExecutionData> flowExecutionDataList = gson.fromJson(response.body().string(), listType);
+                        Platform.runLater(() -> consumer.accept(flowExecutionDataList));
                     }
                 },
-                ClientUtils.HTTP_CLIENT);
+                AdminUtils.HTTP_CLIENT);
     }
 }

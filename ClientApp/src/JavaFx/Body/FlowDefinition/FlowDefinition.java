@@ -251,8 +251,6 @@ public class FlowDefinition {
         freeInputs.setCellValueFactory(new PropertyValueFactory<FlowDefinitionTable,Integer>("freeInputsNumber"));
         ContinuationsNumber.setCellValueFactory(new PropertyValueFactory<FlowDefinitionTable,Integer>("continuationsNumber"));
         flowTable.setItems(flowDefinitionTableObservableList);
-
-
     }
     /*
     sets thw width of the description column in flow main table

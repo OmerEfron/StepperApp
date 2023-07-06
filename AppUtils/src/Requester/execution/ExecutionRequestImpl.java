@@ -98,4 +98,12 @@ public class ExecutionRequestImpl implements ExecutionRequest {
                 .put(RequestBody.create(null, new byte[0]))
                 .build();
     }
+
+    @Override
+    public Request executionDataList() {
+        return new Request.Builder()
+                .url(DATA_URL)
+                .get()
+                .build();
+    }
 }

@@ -52,7 +52,8 @@ public class AppController {
     }
 
     private void updateStats()  {
-        bodyComponentController.initStats(Utils.runSync(new FlowsNamesRequestImpl().getAllFlowNamesRequest(),STRING_LIST_INSTANCE.getClass(),AdminUtils.HTTP_CLIENT));
+        bodyComponentController.initStats(Utils.runSync(new FlowsNamesRequestImpl().getAllFlowNamesRequest(),
+                STRING_LIST_INSTANCE.getClass(),AdminUtils.HTTP_CLIENT));
     }
 
     private static void failureMessage(String message) {
@@ -72,6 +73,7 @@ public class AppController {
     }
 
     public FlowExecutionStats getFlowExecutionsStats(String flowName) {
-        return Utils.runSync(new FlowStatsRequestImp().getFlowRequest(flowName),FlowExecutionStats.class,AdminUtils.HTTP_CLIENT);
+        return Utils.runSync(new FlowStatsRequestImp().getFlowRequest(flowName),
+                FlowExecutionStats.class,AdminUtils.HTTP_CLIENT);
     }
 }
