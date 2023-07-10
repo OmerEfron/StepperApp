@@ -28,6 +28,7 @@ public class Constants {
     public static final String EXECUTION_RERUN_URL = "/execution/rerun";
     public static final String CONTINUATION_URL = "/execution/continue";
     public static final String STATS_URL = "/stats";
+    public static final String STATS_VERSION_URL = "/stats_version";
     public static final String UPLOAD_FILE_URL = "/upload-file";
     public static final String FLOWS_NAMES ="/flows_names";
     public static final List<String> STRING_LIST_INSTANCE = new ArrayList<>();

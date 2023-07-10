@@ -5,8 +5,12 @@ import DTO.ExecutionsStatistics.FlowExecutionStats;
 import DTO.ExecutionsStatistics.StepExecutionStats;
 import JavaFx.Body.AdminBodyController;
 
+import Utils.Utils;
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.chart.BarChart;
 import javafx.scene.chart.CategoryAxis;
@@ -18,77 +22,56 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import static JavaFx.AdminUtils.FLOW_STATS_REQUEST;
+import static JavaFx.AdminUtils.HTTP_CLIENT;
+
 public class FlowStats {
-    @FXML
-    private BorderPane flowStatsBorderPane;
-    @FXML
-    private CheckBox showStepsChart;
-    @FXML
-    private TableView<FlowStatsTableRow> flowStatsTableView;
+    @FXML private BorderPane flowStatsBorderPane;
+    @FXML private CheckBox showStepsChart;
+    @FXML private TableView<FlowExecutionStats> flowStatsTableView;
+    @FXML private TableColumn<FlowExecutionStats, String> flowCol;
+    @FXML private TableColumn<FlowExecutionStats, String> flowExecutionCountCol;
+    @FXML private TableColumn<FlowExecutionStats, String> flowAvgTimeCol;
+    @FXML private TableView<StepExecutionStats> stepStatsTableView;
+    @FXML private TableColumn<StepExecutionStats, String> stepCol;
+    @FXML private TableColumn<StepExecutionStats, String> stepExecutionCountCol;
+    @FXML private TableColumn<StepExecutionStats, String> stepAvgTimeCol;
+    @FXML private BarChart<String, Number> barChart;
 
-    @FXML
-    private TableColumn<FlowStatsTableRow, String> flowCol;
-
-    @FXML
-    private TableColumn<FlowStatsTableRow, String> flowExecutionCountCol;
-
-    @FXML
-    private TableColumn<FlowStatsTableRow, String> flowAvgTimeCol;
-
-    @FXML
-    private TableView<StepStatsTableRow> stepStatsTableView;
-
-    @FXML
-    private TableColumn<StepStatsTableRow, String> stepCol;
-
-    @FXML
-    private TableColumn<StepStatsTableRow, String> stepExecutionCountCol;
-
-    @FXML
-    private TableColumn<StepStatsTableRow, String> stepAvgTimeCol;
-
-    @FXML
-    private BarChart<String, Number> barChart;
-
+    private List<FlowExecutionStats> flowExecutionStatsList=new ArrayList<>();
     private final BarChart<String, Number> stepBarChart = new BarChart<>(new CategoryAxis(), new NumberAxis());
-
     private AdminBodyController adminBodyController;
 
-    ChangeListener<FlowStatsTableRow> switchChartListener = (observable, oldValue, newValue) -> {
-        if(newValue != null && showStepsChart.isSelected()) {
-            switchToStepsChart(newValue);
+    @FXML
+    void changeToStepChart(ActionEvent event) {
+        if(showStepsChart.isSelected()){
+            setStepChart(flowStatsTableView.getSelectionModel().getSelectedItem().getFlowName());
+            flowStatsBorderPane.centerProperty().setValue(stepBarChart);
         }
-    };
-
-    private void switchToStepsChart(FlowStatsTableRow newValue) {
-        setStepChart(newValue.getFlowName());
-        flowStatsBorderPane.centerProperty().setValue(stepBarChart);
-
+        else {
+            setFlowChart();
+            flowStatsBorderPane.centerProperty().setValue(barChart);
+        }
     }
-
 
     @FXML
     void initialize(){
         initTables();
         flowStatsTableView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) ->{
-            setStepStatsTableView(newValue.getFlowName());
+            if(newValue!= null){
+                setStepStatsTableView(newValue.getFlowName());
+            }
+            else {
+                setStepStatsTableView(oldValue.getFlowName());
+            }
             showStepsChart.selectedProperty().setValue(false);
-        });
-        showStepsChart.selectedProperty().addListener((observable, oldValue, newValue) -> {
-            if(newValue && !flowStatsTableView.getSelectionModel().isEmpty()){
-                switchToStepsChart(flowStatsTableView.getSelectionModel().getSelectedItem());
-            }
-            else if(!newValue){
-                flowStatsBorderPane.centerProperty().setValue(barChart);
-            }
         });
         setFlowChart();
 
     }
-
-
 
     private void initTables() {
         initFlowTableCols();
@@ -113,19 +96,18 @@ public class FlowStats {
         XYChart.Series<String, Number> flowSeries = new XYChart.Series<>();
         for(String flowName:flowNames){
             FlowExecutionStats flowExecutionStats = adminBodyController.getFlowExecutionsStats(flowName);
-            flowStatsTableView.getItems().add(new FlowStatsTableRow(flowExecutionStats));
+            flowStatsTableView.getItems().add(flowExecutionStats);
             flowSeries.getData().add(new XYChart.Data<>(flowName, 0));
         }
         barChart.getData().add(flowSeries);
     }
 
-
     public void setStepStatsTableView(String flowName){
-        stepStatsTableView.getItems().clear();
-        FlowExecutionStats flowExecutionsStats = adminBodyController.getStepper().getFlowExecutionsStats(flowName);
+        if(stepStatsTableView.getItems()!= null)
+            stepStatsTableView.getItems().clear();
+        FlowExecutionStats flowExecutionsStats = Utils.runSync(FLOW_STATS_REQUEST.getFlowRequest(flowName),FlowExecutionStats.class,HTTP_CLIENT);
         flowExecutionsStats.getStepExecutionsStats().forEach(step -> {
-            StepStatsTableRow stepStatsTableRow = new StepStatsTableRow(step);
-            stepStatsTableView.getItems().add(stepStatsTableRow);
+            stepStatsTableView.getItems().add(step);
         });
     }
 
@@ -142,7 +124,7 @@ public class FlowStats {
     public void setStepChart(String flowName){
         stepBarChart.getData().clear();
         stepBarChart.layout();
-        FlowExecutionStats flowExecutionStats = adminBodyController.getStepper().getFlowExecutionsStats(flowName);
+        FlowExecutionStats flowExecutionStats = Utils.runSync(FLOW_STATS_REQUEST.getFlowRequest(flowName),FlowExecutionStats.class,HTTP_CLIENT);
         XYChart.Series<String, Number> stepSeries = new XYChart.Series<>();
         for(StepExecutionStats step: flowExecutionStats.getStepExecutionsStats()){
             stepSeries.getData().add(new XYChart.Data<>(step.getStepName(), step.getAvgTimeOfExecutions()));
@@ -153,27 +135,24 @@ public class FlowStats {
         stepBarChart.getData().add(0, stepSeries);
     }
 
+    public void setFlowExecutionStatsList(List<FlowExecutionStats> flowExecutionStatsList) {
+        this.flowExecutionStatsList = flowExecutionStatsList;
+        Platform.runLater(this::updateStats);
+    }
 
-    public void updateStats(String flowName){
-        boolean found = false;
-        ObservableList<FlowStatsTableRow> flowStatsTableRows = flowStatsTableView.getItems();
-        FlowStatsTableRow newFlowStats = new FlowStatsTableRow(adminBodyController.getStepper().getFlowExecutionsStats(flowName));
-        int numOfFlows = flowStatsTableRows.size();
-        for(int i = 0; i< numOfFlows && !found; i++){
-            if(flowStatsTableRows.get(i).getFlowName().equals(flowName)){
-                flowStatsTableView.getItems().set(i, newFlowStats);
-                found = true;
-            }
-        }
-        if(!found){
-            flowStatsTableView.getItems().add(newFlowStats);
-        }
-        ObservableList<XYChart.Series<String, Number>> seriesList = barChart.getData();
-        if(!seriesList.isEmpty()){
-            XYChart.Series<String, Number> series = seriesList.get(0);
-            for(XYChart.Data<String, Number> data : series.getData()){
-                if(data.getXValue().equals(flowName)){
-                    data.setYValue(newFlowStats.getAvgTimeOfExecutions());
+    public void updateStats(){
+        if(!flowExecutionStatsList.isEmpty()) {
+            int selectedIndex = flowStatsTableView.getSelectionModel().getSelectedIndex();
+            flowStatsTableView.setItems(FXCollections.observableList(flowExecutionStatsList));
+            flowStatsTableView.getSelectionModel().select(selectedIndex);
+            ObservableList<XYChart.Series<String, Number>> seriesList = barChart.getData();
+            if (!seriesList.isEmpty()) {
+                XYChart.Series<String, Number> series = seriesList.get(0);
+                for (XYChart.Data<String, Number> data : series.getData()) {
+                    for(FlowExecutionStats flowExecutionStats:flowExecutionStatsList)
+                    if (data.getXValue().equals(flowExecutionStats.getFlowName())) {
+                        data.setYValue(flowExecutionStats.getAvgTimeOfExecutions());
+                    }
                 }
             }
         }

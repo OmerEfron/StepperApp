@@ -4,6 +4,7 @@
 <?import javafx.scene.chart.CategoryAxis?>
 <?import javafx.scene.chart.NumberAxis?>
 <?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
@@ -12,21 +13,20 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<?import javafx.scene.control.Label?>
-<ScrollPane  styleClass="tab-content-background" fitToHeight="true" fitToWidth="true" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="JavaFx.Body.FlowStats.FlowStats">
+<ScrollPane fitToHeight="true" fitToWidth="true" styleClass="tab-content-background" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="JavaFx.Body.FlowStats.FlowStats">
    <content>
-      <BorderPane styleClass="tab-content-background" fx:id="flowStatsBorderPane" prefHeight="700.0" prefWidth="1000.0">
+      <BorderPane fx:id="flowStatsBorderPane" prefHeight="700.0" prefWidth="1000.0" styleClass="tab-content-background">
          <bottom>
             <AnchorPane>
                <children>
-                  <ScrollPane styleClass="tab-content-background" fitToHeight="true" fitToWidth="true" minWidth="-Infinity" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                  <ScrollPane fitToHeight="true" fitToWidth="true" minWidth="-Infinity" styleClass="tab-content-background" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
                      <content>
-                        <HBox styleClass="tab-content-background" alignment="CENTER" prefHeight="303.0" prefWidth="1000.0">
+                        <HBox alignment="CENTER" prefHeight="303.0" prefWidth="1000.0" styleClass="tab-content-background">
                            <children>
                               <VBox styleClass="tab-content-background">
                                  <children>
-                                     <Label text="Show step chart"></Label>
-                                    <CheckBox fx:id="showStepsChart" mnemonicParsing="false" />
+                                     <Label text="Show step chart" />
+                                    <CheckBox fx:id="showStepsChart" mnemonicParsing="false" onAction="#changeToStepChart" />
                                  </children>
                               </VBox>
                               <HBox styleClass="tab-content-background">
@@ -43,7 +43,7 @@
                                     </TableView>
                                  </children>
                               </HBox>
-                              <HBox styleClass="tab-content-background" alignment="TOP_RIGHT">
+                              <HBox alignment="TOP_RIGHT" styleClass="tab-content-background">
                                  <children>
                                     <TableView fx:id="stepStatsTableView" prefHeight="303.0" prefWidth="500.0" HBox.hgrow="ALWAYS">
                                        <columns>
@@ -67,7 +67,7 @@
          <center>
             <BarChart fx:id="barChart" BorderPane.alignment="CENTER">
               <xAxis>
-                <CategoryAxis  label="Label" side="BOTTOM" />
+                <CategoryAxis label="Label" side="BOTTOM" />
               </xAxis>
               <yAxis>
                 <NumberAxis label="Label" side="LEFT" />

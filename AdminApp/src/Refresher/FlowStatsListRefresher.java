@@ -1,35 +1,42 @@
 package Refresher;
 
+import DTO.ExecutionsStatistics.FlowExecutionStats;
 import DTO.FlowExecutionData.FlowExecutionData;
 import JavaFx.AdminUtils;
 import Utils.Utils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import javafx.application.Platform;
+import javafx.beans.property.IntegerProperty;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
 import org.jetbrains.annotations.NotNull;
 import Utils.*;
 import java.io.IOException;
-import java.lang.reflect.Type;
-import java.util.List;
 import java.util.TimerTask;
 import java.util.function.Consumer;
 
-import static JavaFx.AdminUtils.EXECUTION_REQUEST;
+import static JavaFx.AdminUtils.FLOW_STATS_REQUEST;
 
-public class FlowExecutionListRefresher extends TimerTask {
+public class FlowStatsListRefresher extends TimerTask  {
 
-    private final Consumer<List<FlowExecutionData>> consumer;
+    //private final Consumer<List<FlowExecutionStats>> consumer;
+    private final Consumer<StatsWithVersion> consumer;
+    private final IntegerProperty statsVersion;
 
-    public FlowExecutionListRefresher(Consumer<List<FlowExecutionData>> consumer) {
+    public FlowStatsListRefresher(Consumer<StatsWithVersion> consumer,IntegerProperty statsVersion) {
         this.consumer = consumer;
+        this.statsVersion=statsVersion;
+    }
+
+    public void setStatsVersion(int statsVersion) {
+        this.statsVersion.set(statsVersion);
     }
 
     @Override
     public void run() {
-        Utils.runAsync(EXECUTION_REQUEST.executionDataList(),
+        Utils.runAsync(FLOW_STATS_REQUEST.getStatsByVersion(statsVersion.get()),
                 new Callback() {
                     @Override
                     public void onFailure(@NotNull Call call, @NotNull IOException e) {
@@ -38,10 +45,9 @@ public class FlowExecutionListRefresher extends TimerTask {
 
                     @Override
                     public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                        Gson gson= Constants.GSON_INSTANCE;
-                        Type listType = new TypeToken<List<FlowExecutionData>>() {}.getType();
-                        List<FlowExecutionData> flowExecutionDataList = gson.fromJson(response.body().string(), listType);
-                        Platform.runLater(() -> consumer.accept(flowExecutionDataList));
+                        Gson gson=Constants.GSON_INSTANCE;
+                        StatsWithVersion statsWithVersion = gson.fromJson(response.body().string(), StatsWithVersion.class);
+                        Platform.runLater(() -> consumer.accept(statsWithVersion));
                     }
                 },
                 AdminUtils.HTTP_CLIENT);

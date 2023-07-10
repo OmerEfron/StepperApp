@@ -16,6 +16,8 @@ import javafx.scene.layout.VBox;
 import java.io.File;
 import java.io.IOException;
 import Utils.Utils;
+
+import static JavaFx.AdminUtils.*;
 import static Utils.Constants.STRING_LIST_INSTANCE;
 
 public class AppController {
@@ -23,8 +25,6 @@ public class AppController {
     @FXML private TabPane bodyComponent;
     @FXML HeaderController headerComponentController;
     @FXML AdminBodyController bodyComponentController;
-    private final StepperDTO stepperDTO=new StepperDTO();
-    private Stepper stepper;
     boolean isStepperIn=false;
 
 
@@ -36,7 +36,7 @@ public class AppController {
 
     public void loadFile(String filePath,File selectedFile) throws IOException {
         try {
-            String res=Utils.runSyncFile(new FileUploadImpl().fileUploadRequest(selectedFile), AdminUtils.HTTP_CLIENT);
+            String res=Utils.runSyncFile(FILE_UPLOAD.fileUploadRequest(selectedFile), AdminUtils.HTTP_CLIENT);
             if(res!=null)
                 failureMessage(res);
             else{
@@ -52,7 +52,7 @@ public class AppController {
     }
 
     private void updateStats()  {
-        bodyComponentController.initStats(Utils.runSync(new FlowsNamesRequestImpl().getAllFlowNamesRequest(),
+        bodyComponentController.initStats(Utils.runSync(FLOWS_NAMES_REQUEST.getAllFlowNamesRequest(),
                 STRING_LIST_INSTANCE.getClass(),AdminUtils.HTTP_CLIENT));
     }
 
@@ -68,12 +68,8 @@ public class AppController {
         return isStepperIn;
     }
 
-    public Stepper getStepper() {
-        return stepper;
-    }
-
     public FlowExecutionStats getFlowExecutionsStats(String flowName) {
-        return Utils.runSync(new FlowStatsRequestImp().getFlowRequest(flowName),
+        return Utils.runSync(FLOW_STATS_REQUEST.getFlowRequest(flowName),
                 FlowExecutionStats.class,AdminUtils.HTTP_CLIENT);
     }
 }

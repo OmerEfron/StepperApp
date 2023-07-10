@@ -12,7 +12,6 @@ import java.util.List;
 public class FlowStatsTableRow {
 
     private final String flowName;
-
     private final Integer numOfExecutions;
     private final Long avgTimeOfExecutions;
 

@@ -12,8 +12,13 @@ import JavaFx.Body.FlowStats.FlowStats;
 import JavaFx.Body.RolesManagement.RolesManagement;
 import JavaFx.Body.UserManagement.UserManagement;
 import Refresher.FlowExecutionListRefresher;
+import Refresher.FlowStatsListRefresher;
+import Refresher.StatsWithVersion;
 import StepperEngine.Step.api.StepStatus;
 import StepperEngine.Stepper;
+import javafx.application.Platform;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Tab;
@@ -21,6 +26,7 @@ import javafx.scene.control.TabPane;
 import javafx.scene.image.ImageView;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class AdminBodyController {
 
@@ -39,6 +45,12 @@ public class AdminBodyController {
     private AppController mainController;
     private TimerTask flowExecutionsRefresher;
     private Timer timer;
+    private Timer timerStats;
+    private FlowStatsListRefresher FlowStatsListRefresher;
+    private IntegerProperty statsVersion;
+    private Boolean statsRefresherIn=false;
+
+
 
     @FXML
     public void initialize(){
@@ -46,28 +58,16 @@ public class AdminBodyController {
 //        userManagementController.setMainController(this);
         flowHistoryController.setMainController(this);
         flowStatsController.setMainController(this);
-
-        bodyComponent.getSelectionModel().selectedItemProperty().addListener((observable, oldTab, newTab) -> {
-            if (newTab != null && newTab == flowHistoryTab && isStepperIn()) {
-                // Update the TableView with information
-                flowHistoryController.setFlowsExecutionTable();
-            }
-        });
+        statsVersion= new SimpleIntegerProperty();
         flowsHistoryRefresher();
+
     }
     public void setMainController(AppController mainController) {
         this.mainController = mainController;
     }
 
-
-    public void updateStats(String flowName){
-        flowStatsController.updateStats(flowName);
-    }
     public boolean isStepperIn(){
         return mainController.isStepperIn();
-    }
-    public Stepper getStepper(){
-        return mainController.getStepper();
     }
 
     public void updateFlowHistory() {
@@ -106,10 +106,6 @@ public class AdminBodyController {
 
     }
 
-    public String continuationFlow(String uuidFlow,String flowToContinue){
-        return mainController.getStepper().applyContinuation(uuidFlow,flowToContinue);
-    }
-
     public FlowExecutionStats getFlowExecutionsStats(String flowName) {
         return mainController.getFlowExecutionsStats(flowName);
     }
@@ -121,6 +117,34 @@ public class AdminBodyController {
     public void setFlowExecutionDetailsList(List<FlowExecutionData> flowExecutionDataList){
         flowHistoryController.setFlowExecutionDataList(flowExecutionDataList);
     }
+    public void updateStats(){
+        FlowStatsListRefresher = new FlowStatsListRefresher(
+                this::updateStatsWithVersion,
+                statsVersion);
+        timer = new Timer();
+        timer.schedule(FlowStatsListRefresher, 2000, 2000);
+    }
+    public void updateStatsWithVersion(StatsWithVersion statsWithVersion){
+        if((statsWithVersion.getVersion() != statsVersion.get()))
+        {
+            Platform.runLater(()->{
+                setFlowExecutionStatsList(statsWithVersion.getEntries());
+                statsVersion.set(statsWithVersion.getVersion());
+            });
+
+        }
+    }
+    public void setFlowExecutionStatsList(List<FlowExecutionStats> flowExecutionStatsList){
+        flowStatsController.setFlowExecutionStatsList(flowExecutionStatsList);
+    }
+    public Boolean getStatsRefresherIn() {
+        return statsRefresherIn;
+    }
+
+    public void setStatsRefresherIn(Boolean statsRefresherIn) {
+        this.statsRefresherIn = statsRefresherIn;
+    }
+
 
    /* public void setFlowDetailsList(List<FlowDetails> flowDetails){
         flowDefinitionController.setDataByFlowName(flowDetails);

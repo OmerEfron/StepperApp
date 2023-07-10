@@ -5,6 +5,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import exceptions.MissingParamException;
+import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -16,6 +17,8 @@ public class ServletUtils {
 
     public final static String FLOW_NAME_PARAMETER = "flow_name";
     public final static String UUID_PARAMETER = "uuid";
+    private static final String STATS_MANAGER_ATTRIBUTE_NAME = "statsManager";
+    private static final Object statsManagerLock = new Object();
 
     public final static Gson GSON_INSTANCE;
 
@@ -58,5 +61,24 @@ public class ServletUtils {
             result.put(param, currParamData);
         }
         return result;
+    }
+
+    public static StatsManager getStatsManager(ServletContext servletContext) {
+        synchronized (statsManagerLock) {
+            if (servletContext.getAttribute(STATS_MANAGER_ATTRIBUTE_NAME) == null) {
+                servletContext.setAttribute(STATS_MANAGER_ATTRIBUTE_NAME, new StatsManager());
+            }
+        }
+        return (StatsManager) servletContext.getAttribute(STATS_MANAGER_ATTRIBUTE_NAME);
+    }
+    public static int getIntParameter(HttpServletRequest request, String name) {
+        String value = request.getParameter(name);
+        if (value != null) {
+            try {
+                return Integer.parseInt(value);
+            } catch (NumberFormatException numberFormatException) {
+            }
+        }
+        return Integer.MIN_VALUE;
     }
 }

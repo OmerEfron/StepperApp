@@ -11,6 +11,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import utils.ServletUtils;
+import utils.StatsManager;
 import utils.StepperUtils;
 
 import java.io.BufferedReader;
@@ -42,11 +43,23 @@ public class ExecutionServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         // execute a flow. gets a parameter the UUID of the execution.
+        StatsManager statsManager = ServletUtils.getStatsManager(getServletContext());
         Stepper stepper = StepperUtils.getStepper(getServletContext());
         String uuid = req.getParameter(UUID_PARAMETER);
         if(uuid != null) {
             try {
                 stepper.executeFlow(uuid);
+                while (!stepper.isExecutionEnded(uuid)) {
+                    try {
+                        Thread.sleep(300);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+                synchronized (getServletContext()) {
+                    statsManager.setFlowExecutionStatsList(stepper.getFlowExecutionStatsList());
+                    statsManager.addVersion();
+                }
                 ServletUtils.sendResponse(Boolean.TRUE, Boolean.class, resp);
             } catch (ExecutionNotReadyException e) {
                 ServletUtils.sendBadRequest(resp, e.getMessage());

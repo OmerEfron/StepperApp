@@ -1,4 +1,4 @@
-package servlets;
+package servlets.stats;
 
 import DTO.ExecutionsStatistics.FlowExecutionStats;
 import StepperEngine.Stepper;
@@ -11,6 +11,7 @@ import utils.ServletUtils;
 import utils.StepperUtils;
 
 import java.io.IOException;
+import java.util.List;
 
 @WebServlet(name = "getStatsFromEngine", urlPatterns = "/stats")
 public class StatsServlet extends HttpServlet {
@@ -27,7 +28,9 @@ public class StatsServlet extends HttpServlet {
         }
     }
 
-    private void doGetForAllFlows(HttpServletResponse resp, Stepper stepper) {
+    private void doGetForAllFlows(HttpServletResponse resp, Stepper stepper) throws IOException {
+        List<FlowExecutionStats> flowExecutionStatsList=stepper.getFlowExecutionStatsList();
+        ServletUtils.sendResponse(flowExecutionStatsList, flowExecutionStatsList.getClass(), resp);
 
     }
 

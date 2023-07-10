@@ -23,10 +23,6 @@ public class FlowExecutionStats {
 
     private final Map<String, StepExecutionStats> stepExecutionStatsMap = new HashMap<>();
 
-    public FlowExecutionStats(){
-        flowName="a";
-        numOfExecutions=0;
-    }
     public FlowExecutionStats(FlowDefinition flowDefinition, List<FlowExecution> flowExecutions) {
         this.flowName = flowDefinition.getName();
         this.numOfExecutions = flowExecutions != null ? flowExecutions.size() : 0;

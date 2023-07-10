@@ -6,6 +6,7 @@ import okhttp3.Request;
 
 public class FlowStatsRequestImp implements FlowStatsRequest{
     private final String STATS_URL = Constants.BASE_URL + Constants.STATS_URL;
+    private final String STATS_VERSION_URL = Constants.BASE_URL + Constants.STATS_VERSION_URL;
     @Override
     public Request getAllFlowRequest() {
         return new Request.Builder()
@@ -23,5 +24,15 @@ public class FlowStatsRequestImp implements FlowStatsRequest{
                 .url(url)
                 .build();
 
+    }
+
+    @Override
+    public Request getStatsByVersion(int version) {
+        HttpUrl.Builder urlBuilder = HttpUrl.parse(STATS_VERSION_URL).newBuilder();
+        urlBuilder.addQueryParameter("stats_version", String.valueOf(version));
+        String url = urlBuilder.build().toString();
+        return new Request.Builder()
+                .url(url)
+                .build();
     }
 }

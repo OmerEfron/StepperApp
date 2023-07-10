@@ -7,6 +7,7 @@ import JavaFx.Body.AdminBodyController;
 
 
 import javafx.animation.RotateTransition;
+import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -41,6 +42,7 @@ public class FlowHistory {
     @FXML private TreeView<String> StepsTreeVIew;
     @FXML private Label CentralFlowName;
     @FXML private VBox filterVbox;
+
     private BooleanProperty booleanProperty=new SimpleBooleanProperty();
     private AdminBodyController adminBodyController;
     private List<FlowExecutionData> flowExecutionDataList=new ArrayList<>();
@@ -53,12 +55,7 @@ public class FlowHistory {
     @FXML
     void initialize(){
         filterChoose.setOnAction(event -> {
-            String selectedOption = filterChoose.getValue();
-            setItemsInFlowsExecutionTable(FXCollections.observableList(flowExecutionDataList.stream().filter
-                    (flowExecutionData -> flowExecutionData.getExecutionResult().equals(selectedOption)).collect(Collectors.toList())));
-            booleanProperty.set(true);
-            resetTable.opacityProperty().set(1);
-            resetTable.cursorProperty().set(Cursor.HAND);
+            setExecutionTableByFilter();
         });
         filterSelectionLabel.textProperty().bind(Bindings
                 .when(booleanProperty)
@@ -69,8 +66,31 @@ public class FlowHistory {
         );
         disaperRestFilterButton();
     }
+
+    private void setExecutionTableByFilter() {
+        String selectedOption = filterChoose.getValue();
+        setItemsInFlowsExecutionTable(FXCollections.observableList(flowExecutionDataList.stream().filter
+                (flowExecutionData -> flowExecutionData.getExecutionResult().equals(selectedOption)).collect(Collectors.toList())));
+        booleanProperty.set(true);
+        resetTable.opacityProperty().set(1);
+        resetTable.cursorProperty().set(Cursor.HAND);
+    }
+
     public void setFlowExecutionDataList(List<FlowExecutionData> flowExecutionDataList) {
-        this.flowExecutionDataList = flowExecutionDataList;
+        if(flowExecutionDataList.size()==1 && !adminBodyController.getStatsRefresherIn()){
+            adminBodyController.setStatsRefresherIn(true);
+            adminBodyController.updateStats();
+        }
+        if(flowExecutionDataList.size()!=this.flowExecutionDataList.size()) {
+            this.flowExecutionDataList = flowExecutionDataList;
+            Platform.runLater(() -> {
+                if (booleanProperty.get()) {
+                    setExecutionTableByFilter();
+                } else {
+                    setFlowsExecutionTable();
+                }
+            });
+        }
     }
 
     private void disaperRestFilterButton() {

@@ -47,12 +47,9 @@ public class Stepper implements Serializable {
     private final Map<String, FlowExecution> executionsMap = new HashMap<>();
     private final Map<String, List<FlowExecution>> executionsPerFlow = new HashMap<>();
     private final Map<String, List<FlowExecutionData>> flowExecutionDataMap = new HashMap<>(); // flow name to his executions
-
     private ExecutorService executorService;
     private List<FlowExecutionData> flowExecutionDataList=new ArrayList<>();
-
-
-
+    private Map<String,FlowExecutionStats> flowExecutionStatsMap=new HashMap<>();
 
     public Stepper() {
 
@@ -96,6 +93,7 @@ public class Stepper implements Serializable {
                 .collect(Collectors.toList());
         for(FlowDefinition flow :flows){
             flowDetailsMap.put(flow.getName(),new FlowDetails(flow));
+            flowExecutionStatsMap.put(flow.getName(),new FlowExecutionStats(flow, executionsPerFlow.get(flow.getName())));
         }
         try {
             checkContinuation();
@@ -246,8 +244,9 @@ public class Stepper implements Serializable {
                     FlowExecutionData executionData = new FlowExecutionData(flowExecution);
                     flowExecutionDataList.add(executionData);
                     flowExecutionDataMap.computeIfAbsent(executionData.getFlowName(), key -> new ArrayList<>()).add(executionData);
+                    executionsPerFlow.get(executionData.getFlowName());
+                    flowExecutionStatsMap.put(executionData.getFlowName(),new FlowExecutionStats(flowExecution.getFlowDefinition(),executionsPerFlow.get(executionData.getFlowName())));
                 });
-
             } else
                 throw new ExecutionNotReadyException("flow is not ready to be executed. check for not provided" +
                         " free inputs", uuid);
@@ -255,14 +254,17 @@ public class Stepper implements Serializable {
     }
 
     private void executionTask(FlowExecutor flowExecutor, FlowExecution flowExecution) {
+        String flowName=flowExecution.getFlowDefinition().getName();
         flowExecutor.executeFlow(flowExecution);
         executionsPerFlow.computeIfAbsent(
-                flowExecution.getFlowDefinition().getName(),
+                flowName,
                 k -> new ArrayList<>()
         ).add(flowExecution);
     }
 
-
+    public synchronized List<FlowExecutionStats> getFlowExecutionStatsList(){
+        return new ArrayList<>(flowExecutionStatsMap.values());
+    }
 
     public List<FlowDetails> getFlowsDetails() {
         return new ArrayList<>(flowDetailsMap.values());
@@ -338,9 +340,14 @@ public class Stepper implements Serializable {
         return null;
     }
 
+//    public FlowExecutionStats getFlowExecutionsStats(String flowName) {
+//        synchronized (this) {
+//            return new FlowExecutionStats(flowsMap.get(flowName), executionsPerFlow.get(flowName));
+//        }
+//    }
     public FlowExecutionStats getFlowExecutionsStats(String flowName) {
         synchronized (this) {
-            return new FlowExecutionStats(flowsMap.get(flowName), executionsPerFlow.get(flowName));
+            return flowExecutionStatsMap.get(flowName);
         }
     }
 
