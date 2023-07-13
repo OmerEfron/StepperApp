@@ -5,8 +5,10 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import exceptions.MissingParamException;
+import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import users.UserManager;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -16,6 +18,18 @@ public class ServletUtils {
 
     public final static String FLOW_NAME_PARAMETER = "flow_name";
     public final static String UUID_PARAMETER = "uuid";
+    private static final String USER_MANAGER_ATTRIBUTE_NAME = "userManager";
+    private static final Object userManagerLock = new Object();
+
+    public static UserManager getUserManager(ServletContext servletContext) {
+
+        synchronized (userManagerLock) {
+            if (servletContext.getAttribute(USER_MANAGER_ATTRIBUTE_NAME) == null) {
+                servletContext.setAttribute(USER_MANAGER_ATTRIBUTE_NAME, new UserManager());
+            }
+        }
+        return (UserManager) servletContext.getAttribute(USER_MANAGER_ATTRIBUTE_NAME);
+    }
 
     public final static Gson GSON_INSTANCE;
 

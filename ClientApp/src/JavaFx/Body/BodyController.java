@@ -129,7 +129,6 @@ public class BodyController {
     }
     public void rerunFlow(FlowExecutionData flow){
         bodyComponent.getSelectionModel().select(flowExecutionTab);
-        //flowExecutionController.runFlowAgain(getStepper().getFlowsDetailsByName(flow.getFlowName()),mainController.getStepper().reRunFlow(flow.getUniqueExecutionId()));
         FlowDetails flowDetails = Utils.runSync(new FlowRequestImpl().getFlowRequest(flow.getFlowName()), FlowDetails.class, ClientUtils.HTTP_CLIENT);
         String uuid = Utils.runSync(new ExecutionRequestImpl().rerunRequest(flow.getUniqueExecutionId()), String.class, ClientUtils.HTTP_CLIENT);
         flowExecutionController.runFlowAgain(flowDetails, uuid);

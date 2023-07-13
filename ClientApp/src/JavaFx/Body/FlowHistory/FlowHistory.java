@@ -3,6 +3,10 @@ package JavaFx.Body.FlowHistory;
 import DTO.FlowExecutionData.FlowExecutionData;
 import DTO.FlowExecutionData.StepExecuteData;
 import JavaFx.Body.BodyController;
+import JavaFx.ClientUtils;
+import Requester.execution.ExecutionRequestImpl;
+import Utils.Utils;
+import com.google.gson.reflect.TypeToken;
 import javafx.animation.RotateTransition;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
@@ -19,9 +23,17 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Response;
+import org.jetbrains.annotations.NotNull;
 
+import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static Utils.Constants.GSON_INSTANCE;
 
 
 public class FlowHistory {
@@ -42,6 +54,7 @@ public class FlowHistory {
     @FXML private ImageView continuationButtonImage;
     private BooleanProperty booleanProperty=new SimpleBooleanProperty();
     private BodyController bodyController;
+    List<FlowExecutionData> flowExecutions;
 
     public void setMainController(BodyController bodyController) {
         this.bodyController = bodyController;
@@ -51,8 +64,25 @@ public class FlowHistory {
     void initialize(){
         filterChoose.setOnAction(event -> {
             String selectedOption = filterChoose.getValue();
+
+            Utils.runAsync(new ExecutionRequestImpl().executionsHistoryRequest(), new Callback() {
+                @Override
+                public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                    System.out.println("cant get history");
+                }
+
+                @Override
+                public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                    if(response.isSuccessful()) {
+                        Type listType = new TypeToken<List<FlowExecutionData>>() {}.getType();
+                        List<FlowExecutionData> flowExecutions = GSON_INSTANCE.fromJson(response.body().string(), listType);
+                    }
+                }
+            }, ClientUtils.HTTP_CLIENT);
             setItemsInFlowsExecutionTable(FXCollections.observableList(bodyController.getStepper().getFlowExecutionDataList()
-                    .stream().filter(flowExecutionData -> flowExecutionData.getExecutionResult().equals(selectedOption)).collect(Collectors.toList())));
+                    .stream()
+                    .filter(flowExecutionData -> flowExecutionData.getExecutionResult().equals(selectedOption))
+                    .collect(Collectors.toList())));
             booleanProperty.set(true);
             resetTable.opacityProperty().set(1);
             resetTable.cursorProperty().set(Cursor.HAND);

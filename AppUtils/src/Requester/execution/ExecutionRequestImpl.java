@@ -29,6 +29,14 @@ public class ExecutionRequestImpl implements ExecutionRequest {
     }
 
     @Override
+    public Request executionsHistoryRequest() {
+        return new Request.Builder()
+                .url(DATA_URL)
+                .get()
+                .build();
+    }
+
+    @Override
     public Request executeRequest(String uuid) {
         HttpUrl.Builder urlBuilder = HttpUrl.parse(EXECUTION_URL).newBuilder();
         urlBuilder.addQueryParameter("uuid", uuid);
