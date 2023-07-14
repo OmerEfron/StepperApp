@@ -16,6 +16,7 @@ import utils.StepperUtils;
 import java.io.*;
 import java.util.*;
 
+
 @WebServlet("/upload-file")
 @MultipartConfig(fileSizeThreshold = 1024 * 1024, maxFileSize = 1024 * 1024 * 5, maxRequestSize = 1024 * 1024 * 5 * 5)
 public class FileUploadServlet extends HttpServlet {
@@ -34,8 +35,14 @@ public class FileUploadServlet extends HttpServlet {
                 filePath=readFromInputStream(part.getInputStream());
         }
         try {
-            Stepper stepper= StepperUtils.getStepper(getServletContext());
-            stepper.load2(inputStream,filePath);
+            Stepper stepper = StepperUtils.getStepper(getServletContext());
+            if(!StepperUtils.isStepperIn(getServletContext())) {
+                stepper.load2(inputStream, filePath);
+                StepperUtils.setStepperIn(getServletContext());
+            }else{
+
+            }
+
         }catch (ReaderException | FlowBuildException | RuntimeException e ){
             ServletUtils.sendBadRequest(response,e.getMessage());
         }

@@ -81,4 +81,14 @@ public class ServletUtils {
         }
         return Integer.MIN_VALUE;
     }
+    public static void clearAttributes(ServletContext servletContext) {
+        // Get all attribute names
+        java.util.Enumeration<String> attributeNames = servletContext.getAttributeNames();
+
+        // Iterate through the attribute names and remove them
+        while (attributeNames.hasMoreElements()) {
+            String attributeName = attributeNames.nextElement();
+            servletContext.removeAttribute(attributeName);
+        }
+    }
 }

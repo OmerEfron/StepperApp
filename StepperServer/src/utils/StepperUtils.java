@@ -8,6 +8,7 @@ import jakarta.servlet.ServletContext;
 public class StepperUtils {
 
     private static final String STEPPER_ATTRIBUTE_NAME = "stepper";
+    private static final String STEPPER_LOADED_ATTRIBUTE = "is_stepper_loaded";
     private static final Object stepperLock = new Object();
 
     public static Stepper getStepper(ServletContext servletContext){
@@ -24,5 +25,20 @@ public class StepperUtils {
             }
         }
         return (Stepper) servletContext.getAttribute(STEPPER_ATTRIBUTE_NAME);
+    }
+    public static boolean isStepperIn(ServletContext servletContext) {
+        synchronized (stepperLock)
+        {
+            if (servletContext.getAttribute(STEPPER_LOADED_ATTRIBUTE)==null){
+                servletContext.setAttribute(STEPPER_LOADED_ATTRIBUTE,false);
+            }
+        }
+        return (Boolean) servletContext.getAttribute(STEPPER_LOADED_ATTRIBUTE);
+    }
+    public static void setStepperIn(ServletContext servletContext) {
+        synchronized (stepperLock)
+        {
+            servletContext.setAttribute(STEPPER_LOADED_ATTRIBUTE,true);
+        }
     }
 }
