@@ -40,10 +40,7 @@ public class AppController {
             String res=Utils.runSyncFile(FILE_UPLOAD.fileUploadRequest(selectedFile), AdminUtils.HTTP_CLIENT);
             if(res!=null)
                 failureMessage(res);
-            else if(isStepperIn) {
-
-            }
-            else {
+            else if(!isStepperIn) {
                 isStepperIn = true;
                 Platform.runLater(() -> {
                     headerComponentController.updateFilePathLabel(filePath);

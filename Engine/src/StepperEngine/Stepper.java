@@ -70,7 +70,7 @@ public class Stepper implements Serializable {
         List<FlowDefinition> newFlows = new ArrayList<>();
         for (Flow flow:stepper.getFlows().getFlows()) {
             if (flowsMap.containsKey(flow.getName())) {
-                throw new FlowBuildException("The flow : " + flow.getName() + " , is already exsits in stepper!", flow.getName());
+                throw new FlowBuildException("The flow : " + flow.getName() + " , is already exsits in system!", flow.getName());
             }
         }
         for (Flow flow:stepper.getFlows().getFlows()) {

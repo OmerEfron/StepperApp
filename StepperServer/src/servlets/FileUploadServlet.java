@@ -41,7 +41,7 @@ public class FileUploadServlet extends HttpServlet {
                 StepperUtils.setStepperIn(getServletContext());
             }else{
                 stepper.addFlowsFromFile(inputStream,filePath);
-                ServletUtils.getStatsManager(getServletContext()).addVersion();
+                updateStatsManager(stepper);
             }
 
         }catch (ReaderException | FlowBuildException | RuntimeException e ){
@@ -50,6 +50,12 @@ public class FileUploadServlet extends HttpServlet {
         }
 
     }
+
+    private void updateStatsManager(Stepper stepper) {
+        ServletUtils.getStatsManager(getServletContext()).addVersion();
+        ServletUtils.getStatsManager(getServletContext()).setFlowExecutionStatsList(stepper.getFlowExecutionStatsList());
+    }
+
     private String readFromInputStream(InputStream inputStream) {
         return new Scanner(inputStream).useDelimiter("\\Z").next();
     }
