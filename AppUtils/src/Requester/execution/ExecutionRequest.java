@@ -13,4 +13,5 @@ public interface ExecutionRequest {
     Request rerunRequest(String uuid);
     Request continuationRequest(String uuid, String flowToContinue);
     Request executionDataList();
+    Request executionsHistoryRequest();
 }

@@ -23,7 +23,7 @@ public class ExecutionServlet extends HttpServlet {
     private static final String UUID_PARAMETER = "uuid";
     private static final String FREE_INPUT_PARAMETER = "free-input";
     private static final String FREE_INPUT_DATA_PARAMETER = "data";
-    private static final String MISSING_PARAMETER_MESSAGE = "not flow name passed as parameter";
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         // gets an uuid of a new execution created by the engine.
