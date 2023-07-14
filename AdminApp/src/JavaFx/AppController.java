@@ -35,11 +35,15 @@ public class AppController {
     }
 
     public void loadFile(String filePath,File selectedFile) throws IOException {
+
         try {
             String res=Utils.runSyncFile(FILE_UPLOAD.fileUploadRequest(selectedFile), AdminUtils.HTTP_CLIENT);
             if(res!=null)
                 failureMessage(res);
-            else{
+            else if(isStepperIn) {
+
+            }
+            else {
                 isStepperIn = true;
                 Platform.runLater(() -> {
                     headerComponentController.updateFilePathLabel(filePath);

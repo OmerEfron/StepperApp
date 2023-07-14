@@ -37,14 +37,16 @@ public class FileUploadServlet extends HttpServlet {
         try {
             Stepper stepper = StepperUtils.getStepper(getServletContext());
             if(!StepperUtils.isStepperIn(getServletContext())) {
-                stepper.load2(inputStream, filePath);
+                stepper.loadAllStepper(inputStream, filePath);
                 StepperUtils.setStepperIn(getServletContext());
             }else{
-
+                stepper.addFlowsFromFile(inputStream,filePath);
+                ServletUtils.getStatsManager(getServletContext()).addVersion();
             }
 
         }catch (ReaderException | FlowBuildException | RuntimeException e ){
             ServletUtils.sendBadRequest(response,e.getMessage());
+
         }
 
     }

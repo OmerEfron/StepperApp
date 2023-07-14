@@ -21,9 +21,6 @@ import StepperEngine.StepperReader.impl.StepperReaderFromXml;
 
 
 import java.io.InputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
 import java.io.Serializable;
 import java.util.*;
 import java.util.concurrent.*;
@@ -55,17 +52,43 @@ public class Stepper implements Serializable {
 
     }
 
-    public void load(String filePath) throws ReaderException, FlowBuildException {
-        StepperReader reader = new StepperReaderFromXml();
-        TheStepper theStepper = reader.read(filePath);
-        newFlows(theStepper);
-    }
-    public void load2(InputStream inputStream, String filePath) throws ReaderException, FlowBuildException {
+    public void loadAllStepper(InputStream inputStream, String filePath) throws ReaderException, FlowBuildException {
         StepperReader reader = new StepperReaderFromXml();
         TheStepper theStepper = reader.read2(inputStream,filePath);
         newFlows(theStepper);
     }
 
+    public void addFlowsFromFile(InputStream inputStream, String filePath)throws ReaderException, FlowBuildException{
+        StepperReader reader = new StepperReaderFromXml();
+        TheStepper theStepper = reader.read2(inputStream,filePath);
+        Stepper tempStepper=new Stepper();
+        tempStepper.newFlows(theStepper);//check if file valid
+        addFlows(theStepper);
+    }
+
+    private void addFlows(TheStepper stepper) throws FlowBuildException{
+        List<FlowDefinition> newFlows = new ArrayList<>();
+        for (Flow flow:stepper.getFlows().getFlows()) {
+            if (flowsMap.containsKey(flow.getName())) {
+                throw new FlowBuildException("The flow : " + flow.getName() + " , is already exsits in stepper!", flow.getName());
+            }
+        }
+        for (Flow flow:stepper.getFlows().getFlows()) {
+            FlowDefinition flowDefinition=new FlowDefinitionImpl(flow);
+            newFlows.add(flowDefinition);
+            flowNames.add(flow.getName());
+            flowsMap.put(flow.getName(), flowDefinition);
+            flowDetailsMap.put(flow.getName(),new FlowDetails(flowDefinition));
+            flowExecutionStatsMap.put(flow.getName(),new FlowExecutionStats(flowDefinition, executionsPerFlow.get(flow.getName())));
+        }
+        try {
+            checkContinuation();
+        } catch (FlowBuildException e) {
+            throw new RuntimeException(e);
+        }
+
+
+    }
 
     public void newFlows(TheStepper stepper) throws FlowBuildException {
         List<FlowDefinition> newFlows = new ArrayList<>();
