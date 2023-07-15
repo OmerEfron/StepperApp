@@ -23,11 +23,17 @@ public class HeaderController {
     @FXML
     private Button classicSytleButton;
 
+    @FXML
+    private Label userNameLabel;
+
+
     public void setMainController(AppController mainController) {
         this.mainController = mainController;
     }
 
-
+    public void setUsernameLabel(String username){
+        userNameLabel.textProperty().setValue(username);
+    }
     @FXML
     void classicSytleButton(ActionEvent event) {
         BorderPane root = (BorderPane) classicSytleButton.getScene().getRoot();

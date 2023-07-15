@@ -69,6 +69,7 @@ public class LoginServlet extends HttpServlet {
             }
         } else {
             //user is already logged in
+            response.getWriter().write(usernameFromSession);
             response.setStatus(HttpServletResponse.SC_OK);
         }
     }

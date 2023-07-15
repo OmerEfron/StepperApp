@@ -7,6 +7,7 @@ import com.google.gson.GsonBuilder;
 public class Constants {
 
     public static final Gson GSON_INSTANCE;
+    public static final String LOGIN_PAGE = "/login";
 
     static {
         GsonBuilder gsonBuilder = new GsonBuilder();
