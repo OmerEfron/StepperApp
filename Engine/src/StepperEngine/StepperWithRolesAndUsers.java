@@ -27,9 +27,8 @@ public class StepperWithRolesAndUsers extends Stepper {
         return getFlowExecutionDataList().stream().filter(flowExecutionData -> combinedFlows.contains(flowExecutionData.getFlowName())).collect(Collectors.toList());
     }
 
-    public List<FlowExecutionData> getFlowExecutionDataList(String username, RoleDefinition ... roles){
-        List<FlowExecutionData> flowExecutionDataList = getFlowExecutionDataList(roles);
-        return flowExecutionDataList.stream()
+    public List<FlowExecutionData> getFlowExecutionDataList(String username){
+        return getFlowExecutionDataList().stream()
                 .filter(flowExecutionData -> flowExecutionData.getUserExecuted().equals(username))
                 .collect(Collectors.toList());
     }
