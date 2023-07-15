@@ -3,9 +3,9 @@ package users.roles;
 import java.util.*;
 
 public class RoleImpl implements RoleDefinition{
-    private  String name;
-    private  String description;
-    private  List<String> flows;
+    private String name;
+    private String description;
+    private List<String> flows;
     private Set<String> users=new HashSet<>();
 
     public RoleImpl() {

@@ -13,6 +13,7 @@ import java.util.Map;
 
 public class RolesManager {
     private final Map<String, RoleImpl> roleMap=new HashMap<>();
+
     public RolesManager(Stepper stepper){
         addReadOnlyRole(stepper);
         addAllFlowsRole(stepper);
