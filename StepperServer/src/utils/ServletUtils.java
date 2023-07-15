@@ -1,6 +1,7 @@
 package utils;
 
 import DTO.DataAndType;
+import Managers.StatsManager;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
@@ -17,6 +18,7 @@ import java.util.Map;
 public class ServletUtils {
 
     public final static String FLOW_NAME_PARAMETER = "flow_name";
+    public final static String ROLE_NAME_PARAMETER = "role_name";
     public final static String UUID_PARAMETER = "uuid";
     private static final String STATS_MANAGER_ATTRIBUTE_NAME = "statsManager";
     private static final Object statsManagerLock = new Object();

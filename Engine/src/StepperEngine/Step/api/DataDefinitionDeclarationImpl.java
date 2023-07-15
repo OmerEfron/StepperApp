@@ -11,7 +11,7 @@ import java.util.Objects;
 public class DataDefinitionDeclarationImpl implements DataDefinitionsDeclaration, Serializable {
 
     String name;
-    String userString;//Displays the string to be displayed to the user when entering or exiting the information
+    String userString;//Displays the string to be displayed to the User when entering or exiting the information
     DataNecessity dataNecessity;
     String alias;
     DataDefinition dataDefinition;

@@ -274,7 +274,7 @@ public class FlowDefinitionImpl implements FlowDefinition, Serializable {
 
     /**
      * finds all free inputs of the flow
-     * if a mandatory input that is not a user-friendly one is found, adds it to the problems list.
+     * if a mandatory input that is not a User-friendly one is found, adds it to the problems list.
      */
     private void setFreeInputs() {
         freeInputs = new HashSet<>(steps.stream()

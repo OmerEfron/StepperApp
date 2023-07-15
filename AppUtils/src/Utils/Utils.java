@@ -4,8 +4,10 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import okhttp3.*;
+import users.roles.RoleImpl;
 
 import java.io.IOException;
+import java.util.List;
 
 public class Utils {
 
@@ -54,6 +56,7 @@ public class Utils {
             throw new RuntimeException(e);
         }
     }
+
 
 
 

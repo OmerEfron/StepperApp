@@ -16,6 +16,8 @@ public class Constants {
         gsonBuilder.registerTypeAdapter(DataAndType.class, new DataAndType.DataAndTypeAdapter());
         GSON_INSTANCE = gsonBuilder.create();
     }
+    public final static String ROLE_NAME_PARAMETER = "role_name";
+    public final static String ROLE_TO_ADD_PARAMETER = "role_to_add";
     public static final String port = ":8080";
     public final static String BASE_DOMAIN = "localhost";
     public static final String CONTEXT_PATH = "/StepperServer_Web_exploded";
@@ -31,6 +33,9 @@ public class Constants {
     public static final String STATS_VERSION_URL = "/stats_version";
     public static final String UPLOAD_FILE_URL = "/upload-file";
     public static final String FLOWS_NAMES ="/flows_names";
+    public final static String GET_ROLE="/role/getRoles";
+    public final static String PUT_ROLE="/role/addRole";
+
     public static final List<String> STRING_LIST_INSTANCE = new ArrayList<>();
 
 }

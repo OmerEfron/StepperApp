@@ -1,14 +1,17 @@
 package utils;
 
-import StepperEngine.Flow.FlowBuildExceptions.FlowBuildException;
+import Managers.RolesManager;
 import StepperEngine.Stepper;
-import StepperEngine.StepperReader.Exception.ReaderException;
 import jakarta.servlet.ServletContext;
+import users.roles.RoleImpl;
+
+import java.util.Map;
 
 public class StepperUtils {
 
     private static final String STEPPER_ATTRIBUTE_NAME = "stepper";
     private static final String STEPPER_LOADED_ATTRIBUTE = "is_stepper_loaded";
+    private static final String ROLE_ATTRIBUTE="roles";
     private static final Object stepperLock = new Object();
 
     public static Stepper getStepper(ServletContext servletContext){
@@ -40,5 +43,32 @@ public class StepperUtils {
         {
             servletContext.setAttribute(STEPPER_LOADED_ATTRIBUTE,true);
         }
+    }
+
+    public static Map<String, RoleImpl> getRolesMap(ServletContext servletContext){
+        RolesManager rolesManager;
+        synchronized (stepperLock){
+            if(servletContext.getAttribute(ROLE_ATTRIBUTE)==null){
+                rolesManager=new RolesManager(getStepper(servletContext));
+                servletContext.setAttribute(ROLE_ATTRIBUTE,rolesManager);
+            }
+        }
+        rolesManager=(RolesManager) servletContext.getAttribute(ROLE_ATTRIBUTE);
+        return rolesManager.getRoleMap();
+    }
+    public static RolesManager getRolesManger(ServletContext servletContext){
+        RolesManager rolesManager;
+        synchronized (stepperLock){
+            if(servletContext.getAttribute(ROLE_ATTRIBUTE)==null){
+                rolesManager=new RolesManager(getStepper(servletContext));
+            }
+        }
+        rolesManager=(RolesManager) servletContext.getAttribute(ROLE_ATTRIBUTE);
+        return rolesManager;
+    }
+    public static void addDefaultRoles(ServletContext servletContext){
+        RolesManager rolesManager=(RolesManager) servletContext.getAttribute(ROLE_ATTRIBUTE);
+        rolesManager.addReadOnlyRole(getStepper(servletContext));
+        rolesManager.addAllFlowsRole(getStepper(servletContext));
     }
 }

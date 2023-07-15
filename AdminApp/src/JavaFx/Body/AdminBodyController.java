@@ -2,6 +2,7 @@ package JavaFx.Body;
 
 import DTO.ExecutionsStatistics.FlowExecutionStats;
 import DTO.FlowExecutionData.FlowExecutionData;
+import JavaFx.AdminUtils;
 import JavaFx.AppController;
 
 import JavaFx.Body.ExecutionData.ExecutionData;
@@ -16,6 +17,7 @@ import Refresher.FlowStatsListRefresher;
 import Refresher.StatsWithVersion;
 import StepperEngine.Step.api.StepStatus;
 import StepperEngine.Stepper;
+import Utils.Utils;
 import javafx.application.Platform;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -24,9 +26,13 @@ import javafx.scene.Node;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.image.ImageView;
+import users.roles.RoleImpl;
 
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static JavaFx.AdminUtils.FLOWS_NAMES_REQUEST;
+import static Utils.Constants.STRING_LIST_INSTANCE;
 
 public class AdminBodyController {
 
@@ -54,7 +60,7 @@ public class AdminBodyController {
 
     @FXML
     public void initialize(){
-//        rolesManagementController.setMainController(this);
+        rolesManagementController.setMainController(this);
 //        userManagementController.setMainController(this);
         flowHistoryController.setMainController(this);
         flowStatsController.setMainController(this);
@@ -144,23 +150,18 @@ public class AdminBodyController {
     public void setStatsRefresherIn(Boolean statsRefresherIn) {
         this.statsRefresherIn = statsRefresherIn;
     }
-
-
-   /* public void setFlowDetailsList(List<FlowDetails> flowDetails){
-        flowDefinitionController.setDataByFlowName(flowDetails);
+    public void setRoles(List<RoleImpl> roles){
+        rolesManagementController.setRoleTable(roles);
+        rolesManagementController.appearNewRoleButton();
     }
 
-    public void goToExecuteFlowTab(FlowDetails flow) {
-        flowExecutionController.setFlowToExecute(flow);
-        bodyComponent.getSelectionModel().select(flowExecutionTab);
+    public List<String> getAllFlows() {
+        return Utils.runSync(FLOWS_NAMES_REQUEST.getAllFlowNamesRequest(),
+                STRING_LIST_INSTANCE.getClass(), AdminUtils.HTTP_CLIENT);
     }
-    public void rerunFlow(FlowExecutionDataImpl flow){
-        bodyComponent.getSelectionModel().select(flowExecutionTab);
-        flowExecutionController.runFlowAgain(getStepper().getFlowsDetailsByName(flow.getFlowName()),mainController.getStepper().reRunFlow(flow.getUniqueExecutionId()));
-    }
-    public void applyContinuationFromHistoryTab(String pastFlowUUID,String flowToContinue){
-        bodyComponent.getSelectionModel().select(flowExecutionTab);
-        flowExecutionController.applyContinuation(pastFlowUUID,flowToContinue);
-    }*/
 
+    public void sendNewRole(RoleImpl newRole) {
+        Utils.runAsync(AdminUtils.ROLE_REQUEST.addRole(newRole),rolesManagementController.setNewRoleCallback,AdminUtils.HTTP_CLIENT );
+
+    }
 }

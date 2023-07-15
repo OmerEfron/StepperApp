@@ -18,7 +18,7 @@
       <HBox spacing="10.0">
          <children>
             <Button id="rnd" fx:id="loadButton" minWidth="-Infinity" mnemonicParsing="false" onAction="#handleLoadButtonClick" prefHeight="25.0" prefWidth="90.0" text="Load File" />
-            <Label fx:id="filePathLabel" alignment="CENTER" contentDisplay="CENTER" prefHeight="30.0" styleClass="label1" text="file path" />
+            <Label fx:id="filePathLabel" alignment="CENTER" contentDisplay="CENTER" prefHeight="30.0" styleClass="label-label1" text="file path" />
          </children>
          <opaqueInsets>
             <Insets left="5.0" right="5.0" />

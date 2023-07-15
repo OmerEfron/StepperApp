@@ -6,6 +6,8 @@ import java.util.List;
 public interface RoleDefinition {
     String getName();
     String getDescription();
-    Collection<String> getAllowedFlows();
+    List<String> getAllowedFlows();
     void addFlow(String flowName);
+    void addUser(String userName);
+    Collection<String> getUsers();
 }

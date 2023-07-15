@@ -1,9 +1,7 @@
 package servlets.execution;
 
-import DTO.DataAndType;
 import StepperEngine.Flow.execute.ExecutionNotReadyException;
 import StepperEngine.Stepper;
-import com.google.gson.Gson;
 import exceptions.MissingParamException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -11,10 +9,9 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import utils.ServletUtils;
-import utils.StatsManager;
+import Managers.StatsManager;
 import utils.StepperUtils;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.Map;
 

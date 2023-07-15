@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.Part;
+import users.roles.RoleImpl;
 import utils.ServletUtils;
 import utils.StepperUtils;
 
@@ -39,10 +40,13 @@ public class FileUploadServlet extends HttpServlet {
             if(!StepperUtils.isStepperIn(getServletContext())) {
                 stepper.loadAllStepper(inputStream, filePath);
                 StepperUtils.setStepperIn(getServletContext());
+                StepperUtils.getRolesMap(getServletContext());
             }else{
                 stepper.addFlowsFromFile(inputStream,filePath);
                 updateStatsManager(stepper);
+                Map<String, RoleImpl> stringRoleMap = StepperUtils.getRolesMap(getServletContext());
             }
+
 
         }catch (ReaderException | FlowBuildException | RuntimeException e ){
             ServletUtils.sendBadRequest(response,e.getMessage());

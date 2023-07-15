@@ -42,7 +42,7 @@ public class StatsServlet extends HttpServlet {
         }
         else{
             ServletUtils.sendBadRequest(resp, String.format("Cannot access stats of flow %s. flow might not exist," +
-                    " or user dont have access to it", flowName));
+                    " or User dont have access to it", flowName));
         }
     }
 }

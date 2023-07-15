@@ -3,14 +3,27 @@ package users.roles;
 import java.util.*;
 
 public class RoleImpl implements RoleDefinition{
-    private final String name;
-    private final String description;
-    private final Set<String> flows;
+    private  String name;
+    private  String description;
+    private  List<String> flows;
+    private Set<String> users=new HashSet<>();
 
-    public RoleImpl(String name, String description, String ... flows) {
+    public RoleImpl() {
+        this.name = "";
+        this.description = "";
+        this.flows = new ArrayList<>();
+    }
+    public RoleImpl(String name, String description, List<String> flows) {
         this.name = name;
         this.description = description;
-        this.flows = new HashSet<>(Arrays.asList(flows));
+        this.flows = flows;
+    }
+
+    public RoleImpl(RoleImpl newRole) {
+        this.name = newRole.name;
+        this.description = newRole.description;
+        this.flows = newRole.flows;
+        this.users=newRole.users;
     }
 
     @Override
@@ -24,7 +37,7 @@ public class RoleImpl implements RoleDefinition{
     }
 
     @Override
-    public Collection<String> getAllowedFlows() {
+    public List<String> getAllowedFlows() {
         return flows;
     }
 
@@ -34,15 +47,41 @@ public class RoleImpl implements RoleDefinition{
     }
 
     @Override
+    public void addUser(String userName) {
+        users.add(userName);
+    }
+
+    @Override
+    public Collection<String> getUsers() {
+        return users;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setFlows(List<String> flows) {
+        this.flows = flows;
+    }
+
+    public void setUsers(Set<String> users) {
+        this.users = users;
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         RoleImpl role = (RoleImpl) o;
-        return name.equals(role.name);
+        return name.equals(role.name) && description.equals(role.description);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name);
+        return Objects.hash(name, description);
     }
 }

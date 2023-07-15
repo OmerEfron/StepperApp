@@ -5,11 +5,14 @@ import StepperEngine.Flow.execute.FlowExecution;
 import StepperEngine.Stepper;
 import users.roles.FlowDetailsFilter;
 import users.roles.RoleDefinition;
+import users.roles.RoleImpl;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class StepperWithRoles extends Stepper {
+    List<RoleImpl> roles=new ArrayList<>();
+
     public List<FlowDetails> getFlowsDetails(RoleDefinition ... roles) {
         Set<String> combinedFlows = getCombinedFlows(roles);
         return getFlowsDetails().stream().filter(flowDetails -> combinedFlows.contains(flowDetails.getFlowName())).collect(Collectors.toList());
@@ -38,5 +41,9 @@ public class StepperWithRoles extends Stepper {
         Set<String> flowSet = new HashSet<>();
         Arrays.stream(roles).forEach(role->flowSet.addAll(role.getAllowedFlows()));
         return flowSet;
+    }
+
+    public void addRole (RoleImpl role){
+        roles.add(role);
     }
 }
