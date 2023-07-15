@@ -15,6 +15,7 @@
             <Font size="24.0" />
          </font>
       </Label>
+      <Label fx:id="userNameLabel" />
       <HBox alignment="CENTER_RIGHT" spacing="10.0">
          <children>
             <Button id="rnd" fx:id="greenSytle" minWidth="-Infinity" mnemonicParsing="false" onAction="#greenSytleButton" text="green sytle">

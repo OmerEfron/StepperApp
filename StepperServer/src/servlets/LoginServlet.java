@@ -21,7 +21,7 @@ public class LoginServlet extends HttpServlet {
         String usernameFromSession = SessionUtils.getUsername(request);
         UserManager userManager = ServletUtils.getUserManager(getServletContext());
 
-        if (usernameFromSession == null) { //User is not logged in yet
+        if (usernameFromSession == null) { //user is not logged in yet
 
             String usernameFromParameter = request.getParameter(USERNAME);
             if (usernameFromParameter == null || usernameFromParameter.isEmpty()) {
@@ -36,7 +36,7 @@ public class LoginServlet extends HttpServlet {
                 /*
                 One can ask why not enclose all the synchronizations inside the userManager object ?
                 Well, the atomic action we need to perform here includes both the question (isUserExists) and (potentially) the insertion
-                of a new User (addUser). These two actions needs to be considered atomic, and synchronizing only each one of them, solely, is not enough.
+                of a new user (addUser). These two actions needs to be considered atomic, and synchronizing only each one of them, solely, is not enough.
                 (of course there are other more sophisticated and performable means for that (atomic objects etc) but these are not in our scope)
 
                 The synchronized is on this instance (the servlet).
@@ -49,12 +49,12 @@ public class LoginServlet extends HttpServlet {
                     if (userManager.isUserExists(usernameFromParameter)) {
                         String errorMessage = "Username " + usernameFromParameter + " already exists. Please enter a different username.";
 
-                        // stands for unauthorized as there is already such User with this name
+                        // stands for unauthorized as there is already such user with this name
                         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                         response.getOutputStream().print(errorMessage);
                     }
                     else {
-                        //add the new User to the users list
+                        //add the new user to the users list
                         userManager.addUser(usernameFromParameter);
                         //set the username in a session so it will be available on each request
                         //the true parameter means that if a session object does not exists yet
@@ -68,7 +68,8 @@ public class LoginServlet extends HttpServlet {
                 }
             }
         } else {
-            //User is already logged in
+            //user is already logged in
+            response.getWriter().write(usernameFromSession);
             response.setStatus(HttpServletResponse.SC_OK);
         }
     }
