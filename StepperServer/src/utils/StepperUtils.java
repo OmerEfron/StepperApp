@@ -1,6 +1,5 @@
 package utils;
-
-import Managers.RolesManager;
+import users.roles.RolesManager;
 import StepperEngine.Stepper;
 import StepperEngine.StepperReader.Exception.ReaderException;
 import StepperEngine.StepperWithRolesAndUsers;

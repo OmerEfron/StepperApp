@@ -1,6 +1,5 @@
 package servlets.roles;
-
-import Managers.RolesManager;
+import users.roles.RolesManager;
 import com.google.gson.Gson;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;

@@ -1,9 +1,7 @@
-package Managers;
+package users.roles;
 
 import DTO.FlowDetails.FlowDetails;
 import StepperEngine.Stepper;
-import StepperEngine.StepperReader.XMLReadClasses.Flow;
-import users.roles.RoleImpl;
 
 import java.util.ArrayList;
 import java.util.HashMap;
