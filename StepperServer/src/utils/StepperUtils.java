@@ -1,8 +1,8 @@
 package utils;
-
-import Managers.RolesManager;
+import users.roles.RolesManager;
 import StepperEngine.Stepper;
 import StepperEngine.StepperReader.Exception.ReaderException;
+import StepperEngine.StepperWithRolesAndUsers;
 import jakarta.servlet.ServletContext;
 import users.roles.RoleImpl;
 
@@ -20,7 +20,7 @@ public class StepperUtils {
         Stepper stepper;
         synchronized (stepperLock){
             if(servletContext.getAttribute(STEPPER_ATTRIBUTE_NAME) == null){
-                stepper = new Stepper();
+                stepper = new StepperWithRolesAndUsers();
 //                try {
 //                    stepper.load("C:\\Users\\Gil\\Desktop\\StepperApp2\\ex2.xml");
 //                } catch (ReaderException | FlowBuildException e) {
@@ -29,7 +29,7 @@ public class StepperUtils {
                 servletContext.setAttribute(STEPPER_ATTRIBUTE_NAME,stepper);
             }
         }
-        return (Stepper) servletContext.getAttribute(STEPPER_ATTRIBUTE_NAME);
+        return (StepperWithRolesAndUsers) servletContext.getAttribute(STEPPER_ATTRIBUTE_NAME);
     }
     public static boolean isStepperIn(ServletContext servletContext) {
         synchronized (stepperLock)
