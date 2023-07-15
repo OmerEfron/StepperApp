@@ -3,6 +3,7 @@ package JavaFx;
 import DTO.FlowExecutionData.FlowExecutionData;
 import Requester.Roles.RoleRequestImpl;
 import Requester.Stats.FlowStatsRequestImp;
+import Requester.Users.UsersRequesterImpl;
 import Requester.execution.ExecutionRequestImpl;
 import Requester.fileupload.FileUploadImpl;
 import Requester.flow.flowNames.FlowsNamesRequestImpl;
@@ -28,6 +29,7 @@ public class AdminUtils {
     public final static FlowStatsRequestImp FLOW_STATS_REQUEST=new FlowStatsRequestImp();
     public final static ExecutionRequestImpl EXECUTION_REQUEST=new ExecutionRequestImpl();
     public final static RoleRequestImpl ROLE_REQUEST=new RoleRequestImpl();
+    public final static UsersRequesterImpl USERS_REQUESTER=new UsersRequesterImpl();
 
     public static List<RoleImpl> getRoles(Request request, OkHttpClient httpClient){
         try {

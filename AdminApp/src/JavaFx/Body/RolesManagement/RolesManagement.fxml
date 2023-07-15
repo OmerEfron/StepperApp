@@ -132,7 +132,7 @@
                                  <children>
                                     <Label text="User's in Role" />
                                     <ListView fx:id="usersEditListView" prefHeight="113.0" prefWidth="300.0" />
-                                    <ImageView fx:id="removeUserImage" fitHeight="41.0" fitWidth="31.0" pickOnBounds="true" preserveRatio="true">
+                                    <ImageView fx:id="removeUserImage" fitHeight="41.0" fitWidth="31.0" onMouseClicked="#removeUser" pickOnBounds="true" preserveRatio="true">
                                        <image>
                                           <Image url="@../resource/delete.jpg" />
                                        </image>
@@ -144,7 +144,7 @@
                                  <children>
                                     <Label text="User's to add" />
                                     <ListView fx:id="usersAddListView" prefHeight="113.0" prefWidth="300.0" />
-                                    <ImageView fx:id="addUserImage" fitHeight="34.0" fitWidth="70.0" pickOnBounds="true" preserveRatio="true">
+                                    <ImageView fx:id="addUserImage" fitHeight="34.0" fitWidth="70.0" onMouseClicked="#addUser" pickOnBounds="true" preserveRatio="true">
                                        <image>
                                           <Image url="@../resource/add.jpg" />
                                        </image>

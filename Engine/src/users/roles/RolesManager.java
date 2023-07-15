@@ -34,11 +34,17 @@ public class RolesManager {
     public void addAllFlowsRole(Stepper stepper) {
         roleMap.put("All flows",new RoleImpl("All Flows","The role contains all flows in system", stepper.getFlowNames()));
     }
+    public synchronized RoleImpl getDefaultRole(){
+        return roleMap.get("Read Only Flows");
+    }
 
     public Map<String, RoleImpl> getRoleMap() {
         return roleMap;
     }
     public synchronized void addRole(RoleImpl role){
         roleMap.put(role.getName(),role);
+    }
+    public synchronized void addUserToRole(String roleName,String userName){
+        roleMap.get(roleName).addUser(userName);
     }
 }

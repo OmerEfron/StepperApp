@@ -31,10 +31,7 @@ import org.jetbrains.annotations.NotNull;
 import users.roles.RoleImpl;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 public class RolesManagement {
 
@@ -148,7 +145,7 @@ public class RolesManagement {
     @FXML
     void saveRole(MouseEvent event) {
         newRole.setFlows(new ArrayList<>(flowsEditListView.getItems()));
-        //newRole.setUsers(new HashSet<>(usersEditListView.getItems()));
+        newRole.setUsers(new HashSet<>(usersEditListView.getItems()));
         if(oldRole!= null){
             RoleTable.getItems().remove(oldRole);
         }
@@ -225,7 +222,7 @@ public class RolesManagement {
         flowsEditListView.setItems(FXCollections.observableList(flowsInRole));
         flowsAddListView.setItems(getFlowsThatNotInRole(flowsInRole));
         usersEditListView.setItems(FXCollections.observableArrayList(users));
-       // usersAddListView.setItems(getUsersThatNotInRole(users));
+       usersAddListView.setItems(getUsersThatNotInRole(users));
 
     }
 
@@ -276,26 +273,38 @@ public class RolesManagement {
     void removeFlow(MouseEvent event) {
         generateListView(flowsEditListView, flowsAddListView);
     }
-
+    @FXML
+    void removeUser(MouseEvent event) {
+        swapElementBetweenLists(usersEditListView,usersAddListView);
+    }
     private void generateListView(ListView<String> removeFromeListView, ListView<String> addToListView) {
         if(canRoleBeChanged) {
-            if (removeFromeListView.getSelectionModel().getSelectedItem() != null) {
-                String flowSelected= removeFromeListView.getSelectionModel().getSelectedItem();
-                removeFromeListView.getItems().remove(flowSelected);
-                addToListView.getItems().add(flowSelected);
-                removeFromeListView.getSelectionModel().clearSelection();
-                if(oldRole!=null)
-                    showSaveButton();
-            }
+            swapElementBetweenLists(removeFromeListView, addToListView);
         }
     }
+
+    private void swapElementBetweenLists(ListView<String> removeFromeListView, ListView<String> addToListView) {
+        if (removeFromeListView.getSelectionModel().getSelectedItem() != null) {
+            String flowSelected= removeFromeListView.getSelectionModel().getSelectedItem();
+            removeFromeListView.getItems().remove(flowSelected);
+            addToListView.getItems().add(flowSelected);
+            removeFromeListView.getSelectionModel().clearSelection();
+            if(oldRole!=null)
+                showSaveButton();
+        }
+    }
+
+
 
 
     @FXML
     void addFlow(MouseEvent event) {
         generateListView(flowsAddListView, flowsEditListView);
     }
-
+    @FXML
+    void addUser(MouseEvent event) {
+        swapElementBetweenLists(usersAddListView,usersEditListView);
+    }
 
     private ObservableList<String> getFlowsThatNotInRole(List<String>flowsInRole) {
         List<String> allFlows=adminBodyController.getAllFlows();
@@ -307,9 +316,16 @@ public class RolesManagement {
         }
         return FXCollections.observableList(flowsNotInRole);
     }
-    private ObservableList<String> getUsersThatNotInRole(Collection<String> users) {
+    private ObservableList<String> getUsersThatNotInRole(Collection<String> usersInRole) {
+        Set<String> allUsers = adminBodyController.getUsers();
+        List<String> usersNotInRole=new ArrayList<>();
+        for (String user:allUsers){
+            if (!usersInRole.contains(user)){
+                usersNotInRole.add(user);
+            }
+        }
+        return FXCollections.observableList(usersNotInRole);
 
-        return null;
     }
 
 

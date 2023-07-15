@@ -3,6 +3,7 @@
     -fx-border-color: black;
     -fx-border-width: 1px;
 }
+
 .label-roleName{
     -fx-text-fill: linear-gradient(#151515, #6e6d6d);
     -fx-background-color: null;
@@ -10,6 +11,7 @@
     -fx-font-size: 18px;
     -fx-font-weight: bold;
 }
+
 .label{
     -fx-text-fill: linear-gradient(#151515, #6e6d6d);
     -fx-background-color: null;
@@ -17,6 +19,7 @@
     -fx-font-size: 16px;
     -fx-font-weight: bold;
 }
+
 .label-label1{
     -fx-text-fill: linear-gradient(#181818, #6e6d6d);
     -fx-background-color: null;
@@ -225,16 +228,19 @@
 
 .list-cell: odd{
     -fx-background-color: rgba(206, 210, 206, 0.82);
+
 }
 
 .list-cell: even{
     -fx-background-color: rgba(245, 248, 244, 0.31);
+
 
 }
 
 .list-cell: hover{
     -fx-background-color: #93f9b911;
     -fx-text-background-color: #9b9b7b;
+
 }
 
 .text-field {
