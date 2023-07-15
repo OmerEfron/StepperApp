@@ -5,13 +5,16 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class Constants {
 
     public static final Gson GSON_INSTANCE;
     public static final String LOGIN_PAGE = "/login";
     public static final String ADMIN_LOGIN_PAGE = "/admin/login";
+    public static final String GET_USERS = "/users/getUsers";
 
     static {
         GsonBuilder gsonBuilder = new GsonBuilder();
@@ -39,5 +42,6 @@ public class Constants {
     public final static String PUT_ROLE="/role/addRole";
 
     public static final List<String> STRING_LIST_INSTANCE = new ArrayList<>();
+    public static final Set<String> STRING_SET_INSTANCE = new HashSet<>();
 
 }

@@ -1,4 +1,5 @@
 package servlets.roles;
+import users.UserManager;
 import users.roles.RolesManager;
 import com.google.gson.Gson;
 import jakarta.servlet.ServletException;
@@ -31,9 +32,17 @@ public class AddRoleServlet extends HttpServlet {
         if(newRole!=null) {
             RolesManager rolesManager = StepperUtils.getRolesManger(getServletContext());
             rolesManager.addRole(newRole);
+            addRoleToUser(newRole);
             ServletUtils.sendResponse(true, Boolean.class, resp);
         }else {
             ServletUtils.sendResponse(false, Boolean.class, resp);
+        }
+    }
+
+    private void addRoleToUser(RoleImpl newRole) {
+        UserManager userManager = ServletUtils.getUserManager(getServletContext());
+        for(String name: newRole.getUsers()){
+            userManager.addRoleToUser(name, newRole);
         }
     }
 }

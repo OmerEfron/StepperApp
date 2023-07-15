@@ -33,6 +33,7 @@ import java.util.stream.Collectors;
 
 import static JavaFx.AdminUtils.FLOWS_NAMES_REQUEST;
 import static Utils.Constants.STRING_LIST_INSTANCE;
+import static Utils.Constants.STRING_SET_INSTANCE;
 
 public class AdminBodyController {
 
@@ -162,6 +163,8 @@ public class AdminBodyController {
 
     public void sendNewRole(RoleImpl newRole) {
         Utils.runAsync(AdminUtils.ROLE_REQUEST.addRole(newRole),rolesManagementController.setNewRoleCallback,AdminUtils.HTTP_CLIENT );
-
+    }
+    public Set<String> getUsers(){
+       return Utils.runSync(AdminUtils.USERS_REQUESTER.getUsers(),STRING_SET_INSTANCE.getClass(),AdminUtils.HTTP_CLIENT );
     }
 }
