@@ -9,6 +9,7 @@ import StepperEngine.Flow.api.FlowDefinition;
 import StepperEngine.Flow.execute.ExecutionNotReadyException;
 import StepperEngine.Flow.execute.FlowExecution;
 
+import StepperEngine.Flow.execute.FlowExecutionWithUser;
 import StepperEngine.Flow.execute.runner.FlowExecutor;
 
 import StepperEngine.StepperReader.Exception.ReaderException;
@@ -35,13 +36,13 @@ public class Stepper implements Serializable {
 
     private List<String> flowNames = new ArrayList<>();
 
-    private Map<String, FlowDefinition> flowsMap = new HashMap<>();
+    protected Map<String, FlowDefinition> flowsMap = new HashMap<>();
 
     private Map<Integer, String> flowsByNumber = new LinkedHashMap<>();
 
     private Map<String,List<String>> continuationMap=new HashMap<>();
     private Map<String, FlowDetails> flowDetailsMap=new HashMap<>();
-    private final Map<String, FlowExecution> executionsMap = new HashMap<>();
+    protected final Map<String, FlowExecution> executionsMap = new HashMap<>();
     private final Map<String, List<FlowExecution>> executionsPerFlow = new HashMap<>();
     private final Map<String, List<FlowExecutionData>> flowExecutionDataMap = new HashMap<>(); // flow name to his executions
     private ExecutorService executorService;
@@ -320,6 +321,7 @@ public class Stepper implements Serializable {
         }
         return uuid;
     }
+
 
     public boolean getExecutionReadyToBeExecuteStatus(String uuid) {
         FlowExecution flowExecution = executionsMap.get(uuid);

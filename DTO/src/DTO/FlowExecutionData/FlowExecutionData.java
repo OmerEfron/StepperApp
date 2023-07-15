@@ -1,6 +1,7 @@
 package DTO.FlowExecutionData;
 
 import StepperEngine.Flow.execute.FlowExecution;
+import StepperEngine.Flow.execute.FlowExecutionWithUser;
 import StepperEngine.Flow.execute.FlowStatus;
 
 import java.io.Serializable;
@@ -14,6 +15,7 @@ import java.util.stream.Collectors;
  */
 public class FlowExecutionData implements Serializable {
     private final String flowName;
+    private final String userExecuted;
     private final String uuid;
     private final String executionTime;
     private final String executionResult;
@@ -49,6 +51,15 @@ public class FlowExecutionData implements Serializable {
         formalOutputs = getFormalOutputs(flowExecution);
         formattedStartTime=flowExecution.getFormattedStartTime();
         hasContinuation=flowExecution.getFlowDefinition().hasContinuation();
+        if(flowExecution instanceof FlowExecutionWithUser){
+            userExecuted = ((FlowExecutionWithUser) flowExecution).getUserExecuting();
+        }else {
+            userExecuted = null;
+        }
+    }
+
+    public String getUserExecuted() {
+        return userExecuted;
     }
 
     public boolean isHasContinuation() {
