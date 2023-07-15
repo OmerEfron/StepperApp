@@ -22,10 +22,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import Utils.Utils;
+import okhttp3.HttpUrl;
+import okhttp3.Request;
 import users.roles.RoleImpl;
 
 import static JavaFx.AdminUtils.*;
-import static Utils.Constants.STRING_LIST_INSTANCE;
+import static Utils.Constants.*;
 
 public class AppController {
     @FXML private VBox headerComponent;
@@ -36,8 +38,18 @@ public class AppController {
 
     @FXML
     public void initialize() {
+        signInAsAdmin();
         headerComponentController.setMainController(this);
         bodyComponentController.setMainController(this);
+    }
+
+    private void signInAsAdmin(){
+        HttpUrl.Builder urlBuilder = HttpUrl.parse(BASE_URL + ADMIN_LOGIN_PAGE).newBuilder();
+        String url = urlBuilder.build().toString();
+        Request request = new Request.Builder()
+                .url(url)
+                .build();
+        Utils.runSync(request, HTTP_CLIENT);
     }
 
     public void loadFile(String filePath,File selectedFile) throws IOException {

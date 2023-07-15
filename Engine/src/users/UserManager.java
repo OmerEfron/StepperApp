@@ -28,4 +28,5 @@ public class UserManager {
     public boolean isUserExists(String username) {
         return usersSet.contains(username);
     }
+
 }

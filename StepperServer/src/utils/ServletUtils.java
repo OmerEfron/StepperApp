@@ -20,10 +20,12 @@ public class ServletUtils {
     public final static String FLOW_NAME_PARAMETER = "flow_name";
     public final static String ROLE_NAME_PARAMETER = "role_name";
     public final static String UUID_PARAMETER = "uuid";
+    public final static String USERNAME_PARAMETER = "username";
     private static final String STATS_MANAGER_ATTRIBUTE_NAME = "statsManager";
     private static final Object statsManagerLock = new Object();
     private static final String USER_MANAGER_ATTRIBUTE_NAME = "userManager";
     private static final Object userManagerLock = new Object();
+    public static final String ADMIN_USERNAME = "admin";
 
     public static UserManager getUserManager(ServletContext servletContext) {
 

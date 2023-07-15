@@ -13,7 +13,7 @@ import utils.StepperUtils;
 import java.io.IOException;
 import java.util.List;
 
-import static utils.ServletUtils.UUID_PARAMETER;
+import static utils.ServletUtils.*;
 
 @WebServlet(name = "executionDataServlet", urlPatterns = "/execution/data")
 public class ExecutionDataServlet extends HttpServlet {
@@ -22,7 +22,8 @@ public class ExecutionDataServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Stepper stepper = StepperUtils.getStepper(getServletContext());
         String uuid = req.getParameter(UUID_PARAMETER);
-        String flow_name = req.getParameter(ServletUtils.FLOW_NAME_PARAMETER);
+        String flow_name = req.getParameter(FLOW_NAME_PARAMETER);
+        String username = req.getParameter(USERNAME_PARAMETER);
         if(uuid != null){
             FlowExecutionData executionData = stepper.getFlowExecutionData(uuid);
             ServletUtils.sendResponse(executionData, executionData.getClass(), resp);
