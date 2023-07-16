@@ -12,14 +12,37 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="file://$MODULE_DIR$/../lib" />
+          <root url="jar://$MODULE_DIR$/../lib/okHttp/annotations-13.0.jar!/" />
         </CLASSES>
         <JAVADOC />
-        <SOURCES>
-          <root url="file://$MODULE_DIR$/../lib" />
-        </SOURCES>
-        <jarDirectory url="file://$MODULE_DIR$/../lib" recursive="false" />
-        <jarDirectory url="file://$MODULE_DIR$/../lib" recursive="false" type="SOURCES" />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../lib/okHttp/kotlin-stdlib-1.4.10.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../lib/okHttp/okhttp-4.9.1.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../lib/okHttp/okio-2.8.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
       </library>
     </orderEntry>
     <orderEntry type="module-library">
@@ -30,11 +53,6 @@
           <root url="jar://$MODULE_DIR$/../lib/json-path-2.7.0.jar!/" />
           <root url="jar://$MODULE_DIR$/../lib/json-smart-2.4.8.jar!/" />
           <root url="jar://$MODULE_DIR$/../lib/slf4j-api-2.0.6.jar!/" />
-          <root url="jar://$MODULE_DIR$/../lib/okHttp/okio-2.8.0.jar!/" />
-          <root url="jar://$MODULE_DIR$/../lib/okHttp/okhttp-4.9.1.jar!/" />
-          <root url="jar://$MODULE_DIR$/../lib/okHttp/annotations-13.0.jar!/" />
-          <root url="jar://$MODULE_DIR$/../lib/okHttp/kotlin-stdlib-1.4.10.jar!/" />
-          <root url="jar://$MODULE_DIR$/../lib/okHttp/kotlin-stdlib-common-1.4.10.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>

@@ -27,6 +27,8 @@ public class ServletUtils {
     private static final Object userManagerLock = new Object();
     public static final String ADMIN_USERNAME = "admin";
 
+    public static final String NOT_LOGIN_ERROR_MESSAGE = "please login for this request";
+
     public static UserManager getUserManager(ServletContext servletContext) {
 
         synchronized (userManagerLock) {

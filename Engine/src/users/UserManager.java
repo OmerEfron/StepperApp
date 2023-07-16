@@ -1,5 +1,6 @@
 package users;
 
+import users.roles.RoleDefinition;
 import users.roles.RoleImpl;
 
 import java.util.*;
@@ -7,7 +8,7 @@ import java.util.*;
 public class UserManager {
 
     private final Set<String> usersSet;
-    private final Map<String, Set<RoleImpl>> userRolesMap;
+    private final Map<String, Set<RoleDefinition>> userRolesMap;
 
     public UserManager() {
         usersSet = new HashSet<>();
@@ -31,7 +32,7 @@ public class UserManager {
         return Collections.unmodifiableSet(usersSet);
     }
 
-    public synchronized Set<RoleImpl> getUserRoles(String userName) {
+    public synchronized Set<RoleDefinition> getUserRoles(String userName) {
         return userRolesMap.get(userName);
     }
 
