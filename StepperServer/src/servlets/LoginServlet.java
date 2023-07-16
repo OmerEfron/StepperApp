@@ -13,6 +13,7 @@ import utils.StepperUtils;
 
 import java.io.IOException;
 
+import static utils.ServletUtils.ADMIN_USERNAME;
 import static utils.SessionUtils.USERNAME;
 @WebServlet(urlPatterns = "/login")
 public class LoginServlet extends HttpServlet {
@@ -49,10 +50,13 @@ public class LoginServlet extends HttpServlet {
                 do here other not related actions (such as response setup. this is shown here in that manner just to stress this issue
                  */
                 synchronized (this) {
-                    if (userManager.isUserExists(usernameFromParameter)) {
+                    if(usernameFromParameter.equals(ADMIN_USERNAME)){
+                        String errorMessage = "cannot sign-in as admin";
+                        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                        response.getOutputStream().print(errorMessage);
+                    }
+                    else if (userManager.isUserExists(usernameFromParameter)) {
                         String errorMessage = "Username " + usernameFromParameter + " already exists. Please enter a different username.";
-
-                        // stands for unauthorized as there is already such user with this name
                         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                         response.getOutputStream().print(errorMessage);
                     }

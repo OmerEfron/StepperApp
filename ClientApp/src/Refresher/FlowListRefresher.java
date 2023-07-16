@@ -4,6 +4,7 @@ import DTO.FlowDetails.FlowDetails;
 import JavaFx.ClientUtils;
 import Requester.flow.FlowRequestImpl;
 import Utils.Utils;
+
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import javafx.application.Platform;
