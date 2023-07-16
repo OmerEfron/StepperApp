@@ -72,6 +72,8 @@ public class RoleImpl implements RoleDefinition{
         this.users = users;
     }
 
+    public void removeUser(String userName){ users.remove(userName);}
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

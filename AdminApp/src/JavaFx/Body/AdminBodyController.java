@@ -11,12 +11,12 @@ import JavaFx.Body.FlowHistory.FlowHistory;
 import JavaFx.Body.FlowStats.FlowStats;
 
 import JavaFx.Body.RolesManagement.RolesManagement;
+import DTO.UserData;
 import JavaFx.Body.UserManagement.UserManagement;
 import Refresher.FlowExecutionListRefresher;
 import Refresher.FlowStatsListRefresher;
 import Refresher.StatsWithVersion;
 import StepperEngine.Step.api.StepStatus;
-import StepperEngine.Stepper;
 import Utils.Utils;
 import javafx.application.Platform;
 import javafx.beans.property.IntegerProperty;
@@ -29,7 +29,6 @@ import javafx.scene.image.ImageView;
 import users.roles.RoleImpl;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static JavaFx.AdminUtils.FLOWS_NAMES_REQUEST;
 import static Utils.Constants.STRING_LIST_INSTANCE;
@@ -56,13 +55,14 @@ public class AdminBodyController {
     private FlowStatsListRefresher FlowStatsListRefresher;
     private IntegerProperty statsVersion;
     private Boolean statsRefresherIn=false;
-
+    private int userDataVersion=0;
+    private Map<String, UserData> userDataMap=new HashMap<>();
 
 
     @FXML
     public void initialize(){
         rolesManagementController.setMainController(this);
-//        userManagementController.setMainController(this);
+        userManagementController.setMainController(this);
         flowHistoryController.setMainController(this);
         flowStatsController.setMainController(this);
         statsVersion= new SimpleIntegerProperty();
@@ -164,7 +164,16 @@ public class AdminBodyController {
     public void sendNewRole(RoleImpl newRole) {
         Utils.runAsync(AdminUtils.ROLE_REQUEST.addRole(newRole),rolesManagementController.setNewRoleCallback,AdminUtils.HTTP_CLIENT );
     }
-    public Set<String> getUsers(){
+    public synchronized Set<String> getUsers(){
        return Utils.runSync(AdminUtils.USERS_REQUESTER.getUsers(),STRING_SET_INSTANCE.getClass(),AdminUtils.HTTP_CLIENT );
+    }
+    public UserData getUserData(String userName){
+        return userDataMap.get(userName);
+    }
+    public Set<String> getAllUsers(){
+        return userDataMap.keySet();
+    }
+    public void setUsers(){
+
     }
 }

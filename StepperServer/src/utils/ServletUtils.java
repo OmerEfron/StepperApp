@@ -2,6 +2,7 @@ package utils;
 
 import DTO.DataAndType;
 import Managers.StatsManager;
+import Managers.UserDataManager;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
@@ -23,7 +24,9 @@ public class ServletUtils {
     private static final String STATS_MANAGER_ATTRIBUTE_NAME = "statsManager";
     private static final Object statsManagerLock = new Object();
     private static final String USER_MANAGER_ATTRIBUTE_NAME = "userManager";
+    private static final String USER_DATA_ATTRIBUTE = "userDataManager";
     private static final Object userManagerLock = new Object();
+    private static final Object userDataManagerLock = new Object();
 
     public static UserManager getUserManager(ServletContext servletContext) {
 
@@ -96,14 +99,12 @@ public class ServletUtils {
         }
         return Integer.MIN_VALUE;
     }
-    public static void clearAttributes(ServletContext servletContext) {
-        // Get all attribute names
-        java.util.Enumeration<String> attributeNames = servletContext.getAttributeNames();
-
-        // Iterate through the attribute names and remove them
-        while (attributeNames.hasMoreElements()) {
-            String attributeName = attributeNames.nextElement();
-            servletContext.removeAttribute(attributeName);
+    public static UserDataManager getUserDataManager(ServletContext servletContext){
+        synchronized (userDataManagerLock){
+            if(servletContext.getAttribute(USER_DATA_ATTRIBUTE)==null){
+                servletContext.setAttribute(USER_DATA_ATTRIBUTE,new UserDataManager());
+            }
         }
+        return (UserDataManager) servletContext.getAttribute(USER_DATA_ATTRIBUTE);
     }
 }
