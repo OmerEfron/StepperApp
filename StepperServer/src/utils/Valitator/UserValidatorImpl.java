@@ -3,6 +3,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import users.UserManager;
 import users.roles.RoleDefinition;
 import users.roles.RoleImpl;
+import users.roles.RolesManager;
 import utils.ServletUtils;
 import utils.SessionUtils;
 
@@ -36,11 +37,15 @@ public class UserValidatorImpl implements UserValidator{
         } else if (isAdmin()) {
             return true;
         }
-        String username = getUsername();
-        UserManager userManager = getUserManager();
-        Set<RoleDefinition> userRoles = userManager.getUserRoles(username);
+        Set<RoleDefinition> userRoles = getUserRoles();
         return userRoles.stream()
                 .anyMatch(role -> role.getAllowedFlows().contains(flowName));
+    }
+
+    private Set<RoleDefinition> getUserRoles() {
+        String username = getUsername();
+        UserManager userManager = getUserManager();
+        return userManager.getUserRoles(username);
     }
 
     private UserManager getUserManager() {
@@ -51,4 +56,9 @@ public class UserValidatorImpl implements UserValidator{
         return (String) request.getSession().getAttribute(USERNAME);
     }
 
+    @Override
+    public Boolean isAllFlowRole() {
+        Set<RoleDefinition> userRoles = getUserRoles();
+        return userRoles.stream().anyMatch(role -> role.getName().equals(RolesManager.ALL_FLOWS_ROLE));
+    }
 }

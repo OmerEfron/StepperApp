@@ -11,6 +11,8 @@ import java.util.Map;
 
 public class RolesManager {
     private final Map<String, RoleImpl> roleMap=new HashMap<>();
+    public static final String READ_ONLY_FLOWS = "Read Only Flows";
+    public static final String ALL_FLOWS_ROLE = "All flows";
 
     public RolesManager(Stepper stepper){
         addReadOnlyRole(stepper);
@@ -27,15 +29,15 @@ public class RolesManager {
                 flows.add(flow.getFlowName());
 
         }
-        roleMap.put("Read Only Flows",new RoleImpl("Read Only Flows","Just read only flow's belong to this role", flows));
+        roleMap.put(READ_ONLY_FLOWS,new RoleImpl(READ_ONLY_FLOWS,"Just read only flow's belong to this role", flows));
 
     }
 
     public void addAllFlowsRole(Stepper stepper) {
-        roleMap.put("All flows",new RoleImpl("All Flows","The role contains all flows in system", stepper.getFlowNames()));
+        roleMap.put(ALL_FLOWS_ROLE,new RoleImpl("All Flows","The role contains all flows in system", stepper.getFlowNames()));
     }
     public synchronized RoleImpl getDefaultRole(){
-        return roleMap.get("Read Only Flows");
+        return roleMap.get(READ_ONLY_FLOWS);
     }
 
     public Map<String, RoleImpl> getRoleMap() {
