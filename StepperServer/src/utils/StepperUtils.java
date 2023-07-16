@@ -1,19 +1,19 @@
 package utils;
 import users.roles.RolesManager;
 import StepperEngine.Stepper;
+import StepperEngine.StepperReader.Exception.ReaderException;
 import StepperEngine.StepperWithRolesAndUsers;
 import jakarta.servlet.ServletContext;
 import users.roles.RoleImpl;
 
 import java.util.Map;
-
+import users.UserManager;
 
 public class StepperUtils {
 
     private static final String STEPPER_ATTRIBUTE_NAME = "stepper";
     private static final String STEPPER_LOADED_ATTRIBUTE = "is_stepper_loaded";
     private static final String ROLE_ATTRIBUTE="roles";
-    private static final String ROLE_MAP_ATTRIBUTE = "role_map";
     private static final Object stepperLock = new Object();
 
     public static Stepper getStepper(ServletContext servletContext){
@@ -47,7 +47,7 @@ public class StepperUtils {
         }
     }
 
-    public static Map<String, RoleImpl> getRolesMap(ServletContext servletContext){
+    public static RolesManager getRolesManger(ServletContext servletContext){
         RolesManager rolesManager;
         synchronized (stepperLock){
             if(servletContext.getAttribute(ROLE_ATTRIBUTE)==null){
@@ -56,16 +56,7 @@ public class StepperUtils {
             }
         }
         rolesManager=(RolesManager) servletContext.getAttribute(ROLE_ATTRIBUTE);
-        return rolesManager.getRoleMap();
-    }
-    public static RolesManager getRolesManger(ServletContext servletContext){
-        RolesManager rolesManager;
-        synchronized (stepperLock){
-            if(servletContext.getAttribute(ROLE_ATTRIBUTE)==null){
-                rolesManager=new RolesManager(getStepper(servletContext));
-            }
-        }
-        return (RolesManager) servletContext.getAttribute(ROLE_ATTRIBUTE);
+        return rolesManager;
     }
     public static void addDefaultRoles(ServletContext servletContext){
         RolesManager rolesManager=(RolesManager) servletContext.getAttribute(ROLE_ATTRIBUTE);

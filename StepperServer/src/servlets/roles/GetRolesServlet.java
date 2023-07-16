@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import users.roles.RoleImpl;
+import users.roles.RolesManager;
 import utils.ServletUtils;
 import utils.StepperUtils;
 
@@ -19,13 +20,13 @@ public class GetRolesServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        Map<String, RoleImpl> roleMap= StepperUtils.getRolesMap(getServletContext());
+        RolesManager rolesManger = StepperUtils.getRolesManger(getServletContext());
         String roleName = req.getParameter(ServletUtils.ROLE_NAME_PARAMETER);
         if (roleName == null){
-            List<RoleImpl> roles=new ArrayList<>(roleMap.values());
+            List<RoleImpl> roles=new ArrayList<>(rolesManger.getRoleMap().values());
             ServletUtils.sendResponse(roles,roles.getClass(),resp);
         }else {
-            RoleImpl role=roleMap.get(roleName);
+            RoleImpl role=rolesManger.getRoleMap().get(roleName);
             ServletUtils.sendResponse(role,role.getClass(),resp);
         }
     }
