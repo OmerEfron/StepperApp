@@ -47,22 +47,12 @@ public class StepperUtils {
         }
     }
 
-    public static Map<String, RoleImpl> getRolesMap(ServletContext servletContext){
-        RolesManager rolesManager;
-        synchronized (stepperLock){
-            if(servletContext.getAttribute(ROLE_ATTRIBUTE)==null){
-                rolesManager=new RolesManager(getStepper(servletContext));
-                servletContext.setAttribute(ROLE_ATTRIBUTE,rolesManager);
-            }
-        }
-        rolesManager=(RolesManager) servletContext.getAttribute(ROLE_ATTRIBUTE);
-        return rolesManager.getRoleMap();
-    }
     public static RolesManager getRolesManger(ServletContext servletContext){
         RolesManager rolesManager;
         synchronized (stepperLock){
             if(servletContext.getAttribute(ROLE_ATTRIBUTE)==null){
                 rolesManager=new RolesManager(getStepper(servletContext));
+                servletContext.setAttribute(ROLE_ATTRIBUTE,rolesManager);
             }
         }
         rolesManager=(RolesManager) servletContext.getAttribute(ROLE_ATTRIBUTE);

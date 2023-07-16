@@ -40,11 +40,11 @@ public class FileUploadServlet extends HttpServlet {
             if(!StepperUtils.isStepperIn(getServletContext())) {
                 stepper.loadAllStepper(inputStream, filePath);
                 StepperUtils.setStepperIn(getServletContext());
-                StepperUtils.getRolesMap(getServletContext());
+                StepperUtils.getRolesManger(getServletContext());
             }else{
                 stepper.addFlowsFromFile(inputStream,filePath);
                 updateStatsManager(stepper);
-                Map<String, RoleImpl> stringRoleMap = StepperUtils.getRolesMap(getServletContext());
+                //Map<String, RoleImpl> stringRoleMap = StepperUtils.getRolesMap(getServletContext());
             }
 
 
