@@ -38,10 +38,13 @@ public class FlowExecutionListRefresher extends TimerTask {
 
                     @Override
                     public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                        Gson gson= Constants.GSON_INSTANCE;
-                        Type listType = new TypeToken<List<FlowExecutionData>>() {}.getType();
-                        List<FlowExecutionData> flowExecutionDataList = gson.fromJson(response.body().string(), listType);
-                        Platform.runLater(() -> consumer.accept(flowExecutionDataList));
+                        if(response.isSuccessful()) {
+                            Gson gson = Constants.GSON_INSTANCE;
+                            Type listType = new TypeToken<List<FlowExecutionData>>() {
+                            }.getType();
+                            List<FlowExecutionData> flowExecutionDataList = gson.fromJson(response.body().string(), listType);
+                            Platform.runLater(() -> consumer.accept(flowExecutionDataList));
+                        }
                     }
                 },
                 AdminUtils.HTTP_CLIENT);

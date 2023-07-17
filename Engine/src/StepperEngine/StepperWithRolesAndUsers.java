@@ -4,6 +4,7 @@ import DTO.FlowDetails.FlowDetails;
 import DTO.FlowExecutionData.FlowExecutionData;
 import StepperEngine.Flow.execute.FlowExecution;
 import StepperEngine.Flow.execute.FlowExecutionWithUser;
+import StepperEngine.exception.FlowNotAllowedException;
 import users.roles.RoleDefinition;
 
 
@@ -15,6 +16,14 @@ public class StepperWithRolesAndUsers extends Stepper {
     public List<FlowDetails> getFlowsDetails(RoleDefinition ... roles) {
         Set<String> combinedFlows = getCombinedFlows(roles);
         return getFlowsDetails().stream().filter(flowDetails -> combinedFlows.contains(flowDetails.getFlowName())).collect(Collectors.toList());
+    }
+
+    public FlowDetails getFlowsDetailsByName(String flowName, RoleDefinition ... roles) throws FlowNotAllowedException{
+        Set<String> combinedFlows = getCombinedFlows(roles);
+        if(combinedFlows.contains(flowName)){
+            return getFlowsDetailsByName(flowName);
+        }
+        throw new FlowNotAllowedException(flowName);
     }
     public List<String> getFlowNames(RoleDefinition ... roles) {
         Set<String> combinedFlows = getCombinedFlows(roles);
@@ -43,6 +52,14 @@ public class StepperWithRolesAndUsers extends Stepper {
         }
         return filteredMap;
     }
+    public List<FlowExecutionData> getFlowExecutionsData(String flowName, RoleDefinition ... roles) throws FlowNotAllowedException {
+        List<FlowExecutionData> flowExecutionData = getFlowExecutionDataMap(roles).get(flowName);
+        if(flowExecutionData == null){
+            throw new FlowNotAllowedException(flowName);
+        }
+        return flowExecutionData;
+    }
+
     private static Set<String> getCombinedFlows(RoleDefinition[] roles) {
         Set<String> flowSet = new HashSet<>();
         Arrays.stream(roles).forEach(role->flowSet.addAll(role.getAllowedFlows()));
@@ -59,5 +76,13 @@ public class StepperWithRolesAndUsers extends Stepper {
             uuid = null;
         }
         return uuid;
+    }
+
+    public String applyContinuation(String flowName, String uuid, RoleDefinition ... roles)throws FlowNotAllowedException{
+        Set<String> combinedFlows = getCombinedFlows(roles);
+        if(combinedFlows.contains(flowName)){
+            return applyContinuation(flowName, uuid);
+        }
+        throw new FlowNotAllowedException(flowName);
     }
 }

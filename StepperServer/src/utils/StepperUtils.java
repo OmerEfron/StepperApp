@@ -1,4 +1,5 @@
 package utils;
+import users.roles.RoleDefinition;
 import users.roles.RolesManager;
 import StepperEngine.Stepper;
 import StepperEngine.StepperReader.Exception.ReaderException;
@@ -6,7 +7,10 @@ import StepperEngine.StepperWithRolesAndUsers;
 import jakarta.servlet.ServletContext;
 import users.roles.RoleImpl;
 
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
+
 import users.UserManager;
 
 public class StepperUtils {
@@ -16,7 +20,7 @@ public class StepperUtils {
     private static final String ROLE_ATTRIBUTE="roles";
     private static final Object stepperLock = new Object();
 
-    public static Stepper getStepper(ServletContext servletContext){
+    public static StepperWithRolesAndUsers getStepper(ServletContext servletContext){
         Stepper stepper;
         synchronized (stepperLock){
             if(servletContext.getAttribute(STEPPER_ATTRIBUTE_NAME) == null){
@@ -58,6 +62,17 @@ public class StepperUtils {
         rolesManager=(RolesManager) servletContext.getAttribute(ROLE_ATTRIBUTE);
         return rolesManager;
     }
+
+    public static Set<RoleDefinition> getUserRoles(ServletContext servletContext, String username){
+        RolesManager rolesManger = getRolesManger(servletContext);
+        return rolesManger.getUserRoles(username);
+    }
+
+    public static RoleDefinition[] getUserRolesAsArray(ServletContext servletContext, String username){
+        Set<RoleDefinition> userRoles = getUserRoles(servletContext, username);
+        return userRoles.toArray(new RoleDefinition[0]);
+    }
+
     public static void addDefaultRoles(ServletContext servletContext){
         RolesManager rolesManager=(RolesManager) servletContext.getAttribute(ROLE_ATTRIBUTE);
         rolesManager.addReadOnlyRole(getStepper(servletContext));

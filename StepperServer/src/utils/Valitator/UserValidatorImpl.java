@@ -1,4 +1,6 @@
 package utils.Valitator;
+import DTO.FlowExecutionData.FlowExecutionData;
+import StepperEngine.Stepper;
 import jakarta.servlet.http.HttpServletRequest;
 import users.UserManager;
 import users.roles.RoleDefinition;
@@ -6,6 +8,7 @@ import users.roles.RoleImpl;
 import users.roles.RolesManager;
 import utils.ServletUtils;
 import utils.SessionUtils;
+import utils.StepperUtils;
 
 import java.util.Set;
 
@@ -39,7 +42,7 @@ public class UserValidatorImpl implements UserValidator{
         }
         Set<RoleDefinition> userRoles = getUserRoles();
         return userRoles.stream()
-                .anyMatch(role -> role.getAllowedFlows().contains(flowName));
+                .anyMatch(role -> role.getAllowedFlows().contains(flowName)) || isAdmin();
     }
 
     private Set<RoleDefinition> getUserRoles() {
@@ -59,6 +62,14 @@ public class UserValidatorImpl implements UserValidator{
     @Override
     public Boolean isAllFlowRole() {
         Set<RoleDefinition> userRoles = getUserRoles();
-        return userRoles.stream().anyMatch(role -> role.getName().equals(RolesManager.ALL_FLOWS_ROLE));
+        return userRoles.stream().anyMatch(role -> role.getName().equals(RolesManager.ALL_FLOWS_ROLE)) || isAdmin();
+    }
+
+    @Override
+    public Boolean isExecutionAllowed(String uuid) {
+        Stepper stepper = StepperUtils.getStepper(request.getServletContext());
+        FlowExecutionData flowExecutionData = stepper.getFlowExecutionData(uuid);
+        String username = getUsername();
+        return flowExecutionData.getUserExecuted().equals(username) || isAdmin();
     }
 }

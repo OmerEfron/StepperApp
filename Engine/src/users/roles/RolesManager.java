@@ -3,14 +3,12 @@ package users.roles;
 import DTO.FlowDetails.FlowDetails;
 import StepperEngine.Stepper;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 public class RolesManager {
     private final Map<String, RoleImpl> roleMap=new HashMap<>();
+    private final Map<String, Set<RoleDefinition>> userToRolesMap = new HashMap<>();
     public static final String READ_ONLY_FLOWS = "Read Only Flows";
     public static final String ALL_FLOWS_ROLE = "All flows";
 
@@ -47,6 +45,12 @@ public class RolesManager {
         roleMap.put(role.getName(),role);
     }
     public synchronized void addUserToRole(String roleName,String userName){
-        roleMap.get(roleName).addUser(userName);
+        RoleDefinition role = roleMap.get(roleName);
+        role.addUser(userName);
+        userToRolesMap.computeIfAbsent(userName, key->new HashSet<>()).add(role);
+    }
+
+    public Set<RoleDefinition> getUserRoles(String username){
+        return userToRolesMap.get(username);
     }
 }

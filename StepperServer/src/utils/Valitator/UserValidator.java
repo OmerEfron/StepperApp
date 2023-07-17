@@ -5,4 +5,5 @@ public interface UserValidator {
     Boolean isLoggedIn();
     Boolean isFlowAllowed(String flowName);
     Boolean isAllFlowRole();
+    Boolean isExecutionAllowed(String uuid);
 }

@@ -2,13 +2,17 @@ package servlets.stats;
 
 import DTO.ExecutionsStatistics.FlowExecutionStats;
 import StepperEngine.Stepper;
+import StepperEngine.StepperWithRolesAndUsers;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import utils.ServletUtils;
+import utils.SessionUtils;
 import utils.StepperUtils;
+import utils.Valitator.UserValidator;
+import utils.Valitator.UserValidatorImpl;
 
 import java.io.IOException;
 import java.util.List;
@@ -18,13 +22,22 @@ public class StatsServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        Stepper stepper = StepperUtils.getStepper(getServletContext());
+        StepperWithRolesAndUsers stepper = StepperUtils.getStepper(getServletContext());
         String flowName = req.getParameter(ServletUtils.FLOW_NAME_PARAMETER);
-        if(flowName != null){
-            doGetForSpecificFlow(flowName, resp, stepper);
-        }
-        else{
-            doGetForAllFlows(resp, stepper);
+        UserValidator userValidator = new UserValidatorImpl(req);
+        String username = SessionUtils.getUsername(req);
+        if(userValidator.isLoggedIn()) {
+            if(userValidator.isAdmin()) {
+                if (flowName != null) {
+                    doGetForSpecificFlow(flowName, resp, stepper);
+                } else {
+                    doGetForAllFlows(resp, stepper);
+                }
+            }else{
+                ServletUtils.sendRoleNotMatchedBadRequest(resp, username);
+            }
+        }else{
+            ServletUtils.sendNotLoggedInBadRequest(resp);
         }
     }
 
