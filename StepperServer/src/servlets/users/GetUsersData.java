@@ -29,6 +29,9 @@ public class GetUsersData extends HttpServlet {
         Gson gson = new Gson();
         Type type = new TypeToken<Map<String, Integer>>() {}.getType();
         Map<String, Integer> versionMap = gson.fromJson(jsonData, type);
+        if(versionMap!=null){
+            System.out.println(versionMap.size());
+        }
         synchronized (getServletContext()) {
             UserDataManager userDataManager = ServletUtils.getUserDataManager(getServletContext());
             Map<String, Integer> userVersion = userDataManager.getUserVersion();

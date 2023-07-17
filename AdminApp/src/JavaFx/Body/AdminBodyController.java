@@ -136,12 +136,12 @@ public class AdminBodyController {
     private void setUsersDataMap(UsersAndVersion usersAndVersion) {
         if(!usersAndVersion.getEntries().isEmpty()) {
             usersVersion= usersAndVersion.getUserVersion();
-            //usersDataRefresher.setUsersVersion(usersVersion);
+            usersDataRefresher.setUsersVersion(usersVersion);
             for (UserData userData : usersAndVersion.getEntries()) {
                 userDataMap.put(userData.getUserName(), userData);
             }
             Platform.runLater(()->{
-                userManagementController.updateNewData(userDataMap.values());
+                userManagementController.updateNewData(userDataMap.values(),usersAndVersion.getEntries());
             });
         }
 
