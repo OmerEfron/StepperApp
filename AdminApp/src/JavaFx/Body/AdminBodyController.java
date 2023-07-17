@@ -14,10 +14,13 @@ import JavaFx.Body.RolesManagement.RolesManagement;
 import DTO.UserData;
 import JavaFx.Body.UserManagement.UserManagement;
 import Refresher.FlowExecutionListRefresher;
-import Refresher.FlowStatsListRefresher;
-import Refresher.StatsWithVersion;
+import Refresher.Stats.FlowStatsListRefresher;
+import Refresher.Stats.StatsWithVersion;
+import Refresher.Users.UsersAndVersion;
+import Refresher.Users.UsersDataRefresher;
 import StepperEngine.Step.api.StepStatus;
 import Utils.Utils;
+import com.google.gson.Gson;
 import javafx.application.Platform;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -26,11 +29,17 @@ import javafx.scene.Node;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.image.ImageView;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Response;
+import org.jetbrains.annotations.NotNull;
 import users.roles.RoleImpl;
 
+import java.io.IOException;
 import java.util.*;
 
 import static JavaFx.AdminUtils.FLOWS_NAMES_REQUEST;
+import static JavaFx.AdminUtils.USERS_REQUESTER;
 import static Utils.Constants.STRING_LIST_INSTANCE;
 import static Utils.Constants.STRING_SET_INSTANCE;
 
@@ -52,10 +61,12 @@ public class AdminBodyController {
     private TimerTask flowExecutionsRefresher;
     private Timer timer;
     private Timer timerStats;
+    private Timer usersTimer;
+    private UsersDataRefresher usersDataRefresher;
     private FlowStatsListRefresher FlowStatsListRefresher;
     private IntegerProperty statsVersion;
     private Boolean statsRefresherIn=false;
-    private int userDataVersion=0;
+    private Map <String,Integer> usersVersion=new HashMap<>();
     private Map<String, UserData> userDataMap=new HashMap<>();
 
 
@@ -67,8 +78,11 @@ public class AdminBodyController {
         flowStatsController.setMainController(this);
         statsVersion= new SimpleIntegerProperty();
         flowsHistoryRefresher();
-
+        usersDataMapRefresher();
     }
+
+
+
     public void setMainController(AppController mainController) {
         this.mainController = mainController;
     }
@@ -116,6 +130,28 @@ public class AdminBodyController {
     public FlowExecutionStats getFlowExecutionsStats(String flowName) {
         return mainController.getFlowExecutionsStats(flowName);
     }
+
+
+
+    private void setUsersDataMap(UsersAndVersion usersAndVersion) {
+        if(!usersAndVersion.getEntries().isEmpty()) {
+            usersVersion= usersAndVersion.getUserVersion();
+            //usersDataRefresher.setUsersVersion(usersVersion);
+            for (UserData userData : usersAndVersion.getEntries()) {
+                userDataMap.put(userData.getUserName(), userData);
+            }
+            Platform.runLater(()->{
+                userManagementController.updateNewData(userDataMap.values());
+            });
+        }
+
+    }
+    private void usersDataMapRefresher() {
+        usersDataRefresher=new UsersDataRefresher(usersVersion,this::setUsersDataMap);
+        usersTimer=new Timer();
+        usersTimer.schedule(usersDataRefresher,2000,2000);
+    }
+
     public void flowsHistoryRefresher(){
         flowExecutionsRefresher = new FlowExecutionListRefresher(this::setFlowExecutionDetailsList);
         timer = new Timer();
@@ -165,8 +201,16 @@ public class AdminBodyController {
         Utils.runAsync(AdminUtils.ROLE_REQUEST.addRole(newRole),rolesManagementController.setNewRoleCallback,AdminUtils.HTTP_CLIENT );
     }
     public synchronized Set<String> getUsers(){
-       return Utils.runSync(AdminUtils.USERS_REQUESTER.getUsers(),STRING_SET_INSTANCE.getClass(),AdminUtils.HTTP_CLIENT );
+//        Set<String> set=Utils.runSync(USERS_REQUESTER.getUsers(),
+//                      STRING_SET_INSTANCE.getClass(), AdminUtils.HTTP_CLIENT);
+//        if(!set.isEmpty())
+//            run();
+//
+//        return set;
+        return Utils.runSync(USERS_REQUESTER.getUsers(),
+              STRING_SET_INSTANCE.getClass(), AdminUtils.HTTP_CLIENT);
     }
+
     public UserData getUserData(String userName){
         return userDataMap.get(userName);
     }
@@ -176,4 +220,5 @@ public class AdminBodyController {
     public void setUsers(){
 
     }
+
 }

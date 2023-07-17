@@ -1,20 +1,22 @@
 package DTO;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class UserData {
     private String userName;
-    private List<String> roles;
-    private int numOfExecutions;
-    private int numOfFlows;
+    private Set<String> roles;
+    private Set<String> flows;
+    private Integer numOfExecutions;
     private boolean isManager;
 
     public UserData (String userName){
         this.userName=userName;
-        roles=new ArrayList<>();
+        roles=new HashSet<>();
         numOfExecutions=0;
-        numOfFlows=0;
+        flows=new HashSet<>();
         isManager=false;
     }
 
@@ -22,11 +24,18 @@ public class UserData {
         this.userName = userName;
     }
 
-    public synchronized void setRoles(List<String> roles) {
+    public synchronized void setRoles(Set<String> roles) {
         this.roles = roles;
     }
     public synchronized void addRole(String roleName){
         roles.add(roleName);
+    }
+
+    public synchronized void addFlow(String flowName){
+        flows.add(flowName);
+    }
+    public synchronized Integer getNumOfFlow(){
+        return flows.size();
     }
 
     public synchronized void setNumOfExecutions(int numOfExecutions) {
@@ -37,10 +46,6 @@ public class UserData {
     }
 
 
-    public synchronized void setNumOfFlows(int numOfFlows) {
-        this.numOfFlows = numOfFlows;
-    }
-
     public synchronized void setManager(boolean manager) {
         isManager = manager;
     }
@@ -49,16 +54,12 @@ public class UserData {
         return userName;
     }
 
-    public synchronized List<String> getRoles() {
+    public synchronized Set<String> getRoles() {
         return roles;
     }
 
-    public synchronized int getNumOfExecutions() {
+    public synchronized Integer getNumOfExecutions() {
         return numOfExecutions;
-    }
-
-    public synchronized int getNumOfFlows() {
-        return numOfFlows;
     }
 
     public synchronized boolean isManager() {

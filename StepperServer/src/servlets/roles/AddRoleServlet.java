@@ -1,4 +1,5 @@
 package servlets.roles;
+import Managers.UserDataManager;
 import users.UserManager;
 import users.roles.RolesManager;
 import com.google.gson.Gson;
@@ -41,8 +42,10 @@ public class AddRoleServlet extends HttpServlet {
 
     private void addRoleToUser(RoleImpl newRole) {
         UserManager userManager = ServletUtils.getUserManager(getServletContext());
+        UserDataManager userDataManager = ServletUtils.getUserDataManager(getServletContext());
         for(String name: newRole.getUsers()){
             userManager.addRoleToUser(name, newRole);
+            userDataManager.addRoles(name,newRole);
         }
     }
 }

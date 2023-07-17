@@ -1,5 +1,6 @@
 package JavaFx.Body.UserManagement;
 
+import DTO.UserData;
 import JavaFx.Body.AdminBodyController;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
@@ -12,7 +13,11 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class UserManagement {
 
@@ -25,6 +30,7 @@ public class UserManagement {
     @FXML private Button managerButton;
     @FXML private ImageView saveImage;
 
+    private String selectedName=null;
     private AdminBodyController adminBodyController;
 
     public void setMainController(AdminBodyController adminBodyController) {
@@ -34,8 +40,24 @@ public class UserManagement {
     void initialize(){
         disappearSaveButton();
     }
-    public void setUsersListView(Set<String> users){
+
+
+    public void setUsersListView(Collection<String> users){
         UsersListView.setItems(FXCollections.observableArrayList(users));
+    }
+    public synchronized void updateNewData(Collection<UserData> users){
+        List<String> names = users.stream()
+                .map(UserData::getUserName)
+                .collect(Collectors.toList());
+        setUsersListView(names);
+        if(selectedName!=null && names.contains(selectedName)
+         && saveImage.mouseTransparentProperty().get() ){
+            users.stream()
+                    .filter(user -> user.getUserName().equals(selectedName))
+                    .findFirst()
+                    .ifPresent(this::updateScreen);
+        }
+
     }
 
     @FXML
@@ -60,8 +82,23 @@ public class UserManagement {
 
     @FXML
     void showUser(MouseEvent event) {
+        if(event.getClickCount()==2){
+            if(UsersListView.getItems() != null){
+                selectedName=UsersListView.getSelectionModel().getSelectedItem();
+                UserData userData=adminBodyController.getUserData(selectedName);
+                updateScreen(userData);
+            }
+        }
+    }
+
+    private void updateScreen(UserData userData) {
+        userNameLabel.setText(userData.getUserName());
+        numOfExecutions.setText(userData.getNumOfExecutions().toString());
+        numOfFlows.setText(userData.getNumOfFlow().toString());
+        rolesList.setItems(FXCollections.observableArrayList(userData.getRoles()));
 
     }
+
     private void disappearSaveButton() {
         saveImage.opacityProperty().set(0.2);
         saveImage.cursorProperty().set(Cursor.DISAPPEAR);

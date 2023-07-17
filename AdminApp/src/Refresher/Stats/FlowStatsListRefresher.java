@@ -1,11 +1,8 @@
-package Refresher;
+package Refresher.Stats;
 
-import DTO.ExecutionsStatistics.FlowExecutionStats;
-import DTO.FlowExecutionData.FlowExecutionData;
 import JavaFx.AdminUtils;
 import Utils.Utils;
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import javafx.application.Platform;
 import javafx.beans.property.IntegerProperty;
 import okhttp3.Call;
@@ -33,6 +30,7 @@ public class FlowStatsListRefresher extends TimerTask  {
     public void setStatsVersion(int statsVersion) {
         this.statsVersion.set(statsVersion);
     }
+
 
     @Override
     public void run() {

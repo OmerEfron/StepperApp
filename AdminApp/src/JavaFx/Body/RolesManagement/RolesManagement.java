@@ -34,7 +34,6 @@ import java.io.IOException;
 import java.util.*;
 
 public class RolesManagement {
-
     @FXML private TableView<RoleImpl> RoleTable;
     @FXML private TableColumn<RoleImpl, String> roleNameCol;
     @FXML private TableColumn<RoleImpl, String> roleDescriptionCol;
@@ -68,20 +67,6 @@ public class RolesManagement {
     private RoleImpl newRole;
     private RoleImpl oldRole;
 
-    public final Callback setNewRoleCallback = new Callback() {
-        @Override
-        public void onFailure(@NotNull Call call, @NotNull IOException e) {
-            System.out.println("cannot go to server");
-        }
-
-        @Override
-        public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-            if(response.isSuccessful()){
-            }
-            else {
-            }
-        }
-    };
     @FXML
     void initialize(){
         initRoleColumns();
@@ -91,7 +76,6 @@ public class RolesManagement {
         setUsersEditListView();
         setFlowsAddListView();
         setUsersAddListView();
-
     }
 
     private void unableTextFields() {
@@ -386,5 +370,19 @@ public class RolesManagement {
         removeFlowImage.opacityProperty().bind(Bindings.when(flowsEditListViewProperty).then(1.0).otherwise(0.2));
         removeFlowImage.cursorProperty().bind(Bindings.when(flowsEditListViewProperty).then(Cursor.HAND).otherwise(Cursor.DISAPPEAR));
     }
+    public final Callback setNewRoleCallback = new Callback() {
+        @Override
+        public void onFailure(@NotNull Call call, @NotNull IOException e) {
+            System.out.println("cannot go to server");
+        }
+
+        @Override
+        public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+            if(response.isSuccessful()){
+            }
+            else {
+            }
+        }
+    };
 
 }

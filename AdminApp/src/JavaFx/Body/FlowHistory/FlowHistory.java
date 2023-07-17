@@ -89,6 +89,7 @@ public class FlowHistory {
                 } else {
                     setFlowsExecutionTable();
                 }
+
             });
         }
     }

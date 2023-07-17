@@ -1,4 +1,4 @@
-package Refresher;
+package Refresher.Stats;
 
 import DTO.ExecutionsStatistics.FlowExecutionStats;
 

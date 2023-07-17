@@ -1,5 +1,6 @@
 package servlets.execution;
 
+import Managers.UserDataManager;
 import StepperEngine.Flow.execute.ExecutionNotReadyException;
 import StepperEngine.Stepper;
 import exceptions.MissingParamException;
@@ -8,8 +9,10 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import users.UserManager;
 import utils.ServletUtils;
 import Managers.StatsManager;
+import utils.SessionUtils;
 import utils.StepperUtils;
 
 import java.io.IOException;
@@ -56,6 +59,8 @@ public class ExecutionServlet extends HttpServlet {
                 synchronized (getServletContext()) {
                     statsManager.setFlowExecutionStatsList(stepper.getFlowExecutionStatsList());
                     statsManager.addVersion();
+                    UserDataManager userDataManager = ServletUtils.getUserDataManager(getServletContext());
+                    userDataManager.addExecutionToUser(SessionUtils.getUsername(req));
                 }
                 ServletUtils.sendResponse(Boolean.TRUE, Boolean.class, resp);
             } catch (ExecutionNotReadyException e) {
