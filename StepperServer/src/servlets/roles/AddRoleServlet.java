@@ -11,6 +11,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import users.roles.RoleImpl;
 import utils.ServletUtils;
 import utils.StepperUtils;
+import utils.Valitator.UserValidator;
+import utils.Valitator.UserValidatorImpl;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -20,23 +22,29 @@ public class AddRoleServlet extends HttpServlet {
 
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        BufferedReader reader = req.getReader();
-        StringBuilder sb = new StringBuilder();
-        String line;
-        while ((line = reader.readLine()) != null) {
-            sb.append(line);
+        UserValidator userValidator = new UserValidatorImpl(req);
+        if(!userValidator.isAdmin()){
+            ServletUtils.sendBadRequest(resp, "Only admin has privilege for this action");
         }
-        String json = sb.toString();
+        else {
+            BufferedReader reader = req.getReader();
+            StringBuilder sb = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                sb.append(line);
+            }
+            String json = sb.toString();
 
-        Gson gson = new Gson();
-        RoleImpl newRole = gson.fromJson(json, RoleImpl.class);
-        if(newRole!=null) {
-            RolesManager rolesManager = StepperUtils.getRolesManger(getServletContext());
-            rolesManager.addRole(newRole);
-            addRoleToUser(newRole);
-            ServletUtils.sendResponse(true, Boolean.class, resp);
-        }else {
-            ServletUtils.sendResponse(false, Boolean.class, resp);
+            Gson gson = new Gson();
+            RoleImpl newRole = gson.fromJson(json, RoleImpl.class);
+            if (newRole != null) {
+                RolesManager rolesManager = StepperUtils.getRolesManger(getServletContext());
+                rolesManager.addRole(newRole);
+                addRoleToUser(newRole);
+                ServletUtils.sendResponse(true, Boolean.class, resp);
+            } else {
+                ServletUtils.sendResponse(false, Boolean.class, resp);
+            }
         }
     }
 

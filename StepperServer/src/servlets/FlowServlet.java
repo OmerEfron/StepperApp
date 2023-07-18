@@ -4,6 +4,7 @@ import DTO.FlowDetails.FlowDetails;
 import StepperEngine.Flow.FlowBuildExceptions.FlowBuildException;
 import StepperEngine.Stepper;
 import StepperEngine.StepperReader.Exception.ReaderException;
+import StepperEngine.StepperWithRolesAndUsers;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -26,7 +27,7 @@ public class FlowServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         UserValidator userValidator = new UserValidatorImpl(req);
         if(userValidator.isLoggedIn()) {
-            Stepper stepper = StepperUtils.getStepper(getServletContext());
+            StepperWithRolesAndUsers stepper = StepperUtils.getStepper(getServletContext());
             String flowName = req.getParameter(ServletUtils.FLOW_NAME_PARAMETER);
             if (flowName != null) {
                 if(userValidator.isFlowAllowed(flowName)) {
@@ -36,13 +37,13 @@ public class FlowServlet extends HttpServlet {
                     ServletUtils.sendBadRequest(resp, String.format("user cannot access flow %s", flowName));
                 }
             } else {
-                if(userValidator.isAdmin())
+                if(userValidator.isAdmin() || userValidator.isAllFlowRole())
                     doGetForAllFlows(resp, stepper);
                 else
                     ServletUtils.sendBadRequest(resp, "access denied - cannot access to all flows");
             }
         }
-        else {
+        else { // user is not logged in
             ServletUtils.sendBadRequest(resp, ServletUtils.NOT_LOGIN_ERROR_MESSAGE);
         }
     }

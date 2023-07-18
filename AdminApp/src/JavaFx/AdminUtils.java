@@ -8,6 +8,7 @@ import Requester.execution.ExecutionRequestImpl;
 import Requester.fileupload.FileUploadImpl;
 import Requester.flow.flowNames.FlowsNamesRequestImpl;
 import Utils.Constants;
+import Utils.SimpleCookieManager;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import javafx.application.Platform;
@@ -21,7 +22,10 @@ import java.lang.reflect.Type;
 import java.util.List;
 
 public class AdminUtils {
+
+    private final static SimpleCookieManager simpleCookieManager = new SimpleCookieManager();
     public final static OkHttpClient HTTP_CLIENT = new OkHttpClient.Builder()
+            .cookieJar(simpleCookieManager)
             .followRedirects(false)
             .build();
     public final static FileUploadImpl FILE_UPLOAD=new FileUploadImpl();

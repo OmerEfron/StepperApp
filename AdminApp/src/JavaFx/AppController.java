@@ -38,7 +38,7 @@ public class AppController {
 
     @FXML
     public void initialize() {
-        signInAsAdmin();
+        //signInAsAdmin();
         headerComponentController.setMainController(this);
         bodyComponentController.setMainController(this);
     }

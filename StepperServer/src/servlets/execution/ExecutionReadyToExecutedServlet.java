@@ -1,6 +1,7 @@
 package servlets.execution;
 
 import StepperEngine.Stepper;
+import StepperEngine.StepperWithRolesAndUsers;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -20,7 +21,7 @@ public class ExecutionReadyToExecutedServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        Stepper stepper = StepperUtils.getStepper(getServletContext());
+        StepperWithRolesAndUsers stepper = StepperUtils.getStepper(getServletContext());
 
         String uuid = req.getParameter(UUID_PARAMETER);
         if(uuid != null){

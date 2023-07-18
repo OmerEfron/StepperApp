@@ -32,6 +32,7 @@ public class ServletUtils {
 
     public static final String NOT_LOGIN_ERROR_MESSAGE = "please login for this request";
 
+
     public static UserManager getUserManager(ServletContext servletContext) {
 
         synchronized (userManagerLock) {
@@ -61,6 +62,22 @@ public class ServletUtils {
         Gson gson = new Gson();
         String json = gson.toJson(errorJson);
         response.getWriter().write(json);
+    }
+
+    public static void sendNotLoggedInBadRequest(HttpServletResponse response) throws IOException {
+        sendBadRequest(response, NOT_LOGIN_ERROR_MESSAGE);
+    }
+
+    public static void sendFlowNotAllowedBadRequest(HttpServletResponse response, String username, String flowName) throws IOException {
+        sendBadRequest(response, String.format("user %s cannot access flow %s", username, flowName));
+    }
+
+    public static void sendExecutionNotAllowedBadRequest(HttpServletResponse response, String username, String uuid) throws IOException {
+        sendBadRequest(response, String.format("user %s cannot access execution %s", username, uuid));
+    }
+
+    public static void sendRoleNotMatchedBadRequest(HttpServletResponse response, String username) throws IOException{
+        sendBadRequest(response, String.format("user %s don't have at least one role to see the requested flow/s"));
     }
 
     public static void sendResponse(Object obj, Class<?> expectedClass, HttpServletResponse response) throws IOException {

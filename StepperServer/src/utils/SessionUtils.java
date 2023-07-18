@@ -8,6 +8,8 @@ public class SessionUtils {
 
     public final static String USERNAME = "username";
 
+
+
     public static String getUsername (HttpServletRequest request) {
         HttpSession session = request.getSession(false);
         Object sessionAttribute = session != null ? session.getAttribute(USERNAME) : null;

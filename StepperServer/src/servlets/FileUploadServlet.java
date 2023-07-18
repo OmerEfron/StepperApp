@@ -3,6 +3,7 @@ package servlets;
 import StepperEngine.Flow.FlowBuildExceptions.FlowBuildException;
 import StepperEngine.Stepper;
 import StepperEngine.StepperReader.Exception.ReaderException;
+import StepperEngine.StepperWithRolesAndUsers;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
@@ -13,6 +14,8 @@ import jakarta.servlet.http.Part;
 import users.roles.RoleImpl;
 import utils.ServletUtils;
 import utils.StepperUtils;
+import utils.Valitator.UserValidator;
+import utils.Valitator.UserValidatorImpl;
 
 import java.io.*;
 import java.util.*;
@@ -23,34 +26,40 @@ import java.util.*;
 public class FileUploadServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        response.setContentType("text/plain");
-        PrintWriter out = response.getWriter();
-        Collection<Part> parts = request.getParts();
 
-        InputStream inputStream=null ;
-        String filePath=null;
-        for (Part part : parts) {
-            if(part.getName().equals("file"))
-                inputStream=part.getInputStream();
-            else
-                filePath=readFromInputStream(part.getInputStream());
-        }
-        try {
-            Stepper stepper = StepperUtils.getStepper(getServletContext());
-            if(!StepperUtils.isStepperIn(getServletContext())) {
-                stepper.loadAllStepper(inputStream, filePath);
-                StepperUtils.setStepperIn(getServletContext());
-                StepperUtils.getRolesManger(getServletContext());
-            }else{
-                stepper.addFlowsFromFile(inputStream,filePath);
-                updateStatsManager(stepper);
-                //Map<String, RoleImpl> stringRoleMap = StepperUtils.getRolesMap(getServletContext());
+        UserValidator userValidator = new UserValidatorImpl(request);
+        if(userValidator.isAdmin()) {
+            response.setContentType("text/plain");
+            PrintWriter out = response.getWriter();
+            Collection<Part> parts = request.getParts();
+
+            InputStream inputStream = null;
+            String filePath = null;
+            for (Part part : parts) {
+                if (part.getName().equals("file"))
+                    inputStream = part.getInputStream();
+                else
+                    filePath = readFromInputStream(part.getInputStream());
             }
+            try {
+                StepperWithRolesAndUsers stepper = StepperUtils.getStepper(getServletContext());
+                if (!StepperUtils.isStepperIn(getServletContext())) {
+                    stepper.loadAllStepper(inputStream, filePath);
+                    StepperUtils.setStepperIn(getServletContext());
+                    StepperUtils.getRolesManger(getServletContext());
+                } else {
+                    stepper.addFlowsFromFile(inputStream, filePath);
+                    updateStatsManager(stepper);
+                    //Map<String, RoleImpl> stringRoleMap = StepperUtils.getRolesMap(getServletContext());
+                }
 
 
-        }catch (ReaderException | FlowBuildException | RuntimeException e ){
-            ServletUtils.sendBadRequest(response,e.getMessage());
+            } catch (ReaderException | FlowBuildException | RuntimeException e) {
+                ServletUtils.sendBadRequest(response, e.getMessage());
 
+            }
+        }else{
+            ServletUtils.sendBadRequest(response, "only admin can upload");
         }
 
     }
