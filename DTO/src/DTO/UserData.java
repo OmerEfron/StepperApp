@@ -34,6 +34,9 @@ public class UserData {
     public synchronized void addFlow(String flowName){
         flows.add(flowName);
     }
+    public synchronized void removeFlow(String flowName){
+        flows.remove(flowName);
+    }
     public synchronized Integer getNumOfFlow(){
         return flows.size();
     }
@@ -44,7 +47,9 @@ public class UserData {
     public synchronized void addExecution(){
         numOfExecutions++;
     }
-
+    public synchronized void removeRole(String role){
+        roles.remove(role);
+    }
 
     public synchronized void setManager(boolean manager) {
         isManager = manager;

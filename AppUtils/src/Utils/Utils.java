@@ -12,9 +12,7 @@ import java.util.List;
 public class Utils {
 
     public static void runAsync(Request request, Callback callback, OkHttpClient httpClient) {
-
         Call call = httpClient.newCall(request);
-
         call.enqueue(callback);
     }
 

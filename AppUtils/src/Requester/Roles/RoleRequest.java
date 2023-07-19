@@ -8,4 +8,5 @@ public interface RoleRequest {
     Request getRole(String roleName);
 
     Request addRole(RoleImpl role);
+    Request changeRole(RoleImpl newRole,RoleImpl oldRole);
 }

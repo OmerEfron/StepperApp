@@ -1,5 +1,6 @@
 package JavaFx.Main;
 
+import JavaFx.AdminUtils;
 import Utils.Utils;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -19,6 +20,7 @@ public class AdminMain extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         signInAsAdmin();
+        AdminUtils adminUtils=new AdminUtils();
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("AdminMain.fxml"));
         Parent root = fxmlLoader.load();
         scene = new Scene(root);

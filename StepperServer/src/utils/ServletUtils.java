@@ -108,6 +108,7 @@ public class ServletUtils {
                 servletContext.setAttribute(STATS_MANAGER_ATTRIBUTE_NAME, new StatsManager());
             }
         }
+
         return (StatsManager) servletContext.getAttribute(STATS_MANAGER_ATTRIBUTE_NAME);
     }
     public static int getIntParameter(HttpServletRequest request, String name) {

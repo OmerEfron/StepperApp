@@ -1,21 +1,20 @@
 package servlets.roles;
 
+import StepperEngine.StepperWithRolesAndUsers;
+import users.roles.RolesManager;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import users.roles.RoleImpl;
-import users.roles.RolesManager;
 import utils.ServletUtils;
 import utils.StepperUtils;
 import utils.Valitator.UserValidator;
 import utils.Valitator.UserValidatorImpl;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @WebServlet(name = "getRoles", urlPatterns = "/role/getRoles")
 public class GetRolesServlet extends HttpServlet {

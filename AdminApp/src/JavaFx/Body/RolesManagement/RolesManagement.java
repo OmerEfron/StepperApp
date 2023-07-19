@@ -2,8 +2,10 @@ package JavaFx.Body.RolesManagement;
 
 import DTO.FlowDetails.FlowDetails;
 import JavaFx.Body.AdminBodyController;
+import JavaFx.Body.UserManagement.UserManagement;
 import Utils.Constants;
 import javafx.animation.FadeTransition;
+import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -52,15 +54,10 @@ public class RolesManagement {
     @FXML private ImageView removeFlowImage;
     @FXML private ListView<String> flowsAddListView;
     @FXML private ImageView addFlowImage;
-    @FXML private ListView<String> usersEditListView;
-    @FXML private ImageView removeUserImage;
-    @FXML private ListView<String> usersAddListView;
-    @FXML private ImageView addUserImage;
+
 
     private BooleanProperty flowsEditListViewProperty=new SimpleBooleanProperty();
     private BooleanProperty flowsAddListViewProperty=new SimpleBooleanProperty();
-    private BooleanProperty usersEditListViewProperty=new SimpleBooleanProperty();
-    private BooleanProperty usersAddListViewProperty=new SimpleBooleanProperty();
     private Boolean canRoleBeChanged=true;
     private List<RoleImpl> roles=new ArrayList<>();
     private AdminBodyController adminBodyController;
@@ -73,9 +70,7 @@ public class RolesManagement {
         disappearSaveButton();
         disappearNewRoleButton();
         setFlowsEditListView();
-        setUsersEditListView();
         setFlowsAddListView();
-        setUsersAddListView();
     }
 
     private void unableTextFields() {
@@ -102,7 +97,36 @@ public class RolesManagement {
     @FXML
     void newRole(ActionEvent event) {
         updateScreenToNewRole();
+    }
 
+
+    private void updateUserTable(String userName, String roleName,boolean add) {
+        if(oldRole != null && oldRole.getName().equals(roleName)){
+            Platform.runLater(()-> {
+                if (add)
+                    usersListView.getItems().add(userName);
+                else
+                    usersListView.getItems().remove(userName);
+            });
+        }
+    }
+
+    public void addOrRemoveUserFromRole(String userName, String roleName,boolean add) {
+        RoleImpl newR = null;
+        for(RoleImpl role:RoleTable.getItems()){
+            if(role.getName().equals(roleName)) {
+                newR=new RoleImpl(role);
+                if(add)
+                    newR.addUser(userName);
+                else
+                    newR.removeUser(userName);
+                adminBodyController.changeRole(newR,role);
+                RoleTable.getItems().remove(role);
+                RoleTable.getItems().add(newR);
+                break;
+            }
+        }
+        updateUserTable(userName, roleName,add);
     }
 
     private void updateScreenToNewRole() {
@@ -128,12 +152,14 @@ public class RolesManagement {
     }
     @FXML
     void saveRole(MouseEvent event) {
-        newRole.setFlows(new ArrayList<>(flowsEditListView.getItems()));
-        newRole.setUsers(new HashSet<>(usersEditListView.getItems()));
+//        newRole.setFlows(new ArrayList<>(flowsEditListView.getItems()));
         if(oldRole!= null){
+            adminBodyController.changeRole(newRole,oldRole);
             RoleTable.getItems().remove(oldRole);
         }
-        adminBodyController.sendNewRole(newRole);
+        else {
+            adminBodyController.sendNewRole(newRole);
+        }
         addNewRoleToTable();
         updateScreen();
     }
@@ -161,7 +187,7 @@ public class RolesManagement {
         checkIfCanBeChanged(oldRole);
         updateRoleNameInChangeSection(oldRole.getName());
         updateRoleDescriptionInChangeSection(oldRole.getDescription());
-        updateListsInChangeRoleSection(oldRole.getAllowedFlows(),oldRole.getUsers());
+        updateListsInChangeRoleSection(newRole.getAllowedFlows(),newRole.getUsers());
     }
 
     private void updateRoleNameInChangeSection(String name) {
@@ -205,9 +231,6 @@ public class RolesManagement {
     private void updateListsInChangeRoleSection(List<String> flowsInRole, Collection<String> users) {
         flowsEditListView.setItems(FXCollections.observableList(flowsInRole));
         flowsAddListView.setItems(getFlowsThatNotInRole(flowsInRole));
-        usersEditListView.setItems(FXCollections.observableArrayList(users));
-       usersAddListView.setItems(getUsersThatNotInRole(users));
-
     }
 
 
@@ -231,7 +254,7 @@ public class RolesManagement {
 
 
     private void checkIfCanBeChanged(RoleImpl oldRole) {
-        canRoleBeChanged = !(oldRole.getName().equals("Read Only Flows") || oldRole.getName().equals("All Flows"));
+        canRoleBeChanged = !(oldRole.getName().equals("Read Only Flows") || oldRole.getName().equals("All flows"));
     }
 
 
@@ -257,10 +280,7 @@ public class RolesManagement {
     void removeFlow(MouseEvent event) {
         generateListView(flowsEditListView, flowsAddListView);
     }
-    @FXML
-    void removeUser(MouseEvent event) {
-        swapElementBetweenLists(usersEditListView,usersAddListView);
-    }
+
     private void generateListView(ListView<String> removeFromeListView, ListView<String> addToListView) {
         if(canRoleBeChanged) {
             swapElementBetweenLists(removeFromeListView, addToListView);
@@ -278,18 +298,10 @@ public class RolesManagement {
         }
     }
 
-
-
-
     @FXML
     void addFlow(MouseEvent event) {
         generateListView(flowsAddListView, flowsEditListView);
     }
-    @FXML
-    void addUser(MouseEvent event) {
-        swapElementBetweenLists(usersAddListView,usersEditListView);
-    }
-
     private ObservableList<String> getFlowsThatNotInRole(List<String>flowsInRole) {
         List<String> allFlows=adminBodyController.getAllFlows();
         List<String> flowsNotInRole=new ArrayList<>();
@@ -300,89 +312,14 @@ public class RolesManagement {
         }
         return FXCollections.observableList(flowsNotInRole);
     }
-    private ObservableList<String> getUsersThatNotInRole(Collection<String> usersInRole) {
-        Set<String> allUsers = adminBodyController.getUsers();
-        List<String> usersNotInRole=new ArrayList<>();
-        for (String user:allUsers){
-            if (!usersInRole.contains(user)){
-                usersNotInRole.add(user);
-            }
-        }
-        return FXCollections.observableList(usersNotInRole);
 
-    }
-
-
-    private void setUsersEditListView() {
-        usersEditListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            boolean isItemSelected = newValue != null;
-            usersEditListViewProperty.set(isItemSelected);
-        });
-
-        usersEditListView.focusedProperty().addListener((observable, oldValue, newValue) -> {
-            if (!newValue) {
-                usersEditListViewProperty.set(false);
-            }
-        });
-        removeUserImage.opacityProperty().bind(Bindings.when(usersEditListViewProperty).then(1.0).otherwise(0.2));
-        removeUserImage.cursorProperty().bind(Bindings.when(usersEditListViewProperty).then(Cursor.HAND).otherwise(Cursor.DISAPPEAR));
-    }
-    private void setUsersAddListView() {
-        usersAddListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            boolean isItemSelected = newValue != null;
-            usersAddListViewProperty.set(isItemSelected);
-        });
-
-        usersAddListView.focusedProperty().addListener((observable, oldValue, newValue) -> {
-            if (!newValue) {
-                usersAddListViewProperty.set(false);
-            }
-        });
-        addUserImage.opacityProperty().bind(Bindings.when(usersAddListViewProperty).then(1.0).otherwise(0.2));
-        addUserImage.cursorProperty().bind(Bindings.when(usersAddListViewProperty).then(Cursor.HAND).otherwise(Cursor.DISAPPEAR));
-    }
     private void setFlowsAddListView() {
-        flowsAddListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            boolean isItemSelected = newValue != null;
-            flowsAddListViewProperty.set(isItemSelected);
-        });
-
-        flowsAddListView.focusedProperty().addListener((observable, oldValue, newValue) -> {
-            if (!newValue) {
-                flowsAddListViewProperty.set(false);
-            }
-        });
-        addFlowImage.opacityProperty().bind(Bindings.when(flowsAddListViewProperty).then(1.0).otherwise(0.2));
-        addFlowImage.cursorProperty().bind(Bindings.when(flowsAddListViewProperty).then(Cursor.HAND).otherwise(Cursor.DISAPPEAR));
+        UserManagement.setProperty(flowsAddListView, flowsAddListViewProperty, addFlowImage);
     }
 
     private void setFlowsEditListView() {
-        flowsEditListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            boolean isItemSelected = newValue != null;
-            flowsEditListViewProperty.set(isItemSelected);
-        });
-
-        flowsEditListView.focusedProperty().addListener((observable, oldValue, newValue) -> {
-            if (!newValue) {
-                flowsEditListViewProperty.set(false);
-            }
-        });
-        removeFlowImage.opacityProperty().bind(Bindings.when(flowsEditListViewProperty).then(1.0).otherwise(0.2));
-        removeFlowImage.cursorProperty().bind(Bindings.when(flowsEditListViewProperty).then(Cursor.HAND).otherwise(Cursor.DISAPPEAR));
+        UserManagement.setProperty(flowsEditListView, flowsEditListViewProperty, removeFlowImage);
     }
-    public final Callback setNewRoleCallback = new Callback() {
-        @Override
-        public void onFailure(@NotNull Call call, @NotNull IOException e) {
-            System.out.println("cannot go to server");
-        }
 
-        @Override
-        public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-            if(response.isSuccessful()){
-            }
-            else {
-            }
-        }
-    };
 
 }

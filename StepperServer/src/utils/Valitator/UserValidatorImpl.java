@@ -4,7 +4,6 @@ import StepperEngine.Stepper;
 import jakarta.servlet.http.HttpServletRequest;
 import users.UserManager;
 import users.roles.RoleDefinition;
-import users.roles.RoleImpl;
 import users.roles.RolesManager;
 import utils.ServletUtils;
 import utils.SessionUtils;

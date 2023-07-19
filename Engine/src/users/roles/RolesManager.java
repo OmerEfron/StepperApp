@@ -5,7 +5,6 @@ import StepperEngine.Stepper;
 
 import java.util.*;
 
-
 public class RolesManager {
     private final Map<String, RoleImpl> roleMap=new HashMap<>();
     private final Map<String, Set<RoleDefinition>> userToRolesMap = new HashMap<>();
@@ -32,7 +31,7 @@ public class RolesManager {
     }
 
     public void addAllFlowsRole(Stepper stepper) {
-        roleMap.put(ALL_FLOWS_ROLE,new RoleImpl("All Flows","The role contains all flows in system", stepper.getFlowNames()));
+        roleMap.put(ALL_FLOWS_ROLE,new RoleImpl(ALL_FLOWS_ROLE,"The role contains all flows in system", stepper.getFlowNames()));
     }
     public synchronized RoleImpl getDefaultRole(){
         return roleMap.get(READ_ONLY_FLOWS);
@@ -52,5 +51,10 @@ public class RolesManager {
 
     public Set<RoleDefinition> getUserRoles(String username){
         return userToRolesMap.get(username);
+    }
+
+    public void changeRoles(RoleImpl newRole, RoleImpl oldRole) {
+        roleMap.remove(oldRole.getName());
+        addRole(newRole);
     }
 }

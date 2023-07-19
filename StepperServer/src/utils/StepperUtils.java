@@ -1,17 +1,13 @@
 package utils;
-import users.roles.RoleDefinition;
-import users.roles.RolesManager;
+
+
 import StepperEngine.Stepper;
-import StepperEngine.StepperReader.Exception.ReaderException;
 import StepperEngine.StepperWithRolesAndUsers;
 import jakarta.servlet.ServletContext;
-import users.roles.RoleImpl;
+import users.roles.RoleDefinition;
+import users.roles.RolesManager;
 
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
-
-import users.UserManager;
 
 public class StepperUtils {
 
@@ -53,6 +49,7 @@ public class StepperUtils {
     }
 
     public static RolesManager getRolesManger(ServletContext servletContext){
+
         RolesManager rolesManager;
         synchronized (stepperLock){
             if(servletContext.getAttribute(ROLE_ATTRIBUTE)==null){

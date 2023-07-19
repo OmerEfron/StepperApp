@@ -30,8 +30,21 @@ public class RoleRequestImpl implements RoleRequest{
 
     @Override
     public Request addRole(RoleImpl role) {
-        String json = Constants.GSON_INSTANCE.toJson(role);
-        RequestBody requestBody = RequestBody.create(MediaType.parse("application/json"), json);
+        String newRoleJson = Constants.GSON_INSTANCE.toJson(role);
+        String combinedJson = "{\"newRole\":" + newRoleJson +"}";
+        RequestBody requestBody = RequestBody.create(MediaType.parse("application/json"), combinedJson);
+        return new Request.Builder()
+                .url(PUT_ROLE_URL)
+                .put(requestBody)
+                .build();
+    }
+
+    @Override
+    public Request changeRole(RoleImpl newRole,RoleImpl oldRole) {
+        String newRoleJson = Constants.GSON_INSTANCE.toJson(newRole);
+        String oldRoleJson = Constants.GSON_INSTANCE.toJson(oldRole);
+        String combinedJson = "{\"newRole\":" + newRoleJson + ", \"oldRole\":" + oldRoleJson + "}";
+        RequestBody requestBody = RequestBody.create(MediaType.parse("application/json"), combinedJson);
         return new Request.Builder()
                 .url(PUT_ROLE_URL)
                 .put(requestBody)

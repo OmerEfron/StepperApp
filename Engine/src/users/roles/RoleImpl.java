@@ -22,8 +22,8 @@ public class RoleImpl implements RoleDefinition{
     public RoleImpl(RoleImpl newRole) {
         this.name = newRole.name;
         this.description = newRole.description;
-        this.flows = newRole.flows;
-        this.users=newRole.users;
+        this.flows =new ArrayList<>( newRole.flows);
+        this.users=new HashSet<>(newRole.users);
     }
 
     @Override

@@ -20,6 +20,8 @@ import users.roles.RoleImpl;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class AdminUtils {
 
@@ -28,6 +30,7 @@ public class AdminUtils {
             .cookieJar(simpleCookieManager)
             .followRedirects(false)
             .build();
+
     public final static FileUploadImpl FILE_UPLOAD=new FileUploadImpl();
     public final static FlowsNamesRequestImpl FLOWS_NAMES_REQUEST=new FlowsNamesRequestImpl();
     public final static FlowStatsRequestImp FLOW_STATS_REQUEST=new FlowStatsRequestImp();
@@ -35,6 +38,9 @@ public class AdminUtils {
     public final static RoleRequestImpl ROLE_REQUEST=new RoleRequestImpl();
     public final static UsersRequesterImpl USERS_REQUESTER=new UsersRequesterImpl();
 
+    public AdminUtils(){
+        Logger.getLogger(OkHttpClient.class.getName()).setLevel(Level.FINE);
+    }
 
     public static List<RoleImpl> getRoles(Request request, OkHttpClient httpClient){
         try {

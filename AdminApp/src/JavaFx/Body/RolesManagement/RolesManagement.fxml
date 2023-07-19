@@ -63,19 +63,19 @@
                         <Separator prefWidth="200.0" />
                         <VBox alignment="TOP_CENTER">
                            <children>
-                              <HBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="577.0" spacing="10.0">
+                              <HBox alignment="TOP_CENTER" prefWidth="577.0" spacing="10.0">
                                  <children>
                                     <VBox alignment="TOP_CENTER">
                                        <children>
                                           <Label text="Flow's in role" />
-                                          <ListView fx:id="flowsListView" prefHeight="179.0" prefWidth="300.0" />
+                                          <ListView fx:id="flowsListView" minHeight="200.0" prefWidth="300.0" />
                                        </children>
                                     </VBox>
                                     <Separator orientation="VERTICAL" prefHeight="200.0" />
                                     <VBox alignment="TOP_CENTER" prefHeight="200.0">
                                        <children>
                                           <Label text="User's in role" />
-                                          <ListView fx:id="usersListView" prefHeight="179.0" prefWidth="316.0" />
+                                          <ListView fx:id="usersListView" prefWidth="316.0" />
                                        </children>
                                     </VBox>
                                  </children>
@@ -109,7 +109,7 @@
                                           <VBox alignment="TOP_CENTER">
                                              <children>
                                                 <Label text="Flow's in Role" />
-                                                <ListView fx:id="flowsEditListView" prefHeight="113.0" prefWidth="300.0" />
+                                                <ListView fx:id="flowsEditListView" prefWidth="300.0" />
                                                 <ImageView fx:id="removeFlowImage" fitHeight="41.0" fitWidth="31.0" onMouseClicked="#removeFlow" pickOnBounds="true" preserveRatio="true">
                                                    <image>
                                                       <Image url="@../resource/delete.jpg" />
@@ -121,7 +121,7 @@
                                           <VBox alignment="TOP_CENTER">
                                              <children>
                                                 <Label text="flow's to add" />
-                                                <ListView fx:id="flowsAddListView" prefHeight="113.0" prefWidth="300.0" />
+                                                <ListView fx:id="flowsAddListView" prefWidth="300.0" />
                                                 <ImageView fx:id="addFlowImage" fitHeight="34.0" fitWidth="70.0" onMouseClicked="#addFlow" pickOnBounds="true" preserveRatio="true">
                                                    <image>
                                                       <Image url="@../resource/add.jpg" />
@@ -134,35 +134,6 @@
                                  </children>
                               </VBox>
                            </children></VBox>
-                        <Separator prefWidth="200.0" />
-                        <TextField alignment="TOP_CENTER" maxWidth="-Infinity" prefWidth="150.0" text="Edit Role Users" />
-                        <HBox alignment="CENTER" spacing="5.0">
-                           <children>
-                              <VBox alignment="TOP_CENTER">
-                                 <children>
-                                    <Label text="User's in Role" />
-                                    <ListView fx:id="usersEditListView" prefHeight="113.0" prefWidth="300.0" />
-                                    <ImageView fx:id="removeUserImage" fitHeight="41.0" fitWidth="31.0" onMouseClicked="#removeUser" pickOnBounds="true" preserveRatio="true">
-                                       <image>
-                                          <Image url="@../resource/delete.jpg" />
-                                       </image>
-                                    </ImageView>
-                                 </children>
-                              </VBox>
-                              <Separator orientation="VERTICAL" prefHeight="200.0" />
-                              <VBox alignment="TOP_CENTER">
-                                 <children>
-                                    <Label text="User's to add" />
-                                    <ListView fx:id="usersAddListView" prefHeight="113.0" prefWidth="300.0" />
-                                    <ImageView fx:id="addUserImage" fitHeight="34.0" fitWidth="70.0" onMouseClicked="#addUser" pickOnBounds="true" preserveRatio="true">
-                                       <image>
-                                          <Image url="@../resource/add.jpg" />
-                                       </image>
-                                    </ImageView>
-                                 </children>
-                              </VBox>
-                           </children>
-                        </HBox>
                         <Separator prefWidth="200.0" />
                      </children>
                      <padding>

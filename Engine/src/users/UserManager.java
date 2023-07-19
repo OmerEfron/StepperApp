@@ -17,6 +17,9 @@ public class UserManager {
     public synchronized void addRoleToUser(String userName,RoleImpl role){
         userRolesMap.get(userName).add(role);
     }
+    public synchronized void removeRoleFromUser(String userName,RoleImpl role){
+        userRolesMap.get(userName).remove(role);
+    }
 
     public synchronized void addUser(String username) {
         usersSet.add(username);

@@ -10,4 +10,5 @@ public interface RoleDefinition {
     void addFlow(String flowName);
     void addUser(String userName);
     Collection<String> getUsers();
+    void removeUser(String userName);
 }

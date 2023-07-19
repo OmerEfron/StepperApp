@@ -1,7 +1,7 @@
 package servlets.roles;
 import Managers.UserDataManager;
 import users.UserManager;
-import users.roles.RolesManager;
+
 import com.google.gson.Gson;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import users.roles.RoleImpl;
+import users.roles.RolesManager;
 import utils.ServletUtils;
 import utils.StepperUtils;
 import utils.Valitator.UserValidator;
@@ -36,15 +37,32 @@ public class AddRoleServlet extends HttpServlet {
             String json = sb.toString();
 
             Gson gson = new Gson();
-            RoleImpl newRole = gson.fromJson(json, RoleImpl.class);
+            CombinedRoles combinedRoles=gson.fromJson(json,CombinedRoles.class);
+            RoleImpl newRole = combinedRoles.getNewRole();
+            RoleImpl oldRole = combinedRoles.getOldRole();
             if (newRole != null) {
                 RolesManager rolesManager = StepperUtils.getRolesManger(getServletContext());
-                rolesManager.addRole(newRole);
+                if(oldRole==null) {
+                    rolesManager.addRole(newRole);
+                }else{
+                    rolesManager.changeRoles(newRole,oldRole);
+                    removeRoleToUser(oldRole);
+                }
                 addRoleToUser(newRole);
                 ServletUtils.sendResponse(true, Boolean.class, resp);
-            } else {
-                ServletUtils.sendResponse(false, Boolean.class, resp);
             }
+            else {
+                ServletUtils.sendBadRequest(resp,"No new role sended!!");
+            }
+        }
+    }
+
+    private void removeRoleToUser(RoleImpl oldRole) {
+        UserManager userManager = ServletUtils.getUserManager(getServletContext());
+        UserDataManager userDataManager = ServletUtils.getUserDataManager(getServletContext());
+        for (String name:oldRole.getUsers()){
+            userManager.removeRoleFromUser(name,oldRole);
+            userDataManager.removeRoles(name,oldRole);
         }
     }
 
@@ -54,6 +72,19 @@ public class AddRoleServlet extends HttpServlet {
         for(String name: newRole.getUsers()){
             userManager.addRoleToUser(name, newRole);
             userDataManager.addRoles(name,newRole);
+        }
+    }
+
+    public class CombinedRoles {
+        private RoleImpl newRole;
+        private RoleImpl oldRole;
+
+        public RoleImpl getNewRole() {
+            return newRole;
+        }
+
+        public RoleImpl getOldRole() {
+            return oldRole;
         }
     }
 }

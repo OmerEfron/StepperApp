@@ -9,6 +9,7 @@ import javafx.application.Platform;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
+import okhttp3.ResponseBody;
 import org.jetbrains.annotations.NotNull;
 import Utils.*;
 import java.io.IOException;
@@ -38,12 +39,16 @@ public class FlowExecutionListRefresher extends TimerTask {
 
                     @Override
                     public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                        if(response.isSuccessful()) {
-                            Gson gson = Constants.GSON_INSTANCE;
-                            Type listType = new TypeToken<List<FlowExecutionData>>() {
-                            }.getType();
-                            List<FlowExecutionData> flowExecutionDataList = gson.fromJson(response.body().string(), listType);
-                            Platform.runLater(() -> consumer.accept(flowExecutionDataList));
+                        try (ResponseBody responseBody = response.body()) {
+                            if (response.isSuccessful()) {
+                                Gson gson = Constants.GSON_INSTANCE;
+                                Type listType = new TypeToken<List<FlowExecutionData>>() {
+                                }.getType();
+                                List<FlowExecutionData> flowExecutionDataList = gson.fromJson(responseBody.string(), listType);
+                                Platform.runLater(() -> consumer.accept(flowExecutionDataList));
+                            }
+                        }catch (IOException e) {
+                            System.out.println("Error processing response: " + e.getMessage());
                         }
                     }
                 },

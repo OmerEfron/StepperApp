@@ -14,10 +14,17 @@ public class UserDataManager {
         userVersion.put(userName,0);
         userData.put(userName,new UserData(userName));
     }
+
     public synchronized void addRoles(String userName, RoleImpl role){
         UserData userDataToUpdate = userData.get(userName);
         role.getAllowedFlows().stream().forEach(userDataToUpdate::addFlow);
         userDataToUpdate.addRole(role.getName());
+        addVersion(userName);
+    }
+    public synchronized void removeRoles(String userName, RoleImpl role){
+        UserData userDataToUpdate = userData.get(userName);
+        role.getAllowedFlows().stream().forEach(userDataToUpdate::removeFlow);
+        userDataToUpdate.removeRole(role.getName());
         addVersion(userName);
     }
 

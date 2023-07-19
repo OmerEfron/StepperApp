@@ -7,6 +7,7 @@ import javafx.application.Platform;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
+import okhttp3.ResponseBody;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -22,8 +23,7 @@ public class UsersDataRefresher extends TimerTask {
     private Map<String,Integer> usersVersion=new HashMap<>();
     private final Consumer<UsersAndVersion> consumer;
 
-    public UsersDataRefresher(Map<String, Integer> usersVersion, Consumer<UsersAndVersion> consumer) {
-        this.usersVersion = usersVersion;
+    public UsersDataRefresher( Consumer<UsersAndVersion> consumer) {
         this.consumer = consumer;
     }
 
@@ -42,9 +42,14 @@ public class UsersDataRefresher extends TimerTask {
 
                     @Override
                     public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                        Gson gson = new Gson();
-                        UsersAndVersion usersAndVersion = gson.fromJson(response.body().string(), UsersAndVersion.class);
-                        Platform.runLater(() -> consumer.accept(usersAndVersion));
+                        try (ResponseBody responseBody = response.body()){
+                            Gson gson = new Gson();
+                            UsersAndVersion usersAndVersion = gson.fromJson(responseBody.string(), UsersAndVersion.class);
+                            Platform.runLater(() -> consumer.accept(usersAndVersion));
+                        }catch (IOException e) {
+                            System.out.println("Error processing response: " + e.getMessage());
+                        }
+
                     }
                 },
                 AdminUtils.HTTP_CLIENT);

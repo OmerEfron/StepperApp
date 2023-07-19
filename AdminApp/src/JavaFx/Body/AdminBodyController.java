@@ -66,7 +66,6 @@ public class AdminBodyController {
     private FlowStatsListRefresher FlowStatsListRefresher;
     private IntegerProperty statsVersion;
     private Boolean statsRefresherIn=false;
-    private Map <String,Integer> usersVersion=new HashMap<>();
     private Map<String, UserData> userDataMap=new HashMap<>();
 
 
@@ -135,8 +134,7 @@ public class AdminBodyController {
 
     private void setUsersDataMap(UsersAndVersion usersAndVersion) {
         if(!usersAndVersion.getEntries().isEmpty()) {
-            usersVersion= usersAndVersion.getUserVersion();
-            usersDataRefresher.setUsersVersion(usersVersion);
+            usersDataRefresher.setUsersVersion(usersAndVersion.getUserVersion());
             for (UserData userData : usersAndVersion.getEntries()) {
                 userDataMap.put(userData.getUserName(), userData);
             }
@@ -147,7 +145,7 @@ public class AdminBodyController {
 
     }
     private void usersDataMapRefresher() {
-        usersDataRefresher=new UsersDataRefresher(usersVersion,this::setUsersDataMap);
+        usersDataRefresher=new UsersDataRefresher(this::setUsersDataMap);
         usersTimer=new Timer();
         usersTimer.schedule(usersDataRefresher,2000,2000);
     }
@@ -197,16 +195,20 @@ public class AdminBodyController {
                 STRING_LIST_INSTANCE.getClass(), AdminUtils.HTTP_CLIENT);
     }
 
-    public void sendNewRole(RoleImpl newRole) {
-        Utils.runAsync(AdminUtils.ROLE_REQUEST.addRole(newRole),rolesManagementController.setNewRoleCallback,AdminUtils.HTTP_CLIENT );
+    public void changeRole(RoleImpl newRole, RoleImpl oldRole) {
+        Utils.runAsync(AdminUtils.ROLE_REQUEST.changeRole(newRole,oldRole),
+                setNewRoleCallback,AdminUtils.HTTP_CLIENT );
     }
+
+    public void sendNewRole(RoleImpl newRole) {
+        Utils.runAsync(AdminUtils.ROLE_REQUEST.addRole(newRole),
+                setNewRoleCallback,AdminUtils.HTTP_CLIENT );
+    }
+    public void addOrRemoveUserFromRole(String userName,String roleName,boolean add){
+        rolesManagementController.addOrRemoveUserFromRole(userName,roleName,add);
+    }
+
     public synchronized Set<String> getUsers(){
-//        Set<String> set=Utils.runSync(USERS_REQUESTER.getUsers(),
-//                      STRING_SET_INSTANCE.getClass(), AdminUtils.HTTP_CLIENT);
-//        if(!set.isEmpty())
-//            run();
-//
-//        return set;
         return Utils.runSync(USERS_REQUESTER.getUsers(),
               STRING_SET_INSTANCE.getClass(), AdminUtils.HTTP_CLIENT);
     }
@@ -217,8 +219,23 @@ public class AdminBodyController {
     public Set<String> getAllUsers(){
         return userDataMap.keySet();
     }
-    public void setUsers(){
+
+    public void updateUserAsManager(String userName) {
 
     }
+
+    public final Callback setNewRoleCallback = new Callback() {
+        @Override
+        public void onFailure(@NotNull Call call, @NotNull IOException e) {
+            System.out.println("cannot go to server");
+        }
+
+        @Override
+        public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+            response.close();
+        }
+    };
+
+
 
 }
