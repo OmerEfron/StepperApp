@@ -53,7 +53,8 @@ public class StepperUtils {
         RolesManager rolesManager;
         synchronized (stepperLock){
             if(servletContext.getAttribute(ROLE_ATTRIBUTE)==null){
-                rolesManager=new RolesManager(getStepper(servletContext));
+                StepperWithRolesAndUsers stepper = getStepper(servletContext);
+                rolesManager=new RolesManager(stepper);
                 servletContext.setAttribute(ROLE_ATTRIBUTE,rolesManager);
             }
         }

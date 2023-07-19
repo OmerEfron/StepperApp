@@ -41,6 +41,7 @@ public class Constants {
     public static final String FLOWS_NAMES ="/flows_names";
     public final static String GET_ROLE="/role/getRoles";
     public final static String PUT_ROLE="/role/addRole";
+    public final static String GET_USER_ROLES_URL = "/user/role";
 
     public static final List<String> STRING_LIST_INSTANCE = new ArrayList<>();
     public static final Set<String> STRING_SET_INSTANCE = new HashSet<>();

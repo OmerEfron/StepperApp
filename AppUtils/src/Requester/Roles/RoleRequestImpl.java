@@ -10,6 +10,7 @@ import users.roles.RoleImpl;
 public class RoleRequestImpl implements RoleRequest{
     private final String GET_ROLE_URL= Constants.BASE_URL+Constants.GET_ROLE;
     private final String PUT_ROLE_URL= Constants.BASE_URL+Constants.PUT_ROLE;
+    private final String GET_USER_ROLES_URL = Constants.BASE_URL + Constants.GET_USER_ROLES_URL;
     @Override
     public Request getAllRoles() {
         return new Request.Builder()
@@ -48,6 +49,14 @@ public class RoleRequestImpl implements RoleRequest{
         return new Request.Builder()
                 .url(PUT_ROLE_URL)
                 .put(requestBody)
+                .build();
+    }
+
+    @Override
+    public Request getUserRoles() {
+        return new Request.Builder()
+                .url(GET_USER_ROLES_URL)
+                .get()
                 .build();
     }
 }
