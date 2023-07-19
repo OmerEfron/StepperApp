@@ -2,6 +2,7 @@ package JavaFx.Header;
 
 
 import JavaFx.AppController;
+import Utils.Utils;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -11,6 +12,8 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+
+import java.util.Collection;
 
 public class HeaderController {
     private AppController mainController;
@@ -25,6 +28,8 @@ public class HeaderController {
 
     @FXML
     private Label userNameLabel;
+    @FXML
+    private Label userRolesLabel;
 
 
     public void setMainController(AppController mainController) {
@@ -66,4 +71,11 @@ public class HeaderController {
         String cssPath = getClass().getResource("/JavaFx/Body/resource/sea-style.css").toExternalForm();
         stylesheets.add(cssPath);
     }
+
+    public void setUserRoles(Collection<String> roles){
+        String joinedRoles = String.join(",", roles);
+        userRolesLabel.textProperty().setValue(joinedRoles);
+    }
+
+
 }

@@ -15,8 +15,6 @@ public class RolesManager {
     public RolesManager(Stepper stepper){
         addReadOnlyRole(stepper);
         addAllFlowsRole(stepper);
-        roleMap.put("Test Role",new RoleImpl("Test Role","Test Role", stepper.getFlowNames().subList(0,1)));
-
     }
 
     public void addReadOnlyRole(Stepper stepper) {

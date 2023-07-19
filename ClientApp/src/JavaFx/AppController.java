@@ -5,6 +5,7 @@ import DTO.StepperDTO;
 import JavaFx.Body.BodyController;
 import JavaFx.Header.HeaderController;
 import JavaFx.Login.LoginController;
+import Refresher.RoleRefresher;
 import Requester.login.LoginRequestImpl;
 import StepperEngine.Flow.FlowBuildExceptions.FlowBuildException;
 import StepperEngine.Stepper;
@@ -23,6 +24,9 @@ import javafx.stage.Window;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Collection;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import static JavaFx.ClientUtils.HTTP_CLIENT;
 import static JavaFx.ClientUtils.LOGIN_PAGE_FXML_RESOURCE_LOCATION;
@@ -38,6 +42,8 @@ public class AppController {
 
     @FXML
     LoginController loginController;
+    private TimerTask rolesRefresher;
+    private Timer timer;
     private final StepperDTO stepperDTO=new StepperDTO();
     private Stepper stepper;
     @FXML
@@ -45,6 +51,7 @@ public class AppController {
         headerComponentController.setMainController(this);
         bodyComponentController.setMainController(this);
         headerComponentController.setUsernameLabel(getCurrUsername());
+        rolesRefresher();
     }
 
     public void switchToMainApp() throws IOException {
@@ -58,6 +65,16 @@ public class AppController {
     public String getCurrUsername(){
         String username = Utils.runSync(new LoginRequestImpl().getUsername(), String.class, HTTP_CLIENT);
         return username;
+    }
+
+    public void setUserRoles(Collection<String> userRoles){
+        headerComponentController.setUserRoles(userRoles);
+    }
+
+    public void rolesRefresher(){
+        rolesRefresher = new RoleRefresher(this::setUserRoles);
+        timer = new Timer();
+        timer.schedule(rolesRefresher, 2000, 2000);
     }
 
     public Stepper getStepper() {
