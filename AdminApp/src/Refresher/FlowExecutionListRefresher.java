@@ -1,7 +1,7 @@
 package Refresher;
 
 import DTO.FlowExecutionData.FlowExecutionData;
-import JavaFx.AdminUtils;
+import AdminUtils.AdminUtils;
 import Utils.Utils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.TimerTask;
 import java.util.function.Consumer;
 
-import static JavaFx.AdminUtils.EXECUTION_REQUEST;
+import static AdminUtils.AdminUtils.EXECUTION_REQUEST;
 
 public class FlowExecutionListRefresher extends TimerTask {
 

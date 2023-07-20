@@ -50,13 +50,6 @@
                   <HBox alignment="TOP_RIGHT" spacing="5.0">
                      <children>
                         <Button fx:id="rerunButton" id="dark" mnemonicParsing="false" onAction="#rerunFlow" text="Rerun flow" />
-                        <Separator orientation="VERTICAL" prefHeight="0.0" prefWidth="0.0" />
-                        <ChoiceBox fx:id="continuationChoiceBox" onMouseEntered="#setContinuationText" prefHeight="31.0" prefWidth="143.0" />
-                        <ImageView fx:id="continuationButtonImage" fitHeight="31.0" fitWidth="45.0" onMouseClicked="#continueToFlow" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../FlowExecution/continueIcon.png" />
-                           </image>
-                        </ImageView>
                      </children>
                      <padding>
                         <Insets bottom="5.0" right="5.0" />

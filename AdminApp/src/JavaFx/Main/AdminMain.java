@@ -1,6 +1,5 @@
 package JavaFx.Main;
 
-import JavaFx.AdminUtils;
 import Utils.Utils;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -10,7 +9,8 @@ import javafx.stage.Stage;
 import okhttp3.HttpUrl;
 import okhttp3.Request;
 
-import static JavaFx.AdminUtils.HTTP_CLIENT;
+
+import static AdminUtils.AdminUtils.HTTP_CLIENT;
 import static Utils.Constants.ADMIN_LOGIN_PAGE;
 import static Utils.Constants.BASE_URL;
 
@@ -20,7 +20,6 @@ public class AdminMain extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         signInAsAdmin();
-        AdminUtils adminUtils=new AdminUtils();
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("AdminMain.fxml"));
         Parent root = fxmlLoader.load();
         scene = new Scene(root);

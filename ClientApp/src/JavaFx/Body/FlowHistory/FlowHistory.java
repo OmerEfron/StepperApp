@@ -9,6 +9,7 @@ import Utils.Utils;
 
 import com.google.gson.reflect.TypeToken;
 import javafx.animation.RotateTransition;
+import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -31,6 +32,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -51,11 +53,9 @@ public class FlowHistory {
     @FXML private TreeView<String> StepsTreeVIew;
     @FXML private Label CentralFlowName;
     @FXML private VBox filterVbox;
-    @FXML private ChoiceBox<String> continuationChoiceBox;
-    @FXML private ImageView continuationButtonImage;
     private BooleanProperty booleanProperty=new SimpleBooleanProperty();
     private BodyController bodyController;
-    List<FlowExecutionData> flowExecutions;
+    private List<FlowExecutionData> flowExecutionDataList=new ArrayList<>();
 
     public void setMainController(BodyController bodyController) {
         this.bodyController = bodyController;
@@ -64,29 +64,7 @@ public class FlowHistory {
     @FXML
     void initialize(){
         filterChoose.setOnAction(event -> {
-            String selectedOption = filterChoose.getValue();
-
-            Utils.runAsync(new ExecutionRequestImpl().executionsHistoryRequest(), new Callback() {
-                @Override
-                public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                    System.out.println("cant get history");
-                }
-
-                @Override
-                public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                    if(response.isSuccessful()) {
-                        Type listType = new TypeToken<List<FlowExecutionData>>() {}.getType();
-                        List<FlowExecutionData> flowExecutions = GSON_INSTANCE.fromJson(response.body().string(), listType);
-                    }
-                }
-            }, ClientUtils.HTTP_CLIENT);
-            setItemsInFlowsExecutionTable(FXCollections.observableList(bodyController.getStepper().getFlowExecutionDataList()
-                    .stream()
-                    .filter(flowExecutionData -> flowExecutionData.getExecutionResult().equals(selectedOption))
-                    .collect(Collectors.toList())));
-            booleanProperty.set(true);
-            resetTable.opacityProperty().set(1);
-            resetTable.cursorProperty().set(Cursor.HAND);
+            setExecutionTableByFilter();
         });
         filterSelectionLabel.textProperty().bind(Bindings
                 .when(booleanProperty)
@@ -95,11 +73,33 @@ public class FlowHistory {
                         "Choose Filter :"
                 )
         );
-        continuationChoiceBox.setOnAction(this::startContinuation);
         rerunButton.opacityProperty().set(0.2);
         rerunButton.cursorProperty().set(Cursor.DISAPPEAR);
         disaperRestFilterButton();
-        initContinuationButton();
+        //initContinuationButton();
+    }
+
+    public void setFlowExecutionDataList(List<FlowExecutionData> flowExecutionDataList) {
+        if(flowExecutionDataList.size()!=this.flowExecutionDataList.size()) {
+            this.flowExecutionDataList = flowExecutionDataList;
+            Platform.runLater(() -> {
+                if (booleanProperty.get()) {
+                    setExecutionTableByFilter();
+                } else {
+                    setFlowsExecutionTable();
+                }
+
+            });
+        }
+    }
+
+    private void setExecutionTableByFilter() {
+        String selectedOption = filterChoose.getValue();
+        setItemsInFlowsExecutionTable(FXCollections.observableList(flowExecutionDataList.stream().filter
+                (flowExecutionData -> flowExecutionData.getExecutionResult().equals(selectedOption)).collect(Collectors.toList())));
+        booleanProperty.set(true);
+        resetTable.opacityProperty().set(1);
+        resetTable.cursorProperty().set(Cursor.HAND);
     }
 
 
@@ -121,7 +121,7 @@ public class FlowHistory {
         if(resetTable.cursorProperty().get().equals(Cursor.HAND)) {
             restTable();
             filterChoose.getSelectionModel().clearSelection();
-            setItemsInFlowsExecutionTable(FXCollections.observableList(bodyController.getStepper().getFlowExecutionDataList()));
+            setItemsInFlowsExecutionTable(FXCollections.observableList(flowExecutionDataList));
             booleanProperty.set(false);
             disaperRestFilterButton();
         }
@@ -136,12 +136,12 @@ public class FlowHistory {
         transition.play();
     }
     public void setFlowsExecutionTable() {
-        if (!bodyController.getStepper().getFlowExecutionDataList().isEmpty()) {
+        if (!flowExecutionDataList.isEmpty()) {
             flowsExecutionsNamesCol.setCellValueFactory(new PropertyValueFactory<FlowExecutionData, String>("flowName"));
             flowsExecutionsTimeCol.setCellValueFactory(new PropertyValueFactory<FlowExecutionData, String>("formattedStartTime"));
             flowsExecutionsStatusCol.setCellValueFactory(new PropertyValueFactory<FlowExecutionData, String>("executionResult"));
             setAligmentToFlowsExecutionCols();
-            setItemsInFlowsExecutionTable(FXCollections.observableList(bodyController.getStepper().getFlowExecutionDataList()));
+            setItemsInFlowsExecutionTable(FXCollections.observableList(flowExecutionDataList));
             filterChoose.setItems(FXCollections.observableList(getOptionList()));
         }
     }
@@ -151,7 +151,7 @@ public class FlowHistory {
     }
 
     private List<String>  getOptionList() {
-        return bodyController.getStepper().getFlowExecutionDataList()
+        return flowExecutionDataList
                 .stream()
                 .map(FlowExecutionData::getExecutionResult)
                 .filter(name -> !name.isEmpty())
@@ -203,32 +203,10 @@ public class FlowHistory {
             }
             rerunButton.opacityProperty().set(1);
             rerunButton.cursorProperty().set(Cursor.HAND);
-            addContinuation(selectedItem);
+            //addContinuation(selectedItem);
         }
     }
 
-    private void addContinuation(FlowExecutionData selectedItem) {
-        if(selectedItem.isHasContinuation()){
-            continuationChoiceBox.setItems(FXCollections.observableArrayList(bodyController.getStepper().getFlowsDetailsByName(selectedItem.getFlowName()).getContinuationNames()));
-        }
-        else{
-            initContinuationButton();
-            if(continuationChoiceBox.getItems()!= null)
-                continuationChoiceBox.getItems().clear();
-        }
-    }
-
-    private void startContinuation(ActionEvent actionEvent) {
-        makeContinuationButtonEnabled();
-    }
-    private void initContinuationButton() {
-        continuationButtonImage.opacityProperty().set(0.2);
-        continuationButtonImage.cursorProperty().set(Cursor.DISAPPEAR);
-    }
-    private void makeContinuationButtonEnabled() {
-        continuationButtonImage.opacityProperty().set(1);
-        continuationButtonImage.cursorProperty().set(Cursor.HAND);
-    }
 
 
     @FXML
@@ -245,26 +223,6 @@ public class FlowHistory {
         }
     }
 
-
-    @FXML
-    void continueToFlow(MouseEvent event) {
-        bodyController.applyContinuationFromHistoryTab(flowsExecutionTable.getSelectionModel().getSelectedItem().getUniqueExecutionId(),
-                continuationChoiceBox.getValue());
-    }
-
-    @FXML
-    void setContinuationText(MouseEvent event) {
-//        Tooltip tooltip = new Tooltip("Choose flow to continue");
-//        tooltip.setAutoHide(true);
-//        tooltip.show(continuationChoiceBox, event.getScreenX(), event.getScreenY());
-//        continuationChoiceBox.setTooltip(tooltip);
-//        PauseTransition pause = new PauseTransition(Duration.seconds(1));
-//        pause.setOnFinished(eventa -> {
-//            tooltip.hide();
-//            continuationChoiceBox.setTooltip(null);
-//        });
-//        pause.play();
-    }
 
 
 }

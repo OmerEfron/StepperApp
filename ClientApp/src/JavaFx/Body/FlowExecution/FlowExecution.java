@@ -206,6 +206,7 @@ public class FlowExecution {
     @FXML
     void executeFlow(MouseEvent event) {
         if(flowExecutionButtonImage.opacityProperty().get() == 1) {
+        }
             executionProgressBar.setProgress(0);
             initExecuteButton();
             Utils.runAsync(new ExecutionRequestImpl().executeRequest(currFlowExecutionUuid), executeCallback, ClientUtils.HTTP_CLIENT);
@@ -217,7 +218,6 @@ public class FlowExecution {
                 }
             }).start();
             lastFlowRunningUuid = currFlowExecutionUuid;
-        }
     }
 
     void executeFlowTask(String uuid) {

@@ -1,11 +1,10 @@
 package JavaFx.Body;
 
 import JavaFx.ClientUtils;
+import Refresher.FlowExecutionListRefresher;
 import Refresher.FlowListRefresher;
-import Refresher.RoleRefresher;
 import Requester.execution.ExecutionRequestImpl;
 import Utils.Utils;
-import Utils.Constants;
 import Requester.flow.FlowRequestImpl;
 import DTO.FlowDetails.FlowDetails;
 import DTO.FlowExecutionData.FlowExecutionData;
@@ -35,7 +34,10 @@ public class BodyController {
     @FXML private FlowHistory flowHistoryController;
     @FXML private Tab flowStatsTab;
     private TimerTask flowsRefresher;
-    private Timer timer;
+    private Timer flowTimer;
+
+    private TimerTask flowExecutionsRefresher;
+    private Timer executionTimer;
 
     private Map<String, ExecutionData> executionDataMap=new HashMap<>();
     private Map<String, Map<String,ExecutionData>> executionStepsInFLow=new HashMap<>();
@@ -50,13 +52,14 @@ public class BodyController {
         flowHistoryController.setMainController(this);
 
         flowsRefresher();
+        flowsHistoryRefresher();
 
     }
 
     public void flowsRefresher(){
         flowsRefresher = new FlowListRefresher(this::setFlowDetailsList);
-        timer = new Timer();
-        timer.schedule(flowsRefresher, 2000, 2000);
+        flowTimer = new Timer();
+        flowTimer.schedule(flowsRefresher, 2000, 2000);
     }
 
 
@@ -85,6 +88,16 @@ public class BodyController {
 
     public void updateFlowHistory() {
         flowHistoryController.setFlowsExecutionTable();
+    }
+
+    public void setFlowExecutionDetailsList(List<FlowExecutionData> flowExecutionDataList){
+        flowHistoryController.setFlowExecutionDataList(flowExecutionDataList);
+    }
+
+    public void flowsHistoryRefresher(){
+        flowExecutionsRefresher = new FlowExecutionListRefresher(this::setFlowExecutionDetailsList);
+        flowTimer = new Timer();
+        flowTimer.schedule(flowExecutionsRefresher, 2000, 2000);
     }
 
     public ExecutionData getFlowExecutionData(FlowExecutionData flow){

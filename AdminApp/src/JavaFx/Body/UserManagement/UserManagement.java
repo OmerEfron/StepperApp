@@ -3,6 +3,7 @@ package JavaFx.Body.UserManagement;
 import DTO.UserData;
 import JavaFx.AdminUtils;
 import JavaFx.Body.AdminBodyController;
+import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -16,8 +17,10 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import users.roles.RoleImpl;
+
 import java.util.*;
 import java.util.stream.Collectors;
+
 import static JavaFx.AdminUtils.HTTP_CLIENT;
 import static JavaFx.AdminUtils.ROLE_REQUEST;
 
@@ -230,10 +233,6 @@ public class UserManagement {
             return true;
         }
         return false;
-    }
-
-    public void addNewRoleToList(String roleName){
-        addRoleListView.getItems().add(roleName);
     }
 
     public static void setProperty(ListView<String> listView, BooleanProperty booleanProperty, ImageView image) {

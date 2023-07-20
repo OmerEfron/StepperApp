@@ -60,31 +60,5 @@
         </SOURCES>
       </library>
     </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="file://$MODULE_DIR$/../../../libs/okHttp" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES>
-          <root url="file://$MODULE_DIR$/../../../libs/okHttp" />
-        </SOURCES>
-        <jarDirectory url="file://$MODULE_DIR$/../../../libs/okHttp" recursive="false" />
-        <jarDirectory url="file://$MODULE_DIR$/../../../libs/okHttp" recursive="false" type="SOURCES" />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="file://$MODULE_DIR$/../../../libs/lib" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES>
-          <root url="file://$MODULE_DIR$/../../../libs/lib" />
-        </SOURCES>
-        <jarDirectory url="file://$MODULE_DIR$/../../../libs/lib" recursive="false" />
-        <jarDirectory url="file://$MODULE_DIR$/../../../libs/lib" recursive="false" type="SOURCES" />
-      </library>
-    </orderEntry>
   </component>
 </module>

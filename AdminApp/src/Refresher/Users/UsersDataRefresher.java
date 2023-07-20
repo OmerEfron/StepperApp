@@ -1,6 +1,6 @@
 package Refresher.Users;
 
-import JavaFx.AdminUtils;
+import AdminUtils.AdminUtils;
 import Utils.Utils;
 import com.google.gson.Gson;
 import javafx.application.Platform;
@@ -16,7 +16,7 @@ import java.util.Map;
 import java.util.TimerTask;
 import java.util.function.Consumer;
 
-import static JavaFx.AdminUtils.USERS_REQUESTER;
+import static AdminUtils.AdminUtils.USERS_REQUESTER;
 
 
 public class UsersDataRefresher extends TimerTask {

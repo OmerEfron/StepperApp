@@ -2,7 +2,7 @@ package JavaFx.Body;
 
 import DTO.ExecutionsStatistics.FlowExecutionStats;
 import DTO.FlowExecutionData.FlowExecutionData;
-import JavaFx.AdminUtils;
+import AdminUtils.AdminUtils;
 import JavaFx.AppController;
 
 import JavaFx.Body.ExecutionData.ExecutionData;
@@ -20,7 +20,6 @@ import Refresher.Users.UsersAndVersion;
 import Refresher.Users.UsersDataRefresher;
 import StepperEngine.Step.api.StepStatus;
 import Utils.Utils;
-import com.google.gson.Gson;
 import javafx.application.Platform;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -38,8 +37,8 @@ import users.roles.RoleImpl;
 import java.io.IOException;
 import java.util.*;
 
-import static JavaFx.AdminUtils.FLOWS_NAMES_REQUEST;
-import static JavaFx.AdminUtils.USERS_REQUESTER;
+import static AdminUtils.AdminUtils.FLOWS_NAMES_REQUEST;
+import static AdminUtils.AdminUtils.USERS_REQUESTER;
 import static Utils.Constants.STRING_LIST_INSTANCE;
 import static Utils.Constants.STRING_SET_INSTANCE;
 
@@ -48,7 +47,7 @@ public class AdminBodyController {
     @FXML private TabPane bodyComponent;
     @FXML private Tab UserManagementTab;
     @FXML private UserManagement userManagementController;
-    @FXML private Tab RolesManagementTab;
+    @FXML private Tab rolesManagementTab;
     @FXML private RolesManagement rolesManagementController;
     @FXML private Tab flowHistoryTab;
     @FXML private FlowHistory flowHistoryController;

@@ -1,6 +1,7 @@
 package Refresher.Stats;
 
-import JavaFx.AdminUtils;
+import AdminUtils.AdminUtils;
+import Utils.Constants;
 import Utils.Utils;
 import com.google.gson.Gson;
 import javafx.application.Platform;
@@ -9,12 +10,12 @@ import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
 import org.jetbrains.annotations.NotNull;
-import Utils.*;
+
 import java.io.IOException;
 import java.util.TimerTask;
 import java.util.function.Consumer;
 
-import static JavaFx.AdminUtils.FLOW_STATS_REQUEST;
+import static AdminUtils.AdminUtils.FLOW_STATS_REQUEST;
 
 public class FlowStatsListRefresher extends TimerTask  {
 
