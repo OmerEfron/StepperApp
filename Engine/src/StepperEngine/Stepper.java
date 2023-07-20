@@ -12,6 +12,7 @@ import StepperEngine.Flow.execute.FlowExecution;
 import StepperEngine.Flow.execute.FlowExecutionWithUser;
 import StepperEngine.Flow.execute.runner.FlowExecutor;
 
+import StepperEngine.Step.impl.ToJson;
 import StepperEngine.StepperReader.Exception.ReaderException;
 import StepperEngine.StepperReader.XMLReadClasses.Continuation;
 import StepperEngine.StepperReader.XMLReadClasses.ContinuationMapping;
@@ -65,6 +66,7 @@ public class Stepper implements Serializable {
         Stepper tempStepper=new Stepper();
         tempStepper.newFlows(theStepper);//check if file valid
         addFlows(theStepper);
+
     }
 
     private void addFlows(TheStepper stepper) throws FlowBuildException{

@@ -1,5 +1,7 @@
 package StepperEngine.Flow.execute;
 
+import StepperEngine.DataDefinitions.Enumeration.MethodEnumerator;
+import StepperEngine.DataDefinitions.Enumeration.ProtocolEnumerator;
 import StepperEngine.DataDefinitions.Enumeration.ZipEnumerator;
 import StepperEngine.Flow.api.FlowDefinition;
 import StepperEngine.Flow.execute.StepData.StepExecuteData;
@@ -154,6 +156,16 @@ public class FlowExecution {
                         .map(ZipEnumerator::getStringValue)
                         .anyMatch(zipType-> zipType.equals(value))){
                     return addValueToFreeInputs(optionalData.get().getFullQualifiedName(), ZipEnumerator.fromString(value.toString()));
+                }
+                if(EnumSet.allOf(MethodEnumerator.class).stream()
+                        .map(MethodEnumerator::getStringValue)
+                        .anyMatch(methodType-> methodType.equals(value))){
+                    return addValueToFreeInputs(optionalData.get().getFullQualifiedName(), MethodEnumerator.fromString(value.toString()));
+                }
+                if(EnumSet.allOf(ProtocolEnumerator.class).stream()
+                        .map(ProtocolEnumerator::getStringValue)
+                        .anyMatch(protocolType-> protocolType.equals(value))){
+                    return addValueToFreeInputs(optionalData.get().getFullQualifiedName(), ProtocolEnumerator.fromString(value.toString()));
                 }
             }
         }
