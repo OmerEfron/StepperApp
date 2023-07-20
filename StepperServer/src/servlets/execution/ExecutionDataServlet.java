@@ -19,6 +19,7 @@ import java.util.List;
 
 import static utils.ServletUtils.*;
 
+
 @WebServlet(name = "executionDataServlet", urlPatterns = "/execution/data")
 public class ExecutionDataServlet extends HttpServlet {
 
@@ -29,9 +30,12 @@ public class ExecutionDataServlet extends HttpServlet {
         String flow_name = req.getParameter(FLOW_NAME_PARAMETER);
         String username = SessionUtils.getUsername(req);
         UserValidator userValidator = new UserValidatorImpl(req);
+        RoleDefinition[] userRolesAsArray=null;
+
         if (userValidator.isLoggedIn()) {
-            RoleDefinition[] userRolesAsArray = StepperUtils.getUserRolesAsArray(getServletContext(), username);
-            if (uuid != null) { // the request is for specific execution
+            if(!userValidator.isAdmin())
+                userRolesAsArray= StepperUtils.getUserRolesAsArray(getServletContext(), username);
+           if (uuid != null) { // the request is for specific execution
                 if (userValidator.isExecutionAllowed(uuid)) {
                     FlowExecutionData executionData = stepper.getFlowExecutionData(uuid);
                     ServletUtils.sendResponse(executionData, executionData.getClass(), resp);

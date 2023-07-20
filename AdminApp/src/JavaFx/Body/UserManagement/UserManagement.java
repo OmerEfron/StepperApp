@@ -1,9 +1,10 @@
 package JavaFx.Body.UserManagement;
 
+import AdminUtils.AdminUtils;
 import DTO.UserData;
-import JavaFx.AdminUtils;
+
 import JavaFx.Body.AdminBodyController;
-import javafx.application.Platform;
+
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -21,8 +22,9 @@ import users.roles.RoleImpl;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static JavaFx.AdminUtils.HTTP_CLIENT;
-import static JavaFx.AdminUtils.ROLE_REQUEST;
+import static AdminUtils.AdminUtils.HTTP_CLIENT;
+import static AdminUtils.AdminUtils.ROLE_REQUEST;
+
 
 public class UserManagement {
 
@@ -192,6 +194,7 @@ public class UserManagement {
 
 
     private List<String> getRolesToAdd(UserData userData) {
+
         List<RoleImpl> roles= AdminUtils.getRoles(ROLE_REQUEST.getAllRoles(),HTTP_CLIENT);
         List<String> rolesName=new ArrayList<>();
         for(RoleImpl role:roles){
@@ -250,5 +253,8 @@ public class UserManagement {
         image.cursorProperty().bind(Bindings.when(booleanProperty).then(Cursor.HAND).otherwise(Cursor.DISAPPEAR));
     }
 
+    public void addNewRoleToList(String name) {
+        addRoleListView.getItems().add(name);
+    }
 }
 
