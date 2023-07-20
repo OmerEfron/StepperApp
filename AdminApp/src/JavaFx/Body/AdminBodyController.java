@@ -203,6 +203,7 @@ public class AdminBodyController {
     public void sendNewRole(RoleImpl newRole) {
         Utils.runAsync(AdminUtils.ROLE_REQUEST.addRole(newRole),
                 setNewRoleCallback,AdminUtils.HTTP_CLIENT );
+        Platform.runLater(()->userManagementController.addNewRoleToList(newRole.getName()));
     }
     public void addOrRemoveUserFromRole(String userName,String roleName,boolean add){
         rolesManagementController.addOrRemoveUserFromRole(userName,roleName,add);
