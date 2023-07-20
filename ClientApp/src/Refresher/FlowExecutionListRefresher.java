@@ -1,10 +1,9 @@
 package Refresher;
 
-import DTO.FlowDetails.FlowDetails;
-import JavaFx.ClientUtils;
-import Requester.flow.FlowRequestImpl;
+import DTO.FlowExecutionData.FlowExecutionData;
+import Requester.execution.ExecutionRequestImpl;
+import Utils.Constants;
 import Utils.Utils;
-
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import javafx.application.Platform;
@@ -20,19 +19,19 @@ import java.util.List;
 import java.util.TimerTask;
 import java.util.function.Consumer;
 
-import Utils.*;
+import static JavaFx.ClientUtils.HTTP_CLIENT;
 
-public class FlowListRefresher extends TimerTask {
+public class FlowExecutionListRefresher extends TimerTask {
 
-    private final Consumer<List<FlowDetails>> consumer;
+    private final Consumer<List<FlowExecutionData>> consumer;
 
-    public FlowListRefresher(Consumer<List<FlowDetails>> consumer) {
+    public FlowExecutionListRefresher(Consumer<List<FlowExecutionData>> consumer) {
         this.consumer = consumer;
     }
 
     @Override
     public void run() {
-        Utils.runAsync(new FlowRequestImpl().getAllFlowRequest(),
+        Utils.runAsync(new ExecutionRequestImpl().executionDataList(),
                 new Callback() {
                     @Override
                     public void onFailure(@NotNull Call call, @NotNull IOException e) {
@@ -41,18 +40,19 @@ public class FlowListRefresher extends TimerTask {
 
                     @Override
                     public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                        try (ResponseBody body = response.body()) {
+                        try (ResponseBody responseBody = response.body()) {
                             if (response.isSuccessful()) {
                                 Gson gson = Constants.GSON_INSTANCE;
-                                Type listType = new TypeToken<List<FlowDetails>>() {
+                                Type listType = new TypeToken<List<FlowExecutionData>>() {
                                 }.getType();
-
-                                List<FlowDetails> flowDetailsList = gson.fromJson(body.string(), listType);
-                                Platform.runLater(() -> consumer.accept(flowDetailsList));
+                                List<FlowExecutionData> flowExecutionDataList = gson.fromJson(responseBody.string(), listType);
+                                Platform.runLater(() -> consumer.accept(flowExecutionDataList));
                             }
+                        }catch (IOException e) {
+                            System.out.println("Error processing response: " + e.getMessage());
                         }
                     }
                 },
-                ClientUtils.HTTP_CLIENT);
+                HTTP_CLIENT);
     }
 }

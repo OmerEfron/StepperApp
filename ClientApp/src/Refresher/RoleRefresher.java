@@ -10,6 +10,7 @@ import javafx.application.Platform;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
+import okhttp3.ResponseBody;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -36,12 +37,14 @@ public class RoleRefresher extends TimerTask {
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                if(response.isSuccessful()){
-                    Gson gson = Constants.GSON_INSTANCE;
-                    Type listType = new TypeToken<List<String>>() {
-                    }.getType();
-                    List<String> roles = gson.fromJson(response.body().string(), listType);
-                    Platform.runLater(() -> consumer.accept(roles));
+                try(ResponseBody body = response.body()) {
+                    if (response.isSuccessful()) {
+                        Gson gson = Constants.GSON_INSTANCE;
+                        Type listType = new TypeToken<List<String>>() {
+                        }.getType();
+                        List<String> roles = gson.fromJson(body.string(), listType);
+                        Platform.runLater(() -> consumer.accept(roles));
+                    }
                 }
             }
         }, ClientUtils.HTTP_CLIENT);
