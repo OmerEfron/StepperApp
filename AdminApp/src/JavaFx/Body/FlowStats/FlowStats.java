@@ -7,7 +7,6 @@ import JavaFx.Body.AdminBodyController;
 
 import Utils.Utils;
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -25,8 +24,8 @@ import javafx.scene.layout.BorderPane;
 import java.util.ArrayList;
 import java.util.List;
 
-import static JavaFx.AdminUtils.FLOW_STATS_REQUEST;
-import static JavaFx.AdminUtils.HTTP_CLIENT;
+import static AdminUtils.AdminUtils.FLOW_STATS_REQUEST;
+import static AdminUtils.AdminUtils.HTTP_CLIENT;
 
 public class FlowStats {
     @FXML private BorderPane flowStatsBorderPane;

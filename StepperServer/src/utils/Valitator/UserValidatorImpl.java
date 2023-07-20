@@ -1,6 +1,8 @@
 package utils.Valitator;
 import DTO.FlowExecutionData.FlowExecutionData;
+import StepperEngine.Flow.execute.FlowExecution;
 import StepperEngine.Stepper;
+import StepperEngine.StepperWithRolesAndUsers;
 import jakarta.servlet.http.HttpServletRequest;
 import users.UserManager;
 import users.roles.RoleDefinition;
@@ -66,9 +68,9 @@ public class UserValidatorImpl implements UserValidator{
 
     @Override
     public Boolean isExecutionAllowed(String uuid) {
-        Stepper stepper = StepperUtils.getStepper(request.getServletContext());
-        FlowExecutionData flowExecutionData = stepper.getFlowExecutionData(uuid);
+        StepperWithRolesAndUsers stepper = StepperUtils.getStepper(request.getServletContext());
+        String executionUsername = stepper.getExecutionUsername(uuid);
         String username = getUsername();
-        return flowExecutionData.getUserExecuted().equals(username) || isAdmin();
+        return executionUsername.equals(username) || isAdmin();
     }
 }

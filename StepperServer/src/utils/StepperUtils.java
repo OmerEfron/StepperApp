@@ -4,6 +4,7 @@ package utils;
 import StepperEngine.Stepper;
 import StepperEngine.StepperWithRolesAndUsers;
 import jakarta.servlet.ServletContext;
+import users.UserManager;
 import users.roles.RoleDefinition;
 import users.roles.RolesManager;
 
@@ -63,8 +64,8 @@ public class StepperUtils {
     }
 
     public static Set<RoleDefinition> getUserRoles(ServletContext servletContext, String username){
-        RolesManager rolesManger = getRolesManger(servletContext);
-        return rolesManger.getUserRoles(username);
+        UserManager userManager = ServletUtils.getUserManager(servletContext);
+        return userManager.getUserRoles(username);
     }
 
     public static RoleDefinition[] getUserRolesAsArray(ServletContext servletContext, String username){

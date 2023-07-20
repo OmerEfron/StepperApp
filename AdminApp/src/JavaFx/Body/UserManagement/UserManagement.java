@@ -1,9 +1,8 @@
 package JavaFx.Body.UserManagement;
 
 import DTO.UserData;
-import JavaFx.AdminUtils;
+import AdminUtils.AdminUtils;
 import JavaFx.Body.AdminBodyController;
-import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -21,8 +20,8 @@ import users.roles.RoleImpl;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static JavaFx.AdminUtils.HTTP_CLIENT;
-import static JavaFx.AdminUtils.ROLE_REQUEST;
+import static AdminUtils.AdminUtils.HTTP_CLIENT;
+import static AdminUtils.AdminUtils.ROLE_REQUEST;
 
 public class UserManagement {
 

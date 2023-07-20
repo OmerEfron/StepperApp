@@ -2,6 +2,7 @@ package StepperEngine;
 
 import DTO.FlowDetails.FlowDetails;
 import DTO.FlowExecutionData.FlowExecutionData;
+import StepperEngine.Flow.api.FlowDefinition;
 import StepperEngine.Flow.execute.FlowExecution;
 import StepperEngine.Flow.execute.FlowExecutionWithUser;
 import StepperEngine.exception.FlowNotAllowedException;
@@ -84,5 +85,26 @@ public class StepperWithRolesAndUsers extends Stepper {
             return applyContinuation(flowName, uuid);
         }
         throw new FlowNotAllowedException(flowName);
+    }
+
+    public String getExecutionUsername(String uuid){
+        FlowExecution flowExecutionByUuid = getFlowExecutionByUuid(uuid);
+        if(flowExecutionByUuid instanceof FlowExecutionWithUser){
+            FlowExecutionWithUser withUser = (FlowExecutionWithUser) flowExecutionByUuid;
+            return withUser.getUserExecuting();
+        }
+        return null;
+    }
+
+    public String createNewExecution(String flowName, String username) {
+        FlowDefinition flowDefinition = flowsMap.get(flowName);
+        if(flowDefinition != null){
+            FlowExecutionWithUser flowExecutionWithUser = new FlowExecutionWithUser(flowDefinition, username);
+            String uuid = flowExecutionWithUser.getUUID();
+            executionsMap.put(uuid, flowExecutionWithUser);
+            return uuid;
+        }else{
+            return null;
+        }
     }
 }
