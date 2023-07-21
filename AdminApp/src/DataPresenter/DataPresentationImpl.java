@@ -3,10 +3,7 @@ package DataPresenter;
 
 import DTO.FlowExecutionData.IOData;
 import DataPresenter.api.DataPresenter;
-import DataPresenter.impl.ListFilePresenter;
-import DataPresenter.impl.ListStringPresenter;
-import DataPresenter.impl.RelationStringPresenter;
-import DataPresenter.impl.SimpleDataPresenter;
+import DataPresenter.impl.*;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.layout.FlowPane;
@@ -38,6 +35,9 @@ public class DataPresentationImpl implements DataPresentation {
                 break;
             case "RelationOfStringRows":
                 dataPresenter=new RelationStringPresenter(data);
+                break;
+            case "JsonObject":
+                dataPresenter=new JsonPresenter(data);
                 break;
             default:
                 dataPresenter=new  SimpleDataPresenter(data);

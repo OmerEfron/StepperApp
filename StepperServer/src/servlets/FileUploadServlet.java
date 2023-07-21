@@ -12,6 +12,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.Part;
 import users.roles.RoleImpl;
+import users.roles.RolesManager;
 import utils.ServletUtils;
 import utils.StepperUtils;
 import utils.Valitator.UserValidator;
@@ -26,7 +27,7 @@ import java.util.*;
 public class FileUploadServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
+        System.out.println("a");
         UserValidator userValidator = new UserValidatorImpl(request);
         if(userValidator.isAdmin()) {
             response.setContentType("text/plain");
@@ -50,6 +51,7 @@ public class FileUploadServlet extends HttpServlet {
                 } else {
                     stepper.addFlowsFromFile(inputStream, filePath);
                     updateStatsManager(stepper);
+                    updateRoleManager(stepper);
                     //Map<String, RoleImpl> stringRoleMap = StepperUtils.getRolesMap(getServletContext());
                 }
 
@@ -62,6 +64,11 @@ public class FileUploadServlet extends HttpServlet {
             ServletUtils.sendBadRequest(response, "only admin can upload");
         }
 
+    }
+
+    private void updateRoleManager(StepperWithRolesAndUsers stepper) {
+        RolesManager rolesManger = StepperUtils.getRolesManger(getServletContext());
+        rolesManger.addNewRolesToAllFlowRole(stepper);
     }
 
     private void updateStatsManager(Stepper stepper) {

@@ -71,12 +71,13 @@ public class Stepper implements Serializable {
 
     private void addFlows(TheStepper stepper) throws FlowBuildException{
         List<FlowDefinition> newFlows = new ArrayList<>();
+        List<Flow> flows = new ArrayList<>();
         for (Flow flow:stepper.getFlows().getFlows()) {
-            if (flowsMap.containsKey(flow.getName())) {
-                throw new FlowBuildException("The flow : " + flow.getName() + " , is already exsits in system!", flow.getName());
+            if (!flowsMap.containsKey(flow.getName())) {
+                flows.add(flow);
             }
         }
-        for (Flow flow:stepper.getFlows().getFlows()) {
+        for (Flow flow:flows) {
             FlowDefinition flowDefinition=new FlowDefinitionImpl(flow);
             newFlows.add(flowDefinition);
             flowNames.add(flow.getName());

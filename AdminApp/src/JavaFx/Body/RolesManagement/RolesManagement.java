@@ -136,7 +136,7 @@ public class RolesManagement {
         editRoleLabel.setText("Add role (to save the role you have to add name!)");
     }
 
-    public void  setRoleTable(List<RoleImpl> roleList){
+    public void setRoleTable(List<RoleImpl> roleList){
         roles=roleList;
         RoleTable.setItems(FXCollections.observableList(roles));
     }

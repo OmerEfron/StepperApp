@@ -42,14 +42,16 @@ public class UsersDataRefresher extends TimerTask {
 
                     @Override
                     public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                        try (ResponseBody responseBody = response.body()){
-                            Gson gson = new Gson();
-                            UsersAndVersion usersAndVersion = gson.fromJson(responseBody.string(), UsersAndVersion.class);
-                            Platform.runLater(() -> consumer.accept(usersAndVersion));
-                        }catch (IOException e) {
-                            System.out.println("Error processing response: " + e.getMessage());
-                        }
+                        if (response.isSuccessful()) {
+                            try (ResponseBody responseBody = response.body()) {
+                                Gson gson = new Gson();
+                                UsersAndVersion usersAndVersion = gson.fromJson(responseBody.string(), UsersAndVersion.class);
+                                Platform.runLater(() -> consumer.accept(usersAndVersion));
+                            } catch (IOException e) {
+                                System.out.println("Error processing response: " + e.getMessage());
+                            }
 
+                        }
                     }
                 },
                 AdminUtils.HTTP_CLIENT);
