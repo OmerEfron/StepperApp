@@ -52,18 +52,13 @@
       </library>
     </orderEntry>
     <orderEntry type="module" module-name="Engine" />
-    <orderEntry type="library" scope="PROVIDED" name="Tomcat 10.0.11" level="application_server_libraries" />
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="file://$MODULE_DIR$/../../../libs/okHttp" />
+          <root url="jar://$MODULE_DIR$/../lib/okHttp/okio-2.8.0.jar!/" />
         </CLASSES>
         <JAVADOC />
-        <SOURCES>
-          <root url="file://$MODULE_DIR$/../../../libs/okHttp" />
-        </SOURCES>
-        <jarDirectory url="file://$MODULE_DIR$/../../../libs/okHttp" recursive="false" />
-        <jarDirectory url="file://$MODULE_DIR$/../../../libs/okHttp" recursive="false" type="SOURCES" />
+        <SOURCES />
       </library>
     </orderEntry>
   </component>
