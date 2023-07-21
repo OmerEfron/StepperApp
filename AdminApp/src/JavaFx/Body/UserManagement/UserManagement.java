@@ -194,7 +194,6 @@ public class UserManagement {
 
 
     private List<String> getRolesToAdd(UserData userData) {
-
         List<RoleImpl> roles= AdminUtils.getRoles(ROLE_REQUEST.getAllRoles(),HTTP_CLIENT);
         List<String> rolesName=new ArrayList<>();
         for(RoleImpl role:roles){
@@ -232,6 +231,11 @@ public class UserManagement {
             if(!roles.contains(roleName))
                 return true;
         }
+        for(String roleName:addRoleListView.getItems()){
+            if(roles.contains(roleName))
+                return true;
+        }
+
         if(rolesListItems.size()==0){
             return true;
         }

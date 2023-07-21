@@ -35,7 +35,6 @@ public class AddRoleServlet extends HttpServlet {
                 sb.append(line);
             }
             String json = sb.toString();
-
             Gson gson = new Gson();
             CombinedRoles combinedRoles=gson.fromJson(json,CombinedRoles.class);
             RoleImpl newRole = combinedRoles.getNewRole();
@@ -62,7 +61,7 @@ public class AddRoleServlet extends HttpServlet {
         UserDataManager userDataManager = ServletUtils.getUserDataManager(getServletContext());
         for (String name:oldRole.getUsers()){
             userManager.removeRoleFromUser(name,oldRole);
-            userDataManager.removeRoles(name,oldRole);
+            userDataManager.removeRoles(name,oldRole,userManager.getUserRoles(name));
         }
     }
 

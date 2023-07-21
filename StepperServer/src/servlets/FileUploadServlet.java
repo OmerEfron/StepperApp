@@ -1,5 +1,6 @@
 package servlets;
 
+import Managers.UserDataManager;
 import StepperEngine.Flow.FlowBuildExceptions.FlowBuildException;
 import StepperEngine.Stepper;
 import StepperEngine.StepperReader.Exception.ReaderException;
@@ -11,6 +12,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.Part;
+import users.UserManager;
 import users.roles.RoleImpl;
 import users.roles.RolesManager;
 import utils.ServletUtils;
@@ -58,7 +60,6 @@ public class FileUploadServlet extends HttpServlet {
 
             } catch (ReaderException | FlowBuildException | RuntimeException e) {
                 ServletUtils.sendBadRequest(response, e.getMessage());
-
             }
         }else{
             ServletUtils.sendBadRequest(response, "only admin can upload");
@@ -68,7 +69,11 @@ public class FileUploadServlet extends HttpServlet {
 
     private void updateRoleManager(StepperWithRolesAndUsers stepper) {
         RolesManager rolesManger = StepperUtils.getRolesManger(getServletContext());
-        rolesManger.addNewRolesToAllFlowRole(stepper);
+        RoleImpl role = rolesManger.addNewRolesToAllFlowRole(stepper);
+        UserDataManager userDataManager = ServletUtils.getUserDataManager(getServletContext());
+        for(String user:role.getUsers()){
+            userDataManager.addRoles(user,role);
+        }
     }
 
     private void updateStatsManager(Stepper stepper) {

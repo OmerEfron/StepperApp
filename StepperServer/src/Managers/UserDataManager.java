@@ -1,10 +1,12 @@
 package Managers;
 
 import DTO.UserData;
+import users.roles.RoleDefinition;
 import users.roles.RoleImpl;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 public class UserDataManager {
     private Map<String,Integer> userVersion=new HashMap<>();
@@ -21,10 +23,11 @@ public class UserDataManager {
         userDataToUpdate.addRole(role.getName());
         addVersion(userName);
     }
-    public synchronized void removeRoles(String userName, RoleImpl role){
+    public synchronized void removeRoles(String userName, RoleImpl role, Set<RoleDefinition> allowedRoles){
         UserData userDataToUpdate = userData.get(userName);
         role.getAllowedFlows().stream().forEach(userDataToUpdate::removeFlow);
         userDataToUpdate.removeRole(role.getName());
+        allowedRoles.stream().forEach(roleDefinition -> roleDefinition.getAllowedFlows().stream().forEach(userDataToUpdate::addFlow));
         addVersion(userName);
     }
 
@@ -38,6 +41,7 @@ public class UserDataManager {
 
     public synchronized void addExecutionToUser(String username) {
         userData.get(username).addExecution();
+        addVersion(username);
     }
     public synchronized void addVersion(String userName){
         int i = userVersion.get(userName) + 1;

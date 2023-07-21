@@ -55,8 +55,9 @@ public class RolesManager {
         userToRolesMap.computeIfAbsent(userName, key->new HashSet<>()).add(role);
     }
 
-    public void addNewRolesToAllFlowRole(StepperWithRolesAndUsers stepper){
+    public RoleImpl addNewRolesToAllFlowRole(StepperWithRolesAndUsers stepper){
         roleMap.get(ALL_FLOWS_ROLE).setFlows(stepper.getFlowNames());
+        return roleMap.get(ALL_FLOWS_ROLE);
     }
 
     public Set<RoleDefinition> getUserRoles(String username){

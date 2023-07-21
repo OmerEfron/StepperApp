@@ -12,6 +12,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import okhttp3.*;
 
+
 import java.io.IOException;
 import java.util.Map;
 import java.util.Optional;
@@ -84,7 +85,7 @@ public class HTTPCall extends StepDefinitionAbstract {
 
     }
 
-    private Request getRequest(String finalUrl, MethodEnumerator method,RequestBody body) {
+    private Request getRequest(String finalUrl, MethodEnumerator method, RequestBody body) {
         Request request = null;
         switch (method){
             case GET:
