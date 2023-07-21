@@ -4,6 +4,7 @@ import AdminUtils.AdminUtils;
 import DTO.ExecutionsStatistics.FlowExecutionStats;
 import JavaFx.Body.AdminBodyController;
 import JavaFx.Header.HeaderController;
+import Requester.fileupload.FileUploadImpl;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -33,7 +34,10 @@ public class AppController {
         //signInAsAdmin();
         headerComponentController.setMainController(this);
         bodyComponentController.setMainController(this);
+        FileUploadImpl fileUpload = new FileUploadImpl();
+        isStepperIn=Utils.runSync(fileUpload.isStepperIn(), Boolean.class, HTTP_CLIENT);
     }
+
 
     private void signInAsAdmin(){
         HttpUrl.Builder urlBuilder = HttpUrl.parse(BASE_URL + ADMIN_LOGIN_PAGE).newBuilder();

@@ -1,9 +1,12 @@
 package JavaFx.Body.RolesManagement;
 
+import AdminUtils.AdminUtils;
 import DTO.FlowDetails.FlowDetails;
 import JavaFx.Body.AdminBodyController;
 import JavaFx.Body.UserManagement.UserManagement;
+import Requester.fileupload.FileUploadImpl;
 import Utils.Constants;
+import Utils.Utils;
 import javafx.animation.FadeTransition;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
@@ -28,6 +31,9 @@ import javafx.scene.paint.Color;
 import javafx.util.Duration;
 import users.roles.RoleImpl;
 import java.util.*;
+
+import static AdminUtils.AdminUtils.HTTP_CLIENT;
+import static AdminUtils.AdminUtils.ROLE_REQUEST;
 
 public class RolesManagement {
     @FXML private TableView<RoleImpl> RoleTable;
@@ -65,6 +71,13 @@ public class RolesManagement {
         disappearNewRoleButton();
         setFlowsEditListView();
         setFlowsAddListView();
+        FileUploadImpl fileUpload = new FileUploadImpl();
+
+        if(Utils.runSync(fileUpload.isStepperIn(), Boolean.class, HTTP_CLIENT))
+        {
+            List<RoleImpl> roles= AdminUtils.getRoles(ROLE_REQUEST.getAllRoles(),HTTP_CLIENT);
+            setRoleTable(roles);
+        }
     }
 
     private void unableTextFields() {
@@ -92,7 +105,6 @@ public class RolesManagement {
     void newRole(ActionEvent event) {
         updateScreenToNewRole();
     }
-
 
     private void updateUserTable(String userName, String roleName,boolean add) {
         if(oldRole != null && oldRole.getName().equals(roleName)){

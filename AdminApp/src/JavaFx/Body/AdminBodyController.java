@@ -222,6 +222,7 @@ public class AdminBodyController {
 
     public void updateUserAsManager(String userName) {
 
+
     }
 
     public final Callback setNewRoleCallback = new Callback() {

@@ -23,11 +23,6 @@ public class StepperUtils {
         synchronized (stepperLock){
             if(servletContext.getAttribute(STEPPER_ATTRIBUTE_NAME) == null){
                 stepper = new StepperWithRolesAndUsers();
-//                try {
-//                    stepper.load("C:\\Users\\Gil\\Desktop\\StepperApp2\\ex2.xml");
-//                } catch (ReaderException | FlowBuildException e) {
-//                    throw new RuntimeException(e);
-//                }
                 servletContext.setAttribute(STEPPER_ATTRIBUTE_NAME,stepper);
             }
         }
@@ -50,7 +45,6 @@ public class StepperUtils {
     }
 
     public static RolesManager getRolesManger(ServletContext servletContext){
-
         RolesManager rolesManager;
         synchronized (stepperLock){
             if(servletContext.getAttribute(ROLE_ATTRIBUTE)==null){
@@ -77,5 +71,12 @@ public class StepperUtils {
         RolesManager rolesManager=(RolesManager) servletContext.getAttribute(ROLE_ATTRIBUTE);
         rolesManager.addReadOnlyRole(getStepper(servletContext));
         rolesManager.addAllFlowsRole(getStepper(servletContext));
+    }
+
+    public static String getFilePath(ServletContext servletContext) {
+        if (StepperUtils.isStepperIn(servletContext)){
+            return (String) servletContext.getAttribute("file-path");
+        }
+        return null;
     }
 }

@@ -1,5 +1,7 @@
 package JavaFx.Header;
 import JavaFx.AppController;
+import Requester.fileupload.FileUploadImpl;
+import Utils.Utils;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -11,6 +13,8 @@ import okhttp3.*;
 import java.io.File;
 import java.io.IOException;
 
+import static AdminUtils.AdminUtils.HTTP_CLIENT;
+
 
 public class HeaderController {
     private AppController mainController;
@@ -20,6 +24,13 @@ public class HeaderController {
 
     @FXML private Label filePathLabel;
 
+    @FXML
+    public void initialize() {
+        FileUploadImpl fileUpload = new FileUploadImpl();
+        if(Boolean.TRUE.equals(Utils.runSync(fileUpload.isStepperIn(), Boolean.class, HTTP_CLIENT)))
+            updateFilePathLabel(Utils.runSync(fileUpload.getFilePath(), String.class, HTTP_CLIENT));
+
+    }
     public void setMainController(AppController mainController) {
         this.mainController = mainController;
     }
@@ -33,7 +44,6 @@ public class HeaderController {
         Stage stage = (Stage) loadButton.getScene().getWindow();
         // Show the file chooser dialog
         File selectedFile = fileChooser.showOpenDialog(stage);
-
 
         if (selectedFile != null) {
             String filePath = selectedFile.getPath();

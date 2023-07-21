@@ -1,4 +1,4 @@
-package servlets;
+package servlets.File;
 
 import Managers.UserDataManager;
 import StepperEngine.Flow.FlowBuildExceptions.FlowBuildException;
@@ -29,7 +29,6 @@ import java.util.*;
 public class FileUploadServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        System.out.println("a");
         UserValidator userValidator = new UserValidatorImpl(request);
         if(userValidator.isAdmin()) {
             response.setContentType("text/plain");
@@ -47,6 +46,7 @@ public class FileUploadServlet extends HttpServlet {
             try {
                 StepperWithRolesAndUsers stepper = StepperUtils.getStepper(getServletContext());
                 if (!StepperUtils.isStepperIn(getServletContext())) {
+                    getServletContext().setAttribute("file-path",filePath);
                     stepper.loadAllStepper(inputStream, filePath);
                     StepperUtils.setStepperIn(getServletContext());
                     StepperUtils.getRolesManger(getServletContext());
@@ -54,7 +54,6 @@ public class FileUploadServlet extends HttpServlet {
                     stepper.addFlowsFromFile(inputStream, filePath);
                     updateStatsManager(stepper);
                     updateRoleManager(stepper);
-                    //Map<String, RoleImpl> stringRoleMap = StepperUtils.getRolesMap(getServletContext());
                 }
 
 

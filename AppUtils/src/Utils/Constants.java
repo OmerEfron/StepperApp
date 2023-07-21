@@ -42,6 +42,8 @@ public class Constants {
     public final static String GET_ROLE="/role/getRoles";
     public final static String PUT_ROLE="/role/addRole";
     public final static String GET_USER_ROLES_URL = "/user/role";
+    public final static String STEPPER_IN = "/isStepperIn";
+    public final static String FILE_PATH = "/filePath";
 
     public final static String LOGOUT_URL = "/logout";
 
