@@ -12,6 +12,7 @@ import StepperEngine.Flow.execute.FlowExecution;
 import StepperEngine.Flow.execute.FlowExecutionWithUser;
 import StepperEngine.Flow.execute.runner.FlowExecutor;
 
+import StepperEngine.Step.impl.ToJson;
 import StepperEngine.StepperReader.Exception.ReaderException;
 import StepperEngine.StepperReader.XMLReadClasses.Continuation;
 import StepperEngine.StepperReader.XMLReadClasses.ContinuationMapping;
@@ -65,16 +66,18 @@ public class Stepper implements Serializable {
         Stepper tempStepper=new Stepper();
         tempStepper.newFlows(theStepper);//check if file valid
         addFlows(theStepper);
+
     }
 
     private void addFlows(TheStepper stepper) throws FlowBuildException{
         List<FlowDefinition> newFlows = new ArrayList<>();
+        List<Flow> flows = new ArrayList<>();
         for (Flow flow:stepper.getFlows().getFlows()) {
-            if (flowsMap.containsKey(flow.getName())) {
-                throw new FlowBuildException("The flow : " + flow.getName() + " , is already exsits in system!", flow.getName());
+            if (!flowsMap.containsKey(flow.getName())) {
+                flows.add(flow);
             }
         }
-        for (Flow flow:stepper.getFlows().getFlows()) {
+        for (Flow flow:flows) {
             FlowDefinition flowDefinition=new FlowDefinitionImpl(flow);
             newFlows.add(flowDefinition);
             flowNames.add(flow.getName());

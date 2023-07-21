@@ -62,7 +62,9 @@ public class LoginServlet extends HttpServlet {
                     }
                     else {
                         //add the new user to the users list
-                        addUserToManagers(userManager, usernameFromParameter);
+                        userManager.addUser(usernameFromParameter);
+                        UserDataManager userDataManager=ServletUtils.getUserDataManager(getServletContext());
+                        userDataManager.addUser(usernameFromParameter);
                         //set the username in a session so it will be available on each request
                         //the true parameter means that if a session object does not exists yet
                         //create a new one
@@ -79,14 +81,5 @@ public class LoginServlet extends HttpServlet {
             response.getWriter().write(usernameFromSession);
             response.setStatus(HttpServletResponse.SC_OK);
         }
-    }
-
-    private void addUserToManagers(UserManager userManager, String usernameFromParameter) {
-        userManager.addUser(usernameFromParameter);
-        RolesManager rolesManger = StepperUtils.getRolesManger(getServletContext());
-        userManager.addRoleToUser(usernameFromParameter,rolesManger.getDefaultRole());
-        rolesManger.addUserToRole(rolesManger.getDefaultRole().getName(), usernameFromParameter);
-        UserDataManager userDataManager=ServletUtils.getUserDataManager(getServletContext());
-        userDataManager.addUser(usernameFromParameter);
     }
 }

@@ -47,6 +47,7 @@ public class FlowExecutionListRefresher extends TimerTask {
                                 List<FlowExecutionData> flowExecutionDataList = gson.fromJson(responseBody.string(), listType);
                                 Platform.runLater(() -> consumer.accept(flowExecutionDataList));
                             }
+
                         }catch (IOException e) {
                             System.out.println("Error processing response: " + e.getMessage());
                         }

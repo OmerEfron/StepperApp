@@ -48,8 +48,10 @@ public class AppController {
 
         try {
             String res=Utils.runSyncFile(FILE_UPLOAD.fileUploadRequest(selectedFile), AdminUtils.HTTP_CLIENT);
-            if(res!=null)
+            if(res!=null) {
+                System.out.println(res);
                 failureMessage(res);
+            }
             else if(!isStepperIn) {
                 isStepperIn = true;
                 Platform.runLater(() -> {
@@ -58,7 +60,11 @@ public class AppController {
                     updateRoles();
                 });
             }
+            else {
+                updateRoles();
+            }
         }catch (RuntimeException e) {
+            System.out.println(e.getMessage());
             failureMessage(e.getMessage());
         }
     }

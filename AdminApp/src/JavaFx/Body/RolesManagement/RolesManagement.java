@@ -26,13 +26,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.util.Duration;
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.Response;
-import org.jetbrains.annotations.NotNull;
 import users.roles.RoleImpl;
-
-import java.io.IOException;
 import java.util.*;
 
 public class RolesManagement {
@@ -142,7 +136,7 @@ public class RolesManagement {
         editRoleLabel.setText("Add role (to save the role you have to add name!)");
     }
 
-    public void  setRoleTable(List<RoleImpl> roleList){
+    public void setRoleTable(List<RoleImpl> roleList){
         roles=roleList;
         RoleTable.setItems(FXCollections.observableList(roles));
     }

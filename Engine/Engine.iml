@@ -8,5 +8,18 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="DTO" />
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="file://$MODULE_DIR$/../../../libs/okHttp" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="file://$MODULE_DIR$/../../../libs/okHttp" />
+        </SOURCES>
+        <jarDirectory url="file://$MODULE_DIR$/../../../libs/okHttp" recursive="false" />
+        <jarDirectory url="file://$MODULE_DIR$/../../../libs/okHttp" recursive="false" type="SOURCES" />
+      </library>
+    </orderEntry>
   </component>
 </module>

@@ -14,7 +14,6 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import users.roles.RoleImpl;
-
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.List;
@@ -24,6 +23,7 @@ import java.util.logging.Logger;
 public class AdminUtils {
 
     private final static SimpleCookieManager simpleCookieManager = new SimpleCookieManager();
+
     public final static OkHttpClient HTTP_CLIENT = new OkHttpClient.Builder()
             .cookieJar(simpleCookieManager)
             .followRedirects(false)

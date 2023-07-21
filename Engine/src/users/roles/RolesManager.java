@@ -2,6 +2,8 @@ package users.roles;
 
 import DTO.FlowDetails.FlowDetails;
 import StepperEngine.Stepper;
+import StepperEngine.StepperWithRolesAndUsers;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
@@ -17,15 +19,21 @@ public class RolesManager {
     }
 
     public void addReadOnlyRole(Stepper stepper) {
+        List<String> flows = getReadOnlyFlowsName(stepper);
+        roleMap.put(READ_ONLY_FLOWS,new RoleImpl(READ_ONLY_FLOWS,"Just read only flow's belong to this role", flows));
+
+    }
+
+    @NotNull
+    private static List<String> getReadOnlyFlowsName(Stepper stepper) {
         List<String> flows=new ArrayList<>();
-        for(FlowDetails flow:stepper.getFlowsDetails())
+        for(FlowDetails flow: stepper.getFlowsDetails())
         {
             if(flow.isFlowReadOnly())
                 flows.add(flow.getFlowName());
 
         }
-        roleMap.put(READ_ONLY_FLOWS,new RoleImpl(READ_ONLY_FLOWS,"Just read only flow's belong to this role", flows));
-
+        return flows;
     }
 
     public void addAllFlowsRole(Stepper stepper) {
@@ -45,6 +53,10 @@ public class RolesManager {
         RoleDefinition role = roleMap.get(roleName);
         role.addUser(userName);
         userToRolesMap.computeIfAbsent(userName, key->new HashSet<>()).add(role);
+    }
+
+    public void addNewRolesToAllFlowRole(StepperWithRolesAndUsers stepper){
+        roleMap.get(ALL_FLOWS_ROLE).setFlows(stepper.getFlowNames());
     }
 
     public Set<RoleDefinition> getUserRoles(String username){
