@@ -136,7 +136,9 @@ public class BodyController {
         bodyComponent.getSelectionModel().select(flowExecutionTab);
         FlowDetails flowDetails = Utils.runSync(new FlowRequestImpl().getFlowRequest(flow.getFlowName()), FlowDetails.class, ClientUtils.HTTP_CLIENT);
         String uuid = Utils.runSync(new ExecutionRequestImpl().rerunRequest(flow.getUniqueExecutionId()), String.class, ClientUtils.HTTP_CLIENT);
-        flowExecutionController.runFlowAgain(flowDetails, uuid);
+        if(uuid != null) {
+            flowExecutionController.runFlowAgain(flowDetails, uuid);
+        }
     }
 
     public void applyContinuationFromHistoryTab(String pastFlowUUID,String flowToContinue){

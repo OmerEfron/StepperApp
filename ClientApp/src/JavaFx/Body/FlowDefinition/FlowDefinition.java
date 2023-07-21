@@ -73,6 +73,9 @@ public class FlowDefinition {
     private BodyController bodyController;
 
 
+
+
+
     @FXML
     void executeFlow(ActionEvent event) {
         bodyController.goToExecuteFlowTab(currSelectedFlow);
@@ -89,6 +92,7 @@ public class FlowDefinition {
             creatFreeInputsTable(currFlow);
             creatOutputsTable(currFlow);
             stepsSelection.setItems(stepsNames.get(currFlow.getFlowName()));
+
         }
     }
 
