@@ -43,6 +43,8 @@ public class Constants {
     public final static String PUT_ROLE="/role/addRole";
     public final static String GET_USER_ROLES_URL = "/user/role";
 
+    public final static String LOGOUT_URL = "/logout";
+
     public static final List<String> STRING_LIST_INSTANCE = new ArrayList<>();
     public static final Set<String> STRING_SET_INSTANCE = new HashSet<>();
 

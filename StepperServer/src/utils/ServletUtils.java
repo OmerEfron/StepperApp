@@ -32,6 +32,8 @@ public class ServletUtils {
 
     public static final String NOT_LOGIN_ERROR_MESSAGE = "please login for this request";
 
+    private static Boolean isAdminLoggedIn = false;
+
 
     public static UserManager getUserManager(ServletContext servletContext) {
 
@@ -41,6 +43,14 @@ public class ServletUtils {
             }
         }
         return (UserManager) servletContext.getAttribute(USER_MANAGER_ATTRIBUTE_NAME);
+    }
+
+    public static void setAdminLoggedIn(Boolean isAdminLoggedIn) {
+        ServletUtils.isAdminLoggedIn = isAdminLoggedIn;
+    }
+
+    public static Boolean getIsAdminLoggedIn() {
+        return isAdminLoggedIn;
     }
 
     public final static Gson GSON_INSTANCE;
