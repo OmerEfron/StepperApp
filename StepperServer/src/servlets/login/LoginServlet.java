@@ -1,4 +1,4 @@
-package servlets;
+package servlets.login;
 
 import Managers.UserDataManager;
 import jakarta.servlet.annotation.WebServlet;

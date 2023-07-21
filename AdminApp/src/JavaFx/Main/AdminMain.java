@@ -1,5 +1,6 @@
 package JavaFx.Main;
 
+import Requester.login.LogoutRequestImpl;
 import Utils.Utils;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -39,5 +40,11 @@ public class AdminMain extends Application {
                 .url(url)
                 .build();
         Utils.runSync(request, HTTP_CLIENT);
+    }
+
+    @Override
+    public void stop() throws Exception {
+        super.stop();
+        Utils.runSync(new LogoutRequestImpl().logoutRequest(), HTTP_CLIENT);
     }
 }
