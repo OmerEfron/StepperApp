@@ -65,7 +65,10 @@ public class AppController {
                 });
             }
             else {
-                updateRoles();
+                Platform.runLater(() -> {
+                    updateStats();
+                    updateRoles();
+                });
             }
         }catch (RuntimeException e) {
             System.out.println(e.getMessage());

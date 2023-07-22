@@ -16,7 +16,8 @@ public class Constants {
     public static final String ADMIN_LOGIN_PAGE = "/admin/login";
     public static final String GET_USERS = "/users/getUsers";
     public static final String GET_USERS_DATA = "/users/getUsersData";
-
+    public final static String USERNAME_PARAMETER = "username";
+    public final static String MANAGER = "/users/manager";
     static {
         GsonBuilder gsonBuilder = new GsonBuilder();
         gsonBuilder.registerTypeAdapter(DataAndType.class, new DataAndType.DataAndTypeAdapter());

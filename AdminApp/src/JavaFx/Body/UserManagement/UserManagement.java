@@ -50,6 +50,7 @@ public class UserManagement {
     private AdminBodyController adminBodyController;
     private Image greenManager=new Image("JavaFx/Body/resource/managerGreen.png");
     private Image redManager=new Image("JavaFx/Body/resource/managerRed.png");
+    public static final String ALL_FLOWS_ROLE = "All flows";
 
     public void setMainController(AdminBodyController adminBodyController) {
         this.adminBodyController = adminBodyController;
@@ -63,14 +64,25 @@ public class UserManagement {
         setManageProperties();
     }
 
-    private void setManageProperties() {
-        tooltip.textProperty().bind(Bindings.when(isManager).then("Disable the manager option")
-                .otherwise("Set as manager"));
-        managerImage.imageProperty().bind(Bindings.when(isManager).then(greenManager)
-                .otherwise(redManager));
-        ManagerTextFiled.textProperty().bind(Bindings.when(isManager).then("The user is manager")
-                .otherwise("The user is not manager"));
-
+    @FXML
+    void save(MouseEvent event) {
+        String userName = selectedName;
+        ObservableList<String> rolesListItems = rolesList.getItems();
+        for (String roleName : rolesListItems) {
+            if (!roles.contains(roleName))
+                adminBodyController.addOrRemoveUserFromRole(userName, roleName,true);
+        }
+        for (String roleName : roles) {
+            if (!rolesListItems.contains(roleName))
+                adminBodyController.addOrRemoveUserFromRole(userName, roleName,false);
+        }
+        if (isManager.get() != isManagerInStart) {
+            if(isManager.get())
+                adminBodyController.updateUserAsManager(userName);
+            else
+                adminBodyController.removeManager(userName);
+        }
+        disappearSaveButton();
     }
 
     @FXML
@@ -78,6 +90,17 @@ public class UserManagement {
         boolean isManagerNow = isManager.get();
         isManager.set(!isManagerNow);
         changeSaveButtonAppears();
+        if(isManager.get()){
+            if(!rolesList.getItems().contains(ALL_FLOWS_ROLE)) {
+                rolesList.getItems().add(ALL_FLOWS_ROLE);
+                addRoleListView.getItems().remove(ALL_FLOWS_ROLE);
+            }
+        }else {
+            if(rolesList.getItems().contains(ALL_FLOWS_ROLE)) {
+                rolesList.getItems().remove(ALL_FLOWS_ROLE);
+                addRoleListView.getItems().add(ALL_FLOWS_ROLE);
+            }
+        }
     }
     @FXML
     void disableTextInManagerIcon(MouseEvent event) {
@@ -88,6 +111,16 @@ public class UserManagement {
     void setTextInManagerIcon(MouseEvent event) {
         Point2D mousePosition = managerImage.localToScreen(event.getX(), event.getY());
         tooltip.show(managerImage, mousePosition.getX() + 10, mousePosition.getY());
+    }
+
+    private void setManageProperties() {
+        tooltip.textProperty().bind(Bindings.when(isManager).then("Disable the manager option")
+                .otherwise("Set as manager"));
+        managerImage.imageProperty().bind(Bindings.when(isManager).then(greenManager)
+                .otherwise(redManager));
+        ManagerTextFiled.textProperty().bind(Bindings.when(isManager).then("The user is manager")
+                .otherwise("The user is not manager"));
+
     }
 
     public void setUsersListView(Collection<String> users){
@@ -124,10 +157,19 @@ public class UserManagement {
     private void swapElementBetweenLists(ListView<String> removeFromeListView, ListView<String> addToListView) {
         if (removeFromeListView.getSelectionModel().getSelectedItem() != null) {
             String selectedItem = removeFromeListView.getSelectionModel().getSelectedItem();
-            removeFromeListView.getItems().remove(selectedItem);
-            addToListView.getItems().add(selectedItem);
-            removeFromeListView.getSelectionModel().clearSelection();
-            changeSaveButtonAppears();
+            if(isManager.get() && selectedItem.equals(ALL_FLOWS_ROLE)){
+                Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.setTitle("Warning");
+                alert.setHeaderText(null);
+                alert.setContentText("The user is a manager,All flows role cannot be deleted.\n" +
+                        "Remove manager permission to delete this role.");
+                alert.showAndWait();
+            }else {
+                removeFromeListView.getItems().remove(selectedItem);
+                addToListView.getItems().add(selectedItem);
+                removeFromeListView.getSelectionModel().clearSelection();
+                changeSaveButtonAppears();
+            }
         }
     }
 
@@ -149,24 +191,6 @@ public class UserManagement {
         generateListView(addRoleListView,rolesList);
     }
 
-
-    @FXML
-    void save(MouseEvent event) {
-        String userName = selectedName;
-        ObservableList<String> rolesListItems = rolesList.getItems();
-        for (String roleName : rolesListItems) {
-            if (!roles.contains(roleName))
-                adminBodyController.addOrRemoveUserFromRole(userName, roleName,true);
-        }
-        for (String roleName : roles) {
-            if (!rolesListItems.contains(roleName))
-                adminBodyController.addOrRemoveUserFromRole(userName, roleName,false);
-        }
-        if (isManager.get() != isManagerInStart) {
-            adminBodyController.updateUserAsManager(userName);
-        }
-        disappearSaveButton();
-    }
     @FXML
     void showUser(MouseEvent event) {
         if (UsersListView.getItems() != null) {

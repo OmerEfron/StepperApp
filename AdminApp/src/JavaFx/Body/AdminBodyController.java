@@ -94,7 +94,8 @@ public class AdminBodyController {
     }
 
     public void initStats(List<String> flowNames){
-        flowStatsController.initStats(flowNames);
+        if(!getStatsRefresherIn())
+            flowStatsController.initStats(flowNames);
     }
 
     public ExecutionData getFlowExecutionData(FlowExecutionData flow){
@@ -221,8 +222,7 @@ public class AdminBodyController {
     }
 
     public void updateUserAsManager(String userName) {
-
-
+        Utils.runAsync(AdminUtils.USERS_REQUESTER.addManager(userName),setNewRoleCallback,AdminUtils.HTTP_CLIENT);
     }
 
     public final Callback setNewRoleCallback = new Callback() {
@@ -238,5 +238,7 @@ public class AdminBodyController {
     };
 
 
-
+    public void removeManager(String userName) {
+        Utils.runAsync(AdminUtils.USERS_REQUESTER.removeManager(userName),setNewRoleCallback,AdminUtils.HTTP_CLIENT);
+    }
 }

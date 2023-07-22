@@ -35,6 +35,8 @@ public class FlowHistory {
     @FXML private TableColumn<FlowExecutionData, String> flowsExecutionsNamesCol;
     @FXML private TableColumn<FlowExecutionData, String> flowsExecutionsTimeCol;
     @FXML private TableColumn<FlowExecutionData, String> flowsExecutionsStatusCol;
+    @FXML private TableColumn<FlowExecutionData, String> UserNameCol;
+    @FXML private TableColumn<FlowExecutionData, String> managerCol;
     @FXML private ComboBox<String> filterChoose;
     @FXML private Label filterSelectionLabel;
     @FXML private ImageView resetTable;
@@ -123,6 +125,7 @@ public class FlowHistory {
             flowsExecutionsNamesCol.setCellValueFactory(new PropertyValueFactory<FlowExecutionData, String>("flowName"));
             flowsExecutionsTimeCol.setCellValueFactory(new PropertyValueFactory<FlowExecutionData, String>("formattedStartTime"));
             flowsExecutionsStatusCol.setCellValueFactory(new PropertyValueFactory<FlowExecutionData, String>("executionResult"));
+            UserNameCol.setCellValueFactory(new PropertyValueFactory<FlowExecutionData,String>("userExecuted"));
             setAligmentToFlowsExecutionCols();
             setItemsInFlowsExecutionTable(FXCollections.observableList(flowExecutionDataList));
             filterChoose.setItems(FXCollections.observableList(getOptionList()));
@@ -162,6 +165,14 @@ public class FlowHistory {
         });
 
         flowsExecutionsStatusCol.setCellFactory(column -> new TableCell<FlowExecutionData, String>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                setText(item);
+                setAlignment(Pos.CENTER);  // Align text to the middle
+            }
+        });
+        UserNameCol.setCellFactory(column -> new TableCell<FlowExecutionData, String>() {
             @Override
             protected void updateItem(String item, boolean empty) {
                 super.updateItem(item, empty);

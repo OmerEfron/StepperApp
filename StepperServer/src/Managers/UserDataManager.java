@@ -38,6 +38,12 @@ public class UserDataManager {
     public synchronized Map<String, UserData> getUserData() {
         return userData;
     }
+    public synchronized void setAsManager(String userName) {
+        userData.get(userName).setManager(true);
+    }
+    public synchronized void enableManager(String userName) {
+        userData.get(userName).setManager(false);
+    }
 
     public synchronized void addExecutionToUser(String username) {
         userData.get(username).addExecution();

@@ -7,4 +7,6 @@ import java.util.Map;
 public interface UsersRequester {
     Request getUsers();
     Request getUsersData(Map<String, Integer> version);
+    Request addManager(String userName);
+    Request removeManager(String userName);
 }

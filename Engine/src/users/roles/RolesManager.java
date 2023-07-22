@@ -54,11 +54,23 @@ public class RolesManager {
         role.addUser(userName);
         userToRolesMap.computeIfAbsent(userName, key->new HashSet<>()).add(role);
     }
+    public List<RoleImpl> updateDefaultRoles(StepperWithRolesAndUsers stepper){
+        List<RoleImpl> res=new ArrayList<>();
+        res.add(addNewRolesToReadOnly(stepper));
+        res.add(addNewRolesToAllFlowRole(stepper));
+        return res;
+    }
 
-    public RoleImpl addNewRolesToAllFlowRole(StepperWithRolesAndUsers stepper){
+    private RoleImpl addNewRolesToAllFlowRole(StepperWithRolesAndUsers stepper){
         roleMap.get(ALL_FLOWS_ROLE).setFlows(stepper.getFlowNames());
         return roleMap.get(ALL_FLOWS_ROLE);
     }
+    private RoleImpl addNewRolesToReadOnly(StepperWithRolesAndUsers stepper){
+        roleMap.get(READ_ONLY_FLOWS).setFlows(getReadOnlyFlowsName(stepper));
+        return roleMap.get(READ_ONLY_FLOWS);
+    }
+
+
 
     public Set<RoleDefinition> getUserRoles(String username){
         return userToRolesMap.get(username);

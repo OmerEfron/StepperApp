@@ -62,6 +62,11 @@ public class StepperUtils {
         return userManager.getUserRoles(username);
     }
 
+    public static boolean isManager(ServletContext servletContext,String userName){
+        UserManager userManager = ServletUtils.getUserManager(servletContext);
+        return userManager.isUserManager(userName);
+    }
+
     public static RoleDefinition[] getUserRolesAsArray(ServletContext servletContext, String username){
         Set<RoleDefinition> userRoles = getUserRoles(servletContext, username);
         return userRoles.toArray(new RoleDefinition[0]);

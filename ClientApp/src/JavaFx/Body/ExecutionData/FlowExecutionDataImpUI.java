@@ -30,6 +30,7 @@ public class FlowExecutionDataImpUI implements ExecutionData{
     private FlowExecutionData flow;
     private VBox flowVbox =new VBox();
     private HBox name;
+    private HBox userName;
     private HBox UUID;
     private HBox flowExecutionStatus;
     private HBox timeStamp;
@@ -42,13 +43,14 @@ public class FlowExecutionDataImpUI implements ExecutionData{
     public FlowExecutionDataImpUI(FlowExecutionData flow) {
         this.flow = flow;
         this.name=setTwoLabels("Flow Name :", flow.getFlowName());
+        this.userName=setTwoLabels("User Identity:",flow.getUserExecuted()+" is "+flow.getManager());
         this.UUID=setTwoLabels("UUID :", flow.getUniqueExecutionId());
         this.flowExecutionStatus=setTwoLabels("Flow execution status :", flow.getExecutionResult());
         this.timeStamp=setTwoLabels("Timestamp", flow.getExecutionTime());
         freeInputs=getFreeInputs(flow);
         flowVbox.setSpacing(5);
         flowVbox.getChildren().addAll(
-                name,UUID,flowExecutionStatus,timeStamp,freeInputs,new Separator(),
+                name,userName,UUID,flowExecutionStatus,timeStamp,freeInputs,new Separator(),
                 new Label("All Outputs :"),dataPresentation.getDataPresent(flow.getOutputs()));
         createStepsMap();
 

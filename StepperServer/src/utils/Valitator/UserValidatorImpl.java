@@ -30,6 +30,11 @@ public class UserValidatorImpl implements UserValidator{
     }
 
     @Override
+    public Boolean isManager() {
+        return StepperUtils.isManager(request.getServletContext(),SessionUtils.getUsername(request));
+    }
+
+    @Override
     public Boolean isLoggedIn() {
         return SessionUtils.getUsername(request) != null;
     }

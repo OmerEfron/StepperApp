@@ -68,10 +68,14 @@ public class FileUploadServlet extends HttpServlet {
 
     private void updateRoleManager(StepperWithRolesAndUsers stepper) {
         RolesManager rolesManger = StepperUtils.getRolesManger(getServletContext());
-        RoleImpl role = rolesManger.addNewRolesToAllFlowRole(stepper);
+        List<RoleImpl> roles = rolesManger.updateDefaultRoles(stepper);
+        roles.forEach(this::updateUsersThatRelatedToRole);
+    }
+
+    private void updateUsersThatRelatedToRole(RoleImpl role) {
         UserDataManager userDataManager = ServletUtils.getUserDataManager(getServletContext());
-        for(String user:role.getUsers()){
-            userDataManager.addRoles(user,role);
+        for(String user: role.getUsers()){
+            userDataManager.addRoles(user, role);
         }
     }
 
