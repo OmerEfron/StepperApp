@@ -9,6 +9,8 @@ import JavaFx.Body.BodyController;
 import JavaFx.ClientUtils;
 import Requester.execution.ExecutionRequestImpl;
 import Requester.flow.FlowRequestImpl;
+import StepperEngine.DataDefinitions.Enumeration.MethodEnumerator;
+import StepperEngine.DataDefinitions.Enumeration.ProtocolEnumerator;
 import StepperEngine.DataDefinitions.Enumeration.ZipEnumerator;
 import StepperEngine.Flow.execute.StepData.StepExecuteData;
 import StepperEngine.Step.api.DataNecessity;
@@ -350,18 +352,31 @@ public class FlowExecution {
         if(typeName.equals("Enumerator")){
             return getEnumeratorChoiceBox(input);
         }
-        else if(typeName.equals("File path") || typeName.equals("Folder path")){
+        else if(typeName.equals("File path") || typeName.equals("Folder path") || typeName.equals("JSON")){
             return getFileChooserButton(input);
-        }
-        else{
+        } else{
             return getTextFieldChooser(input);
         }
     }
 
     private ChoiceBox<String> getEnumeratorChoiceBox(Input input) {
-        ChoiceBox<String> choiceBox = new ChoiceBox<>(FXCollections.observableArrayList(EnumSet.allOf(ZipEnumerator.class).stream()
-                .map(Enum::toString)
-                .collect(Collectors.toList())));
+        ChoiceBox<String> someChoicebox=null;
+        if(input.getUserString().equals("Method")) {
+            someChoicebox = new ChoiceBox<>(FXCollections.observableArrayList(EnumSet.allOf(MethodEnumerator.class).stream()
+                    .map(Enum::toString)
+                    .collect(Collectors.toList())));
+
+        } else if (input.getUserString().equals("protocol")) {
+            someChoicebox = new ChoiceBox<>(FXCollections.observableArrayList(EnumSet.allOf(ProtocolEnumerator.class).stream()
+                    .map(Enum::toString)
+                    .collect(Collectors.toList())));
+
+        }else {
+            someChoicebox = new ChoiceBox<>(FXCollections.observableArrayList(EnumSet.allOf(ZipEnumerator.class).stream()
+                    .map(Enum::toString)
+                    .collect(Collectors.toList())));
+        }
+        ChoiceBox<String> choiceBox=someChoicebox;
         choiceBox.setOnAction(event -> {
             if(choiceBox.getValue() != null){
                 boolean isAdded = addNewValue(input, choiceBox.getValue());
@@ -391,8 +406,9 @@ public class FlowExecution {
         Tooltip.install(textField, newFile);
         if(input.getTypeName().equals("Folder path")){
             hBox.getChildren().add(folderChooserButton);
-        }
-        else {
+        } else if (input.getTypeName().equals("JSON")) {
+            hBox.getChildren().add(folderChooserButton);
+        } else {
             hBox.getChildren().add(textField);
             hBox.getChildren().add(fileChooserButton);
             hBox.getChildren().add(folderChooserButton);

@@ -1,5 +1,7 @@
 package DTO.FlowExecutionData;
 
+import com.google.gson.reflect.TypeToken;
+
 import java.io.Serializable;
 
 /**
@@ -13,9 +15,8 @@ public class IOData implements Serializable {
     private final String content;
     private final String necessity;
     private final String userString;
-    private final Object value;
+    private  Object value;
     private final String FullQualifiedName;
-
 
 
     public IOData(boolean isOutput, String name, String userString, String type, String content, String necessity, Object value, String fullQualifiedName) {
@@ -36,6 +37,16 @@ public class IOData implements Serializable {
     public <T> T getDataValue (Class<T> exceptedDataType) {
         return exceptedDataType.cast(value);
     }
+
+
+    public void setValue(Object value) {
+        this.value = value;
+    }
+
+    public Object getValue() {
+        return value;
+    }
+
     public boolean isOutput() {
         return isOutput;
     }

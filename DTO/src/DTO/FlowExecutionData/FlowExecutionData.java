@@ -17,9 +17,6 @@ public class FlowExecutionData implements Serializable {
     private final String flowName;
     private final String userExecuted;
     private final String manager;
-
-
-
     private final String uuid;
     private final String executionTime;
     private final String executionResult;
