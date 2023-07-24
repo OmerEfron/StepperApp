@@ -80,4 +80,7 @@ public class RolesManager {
         roleMap.remove(oldRole.getName());
         addRole(newRole);
     }
+    public void removeRole(String roleName){
+        roleMap.remove(roleName);
+    }
 }

@@ -282,7 +282,21 @@ public class UserManagement {
     }
 
     public void addNewRoleToList(String name) {
-        addRoleListView.getItems().add(name);
+        if(selectedName!=null)
+            addRoleListView.getItems().add(name);
+    }
+    public void removeRole(String name) {
+        if(selectedName!=null)
+            addRoleListView.getItems().remove(name);
+    }
+
+    public void changeRoleName(String newRole, String oldRole) {
+        if(selectedName!=null){
+            if(addRoleListView.getItems().contains(oldRole)) {
+                addRoleListView.getItems().remove(oldRole);
+                addRoleListView.getItems().add(newRole);
+            }
+        }
     }
 }
 

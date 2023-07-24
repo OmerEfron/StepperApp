@@ -41,6 +41,7 @@ public class Constants {
     public static final String UPLOAD_FILE_URL = "/upload-file";
     public static final String FLOWS_NAMES ="/flows_names";
     public final static String GET_ROLE="/role/getRoles";
+    public final static String REMOVE_ROLE="/role/removeRole";
     public final static String PUT_ROLE="/role/addRole";
     public final static String GET_USER_ROLES_URL = "/user/role";
     public final static String STEPPER_IN = "/isStepperIn";
