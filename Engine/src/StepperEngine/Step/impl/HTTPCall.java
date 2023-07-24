@@ -9,6 +9,7 @@ import StepperEngine.Step.api.DataNecessity;
 import StepperEngine.Step.api.StepDefinitionAbstract;
 import StepperEngine.Step.api.StepStatus;
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import okhttp3.*;
 import okhttp3.MediaType;
@@ -41,7 +42,7 @@ public class HTTPCall extends StepDefinitionAbstract {
         String address=context.getDataValue("ADDRESS",String.class);
         ProtocolEnumerator protocol=context.getDataValue("PROTOCOL",ProtocolEnumerator.class);
         MethodEnumerator method= Optional.ofNullable(context.getDataValue("METHOD", MethodEnumerator.class)).orElse(MethodEnumerator.GET);
-        JsonObject body=context.getDataValue("BODY",JsonObject.class);
+        JsonElement body=context.getDataValue("BODY",JsonElement.class);
         String finalUrl;
         Request request=null;
         OkHttpClient client = new OkHttpClient();

@@ -8,6 +8,7 @@ import StepperEngine.Step.api.DataNecessity;
 import StepperEngine.Step.api.StepDefinitionAbstract;
 import StepperEngine.Step.api.StepStatus;
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 
@@ -28,9 +29,10 @@ public class ToJson extends StepDefinitionAbstract {
         Gson gson=new Gson();
         String invokeSummery;
         String content = context.getDataValue(nameToAlias.get("CONTENT"), String.class);
-        JsonObject jsonObject =null;
+        JsonElement jsonElement=null;
         try {
-            jsonObject = gson.fromJson(content, JsonObject.class);
+            Object o = gson.fromJson(content, Object.class);
+            jsonElement = gson.toJsonTree(content);
             invokeSummery="The content converted to Json!";
             context.addLog(stepName,"Content is JSON string. Converting it to json…");
             context.setStepStatus(stepName,StepStatus.SUCCESS);
@@ -40,7 +42,7 @@ public class ToJson extends StepDefinitionAbstract {
             context.setStepStatus(stepName,StepStatus.FAIL);
         }
         context.setInvokeSummery(stepName, invokeSummery);
-        context.storeValue(nameToAlias.get("JSON"),jsonObject);
+        context.storeValue(nameToAlias.get("JSON"),jsonElement);
         context.setTotalTime(stepName, Duration.between(start, Instant.now()));
         return context.getStepStatus(stepName);
     }

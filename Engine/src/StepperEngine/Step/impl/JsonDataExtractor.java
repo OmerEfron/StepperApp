@@ -7,6 +7,7 @@ import StepperEngine.Step.api.DataNecessity;
 import StepperEngine.Step.api.StepDefinitionAbstract;
 import StepperEngine.Step.api.StepStatus;
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import com.jayway.jsonpath.JsonPath;
@@ -29,12 +30,12 @@ public class JsonDataExtractor extends StepDefinitionAbstract {
         Instant start = Instant.now();
         Gson gson=new Gson();
         String invokeSummery,value="";
-        JsonObject jsonObject = context.getDataValue(nameToAlias.get("JSON"), JsonObject.class);
+        JsonElement jsonElement = context.getDataValue(nameToAlias.get("JSON"), JsonElement.class);
         String jsonPath=context.getDataValue(nameToAlias.get("JSON_PATH"),String.class);
         String[] jsonPaths=jsonPath.split("\\|");
         for(int i=0;i<jsonPaths.length;i++) {
             try {
-                String extractedData = JsonPath.read(jsonObject.toString(), jsonPaths[i]).toString();
+                String extractedData = JsonPath.read(jsonElement.toString(), jsonPaths[i]).toString();
                 if(extractedData==""){
                     context.addLog(stepName,"No value found for json path "+jsonPaths[i]);
                 }else {
@@ -48,7 +49,7 @@ public class JsonDataExtractor extends StepDefinitionAbstract {
             }
         }
 
-        if(jsonObject==null){
+        if(jsonElement==null){
             context.setStepStatus(stepName,StepStatus.FAIL);
             invokeSummery="The json object dosent exsits";
         } else if (jsonPath == null) {

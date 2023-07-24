@@ -1,17 +1,28 @@
 package StepperEngine.DataDefinitions.List;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-public class FilesListDataDef extends DataDefList<File>{
-    public FilesListDataDef(List<File> list){
-        this.list=list;
+public class FilesListDataDef extends DataDefList<File> {
+    public FilesListDataDef(List<File> list) {
+        this.list = list;
     }
-    public List<File> getFilesList(){
-    return list;
-}
+
+    public List<File> getFilesList() {
+        return list;
+    }
+
+    public List<String> getPaths() {
+       List<String> strings=new ArrayList<>();
+       for (File file:list)
+       {
+           strings.add(file.getAbsolutePath());
+       }
+       return strings;
+    }
 
     @Override
     public String toString() {

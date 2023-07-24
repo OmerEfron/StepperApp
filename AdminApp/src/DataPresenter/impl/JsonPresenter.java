@@ -11,15 +11,16 @@ public class JsonPresenter extends DataPresenterAbstractClass {
 
     public JsonPresenter(IOData data){
         super(data);
-        JsonObject json=data.getDataValue(JsonObject.class);
+//        JsonElement json=data.getDataValue(JsonElement.class);
+        JsonElement json=data.getJsonElement();
         TreeItem<String> rootItem = convertJsonObjectToTreeItem(json, "Root");
         TreeView<String> treeView = new TreeView<>(rootItem);
         presentation.getChildren().add(treeView);
     }
-    private TreeItem<String> convertJsonObjectToTreeItem(JsonObject jsonObject, String name) {
+    private TreeItem<String> convertJsonObjectToTreeItem(JsonElement jsonElement, String name) {
         TreeItem<String> rootItem = new TreeItem<>(name);
-        for (String key : jsonObject.keySet()) {
-            JsonElement value = jsonObject.get(key);
+        for (String key : jsonElement.getAsJsonObject().keySet()) {
+            JsonElement value = jsonElement.getAsJsonObject().get(key);
             if (value.isJsonObject()) {
                 TreeItem<String> childItem = convertJsonObjectToTreeItem(value.getAsJsonObject(), key);
                 rootItem.getChildren().add(childItem);
