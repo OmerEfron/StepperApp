@@ -11,14 +11,20 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="file://$MODULE_DIR$/../../../libs/okHttp" />
+          <root url="jar://$MODULE_DIR$/../lib/accessors-smart-2.4.8.jar!/" />
+          <root url="jar://$MODULE_DIR$/../lib/annotations-13.0.jar!/" />
+          <root url="jar://$MODULE_DIR$/../lib/gson-2.8.8.jar!/" />
+          <root url="jar://$MODULE_DIR$/../lib/json-path-2.7.0.jar!/" />
+          <root url="jar://$MODULE_DIR$/../lib/json-smart-2.4.8.jar!/" />
+          <root url="jar://$MODULE_DIR$/../lib/kotlin-stdlib-1.4.10.jar!/" />
+          <root url="jar://$MODULE_DIR$/../lib/okhttp-4.9.1.jar!/" />
+          <root url="jar://$MODULE_DIR$/../lib/slf4j-api-2.0.6.jar!/" />
+          <root url="jar://$MODULE_DIR$/../lib/okio-2.8.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="file://$MODULE_DIR$/../../../libs/okHttp" />
+          <root url="jar://$MODULE_DIR$/../lib/gson-2.8.8-sources.jar!/" />
         </SOURCES>
-        <jarDirectory url="file://$MODULE_DIR$/../../../libs/okHttp" recursive="false" />
-        <jarDirectory url="file://$MODULE_DIR$/../../../libs/okHttp" recursive="false" type="SOURCES" />
       </library>
     </orderEntry>
   </component>

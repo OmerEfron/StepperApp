@@ -407,7 +407,7 @@ public class FlowExecution {
         if(input.getTypeName().equals("Folder path")){
             hBox.getChildren().add(folderChooserButton);
         } else if (input.getTypeName().equals("JSON")) {
-            hBox.getChildren().add(folderChooserButton);
+            hBox.getChildren().add(fileChooserButton);
         } else {
             hBox.getChildren().add(textField);
             hBox.getChildren().add(fileChooserButton);
