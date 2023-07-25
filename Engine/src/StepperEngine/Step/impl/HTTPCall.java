@@ -40,7 +40,6 @@ public class HTTPCall extends StepDefinitionAbstract {
         String finalUrl;
         Request request=null;
 
-
         if(protocol.equals(ProtocolEnumerator.HTTPS)){
             finalUrl="https://"+address+resource;
         } else {
@@ -59,6 +58,10 @@ public class HTTPCall extends StepDefinitionAbstract {
                 context.setStepStatus(stepName, StepStatus.FAIL);
                 context.setInvokeSummery(stepName, "Cannt create put/post request without body!!");
                 return StepStatus.FAIL;
+            }else{
+                request=new Request.Builder()
+                        .url(finalUrl)
+                        .build();
             }
         }else {
             String jsonBody = new Gson().toJson(body);
