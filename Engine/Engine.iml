@@ -27,5 +27,38 @@
         </SOURCES>
       </library>
     </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../../../libs/okHttp/gson-2.8.8.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../../libs/okHttp/okio-2.8.0.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../../libs/okHttp/okhttp-4.9.1.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../../libs/okHttp/json-path-2.7.0.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../../libs/okHttp/slf4j-api-2.0.6.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../../libs/okHttp/annotations-13.0.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../../libs/okHttp/json-smart-2.4.8.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../../libs/okHttp/gson-2.8.8-javadoc.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../../libs/okHttp/gson-2.8.8-sources.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../../libs/okHttp/kotlin-stdlib-1.4.10.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../../libs/okHttp/accessors-smart-2.4.8.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../../libs/okHttp/kotlin-stdlib-common-1.4.10.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$MODULE_DIR$/../../../libs/okHttp/gson-2.8.8.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../../libs/okHttp/okio-2.8.0.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../../libs/okHttp/okhttp-4.9.1.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../../libs/okHttp/json-path-2.7.0.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../../libs/okHttp/slf4j-api-2.0.6.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../../libs/okHttp/annotations-13.0.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../../libs/okHttp/json-smart-2.4.8.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../../libs/okHttp/gson-2.8.8-javadoc.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../../libs/okHttp/gson-2.8.8-sources.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../../libs/okHttp/kotlin-stdlib-1.4.10.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../../libs/okHttp/accessors-smart-2.4.8.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../../libs/okHttp/kotlin-stdlib-common-1.4.10.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
   </component>
 </module>

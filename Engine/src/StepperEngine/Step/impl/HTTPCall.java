@@ -12,6 +12,8 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import okhttp3.*;
 import java.io.IOException;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.Map;
 import java.util.Optional;
 
@@ -32,6 +34,8 @@ public class HTTPCall extends StepDefinitionAbstract {
     }
     @Override
     public StepStatus invoke(StepExecutionContext context, Map<String, String> nameToAlias, String stepName) {
+        Instant start = Instant.now();
+
         String resource=context.getDataValue(nameToAlias.get("RESOURCE"),String.class);
         String address=context.getDataValue(nameToAlias.get("ADDRESS"),String.class);
         ProtocolEnumerator protocol=context.getDataValue(nameToAlias.get("PROTOCOL"),ProtocolEnumerator.class);
@@ -57,6 +61,7 @@ public class HTTPCall extends StepDefinitionAbstract {
             {
                 context.setStepStatus(stepName, StepStatus.FAIL);
                 context.setInvokeSummery(stepName, "Cannt create put/post request without body!!");
+                context.setTotalTime(stepName, Duration.between(start, Instant.now()));
                 return StepStatus.FAIL;
             }else{
                 request=new Request.Builder()
@@ -79,10 +84,12 @@ public class HTTPCall extends StepDefinitionAbstract {
             context.storeValue(nameToAlias.get("RESPONSE_BODY"),response.body().string());
             context.setInvokeSummery(stepName,"The request was sent successfully");
             context.setStepStatus(stepName,StepStatus.SUCCESS);
+            context.setTotalTime(stepName,Duration.between(start, Instant.now()));
             return StepStatus.SUCCESS;
         } catch (IOException e) {
             context.setStepStatus(stepName, StepStatus.FAIL);
             context.setInvokeSummery(stepName, "The request failed :"+ e.getMessage());
+            context.setTotalTime(stepName,Duration.between(start, Instant.now()));
             return StepStatus.FAIL;
         }
 
