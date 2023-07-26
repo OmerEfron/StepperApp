@@ -14,6 +14,7 @@ public class UsersRequesterImpl implements UsersRequester {
     private final String GET_USERS_URL= Constants.BASE_URL+Constants.GET_USERS;
     private final String GET_USERS_DATA_URL= Constants.BASE_URL+Constants.GET_USERS_DATA;
     private final String MANAGER_URL= Constants.BASE_URL+Constants.MANAGER;
+    private final String IS_MANAGER_URL= Constants.BASE_URL+Constants.IS_MANAGER;
     private final String VERSION_MAP_PARAMETER="users_version";
 
     @Override
@@ -54,6 +55,15 @@ public class UsersRequesterImpl implements UsersRequester {
         String url = urlBuilder.build().toString();
         return new Request.Builder()
                 .delete()
+                .url(url)
+                .build();
+    }
+    @Override
+    public Request isManager(String userName) {
+        HttpUrl.Builder urlBuilder = HttpUrl.parse(IS_MANAGER_URL).newBuilder();
+        urlBuilder.addQueryParameter(USERNAME_PARAMETER, userName);
+        String url = urlBuilder.build().toString();
+        return new Request.Builder()
                 .url(url)
                 .build();
     }

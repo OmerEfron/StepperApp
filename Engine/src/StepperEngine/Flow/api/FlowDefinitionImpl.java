@@ -216,11 +216,11 @@ public class FlowDefinitionImpl implements FlowDefinition, Serializable {
             } else if (dd.dataDefinition().getType().isAssignableFrom(Double.class)) {
                 value = Double.parseDouble(initialInputValue.getInitialValue());
             } else if (dd.dataDefinition().getType().isAssignableFrom(ZipEnumerator.class)) {
-                value = ZipEnumerator.valueOf(initialInputValue.getInitialValue());
+                value = ZipEnumerator.valueOf(initialInputValue.getInitialValue().toUpperCase());
             } else if (dd.dataDefinition().getType().isAssignableFrom(ProtocolEnumerator.class)) {
-                value=ProtocolEnumerator.valueOf(initialInputValue.getInitialValue());
+                value=ProtocolEnumerator.valueOf(initialInputValue.getInitialValue().toUpperCase());
             }else if (dd.dataDefinition().getType().isAssignableFrom(MethodEnumerator.class)) {
-                value=MethodEnumerator.valueOf(initialInputValue.getInitialValue());
+                value=MethodEnumerator.valueOf(initialInputValue.getInitialValue().toUpperCase());
             } else if (dd.dataDefinition().getType().isAssignableFrom(JsonElement.class)) {
                 Gson gson=new Gson();
                 value=gson.fromJson(initialInputValue.getInitialValue(), JsonElement.class);

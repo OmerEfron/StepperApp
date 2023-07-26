@@ -7,10 +7,7 @@ import StepperEngine.Step.api.DataDefinitionDeclarationImpl;
 import StepperEngine.Step.api.DataNecessity;
 import StepperEngine.Step.api.StepDefinitionAbstract;
 import StepperEngine.Step.api.StepStatus;
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonSyntaxException;
+import com.google.gson.*;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -32,11 +29,12 @@ public class ToJson extends StepDefinitionAbstract {
         JsonElement jsonElement=null;
         try {
             Object o = gson.fromJson(content, Object.class);
-            jsonElement = gson.toJsonTree(content);
+            jsonElement = JsonParser.parseString(content);
             invokeSummery="The content converted to Json!";
             context.addLog(stepName,"Content is JSON string. Converting it to json…");
             context.setStepStatus(stepName,StepStatus.SUCCESS);
         } catch (JsonSyntaxException e) {
+            //jsonElement=gson.toJsonTree("");
             context.addLog(stepName,"Content is not a valid JSON representation");
             invokeSummery="Content is not a valid JSON representation.";
             context.setStepStatus(stepName,StepStatus.FAIL);

@@ -78,19 +78,30 @@ public class HTTPCall extends StepDefinitionAbstract {
         try {
             String[] domainAndPort=address.split(":");
             context.addLog(stepName,"About to invoke http request " + protocol.getStringValue()+" | "+method+ " | "+domainAndPort[0]+" | "+domainAndPort[1]);
-            Response response = HTTP_CLIENT.newCall(request).execute();
-            context.addLog(stepName,"Received Response. Status code: "+response.code());
-            context.storeValue(nameToAlias.get("CODE"),response.code());
-            context.storeValue(nameToAlias.get("RESPONSE_BODY"),response.body().string());
-            context.setInvokeSummery(stepName,"The request was sent successfully");
-            context.setStepStatus(stepName,StepStatus.SUCCESS);
-            context.setTotalTime(stepName,Duration.between(start, Instant.now()));
-            return StepStatus.SUCCESS;
+            try (Response response = HTTP_CLIENT.newCall(request).execute()) {
+                context.addLog(stepName, "Received Response. Status code: " + response.code());
+                context.storeValue(nameToAlias.get("CODE"), response.code());
+                context.storeValue(nameToAlias.get("RESPONSE_BODY"), response.body().string());
+                context.setInvokeSummery(stepName, "The request was sent successfully");
+                context.setStepStatus(stepName, StepStatus.SUCCESS);
+                context.setTotalTime(stepName, Duration.between(start, Instant.now()));
+                return StepStatus.SUCCESS;
+
+            }
+
+
         } catch (IOException e) {
+            context.storeValue(nameToAlias.get("CODE"),0);
+            context.storeValue(nameToAlias.get("RESPONSE_BODY"),"The call didnt sended !");
             context.setStepStatus(stepName, StepStatus.FAIL);
             context.setInvokeSummery(stepName, "The request failed :"+ e.getMessage());
             context.setTotalTime(stepName,Duration.between(start, Instant.now()));
             return StepStatus.FAIL;
+        }catch (RuntimeException e) {
+            // Handle any other runtime exceptions that might occur
+            e.printStackTrace();
+            return StepStatus.FAIL;
+
         }
 
     }

@@ -39,6 +39,7 @@ import javafx.util.Duration;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
+import okhttp3.ResponseBody;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -91,7 +92,7 @@ public class FlowExecution {
     @FXML private Label CentralFlowName;
     @FXML private TreeView<String> StepsTreeVIew;
     @FXML private VBox MainExecutionDataVbox;
-    @FXML private Button rerunButton;
+
 
 
     private final Callback executeCallback = new Callback() {
@@ -105,7 +106,11 @@ public class FlowExecution {
             if(response.isSuccessful()){
                 System.out.println("execution finished");
             }else{
-                System.out.println(response.body().string());
+                try (ResponseBody responseBody = response.body()) {
+                    System.out.println(responseBody.string());
+                }catch (IOException e) {
+                    System.out.println("Error processing response: " + e.getMessage());
+                }
             }
         }
     };
@@ -202,7 +207,7 @@ public class FlowExecution {
         continuationChoiceBox.getItems().clear();
         initContinuationButton();
         setContinuation();
-        initRerunButton();
+
     }
 
     @FXML
@@ -242,7 +247,6 @@ public class FlowExecution {
             flowExecutionDataImp=flowExecutionData;
             cleanUpExecutionDetails();
             setExecutionDetails();
-            makeRerunButtonEnabled();
         });
     }
 
@@ -284,18 +288,8 @@ public class FlowExecution {
     private void initButtons() {
         initExecuteButton();
         initContinuationButton();
-        initRerunButton();
-    }
-    private void initRerunButton()
-    {
-        rerunButton.opacityProperty().set(0.2);
-        rerunButton.cursorProperty().set(Cursor.DISAPPEAR);
     }
 
-    private void makeRerunButtonEnabled(){
-        rerunButton.opacityProperty().set(1);
-        rerunButton.cursorProperty().set(Cursor.HAND);
-    }
     private void initContinuationButton() {
         continuationButtonImage.opacityProperty().set(0.2);
         continuationButtonImage.cursorProperty().set(Cursor.DISAPPEAR);

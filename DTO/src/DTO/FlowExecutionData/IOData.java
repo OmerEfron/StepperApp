@@ -55,7 +55,7 @@ public class IOData implements Serializable {
                 listOfString=relation.getColNames();
                 this.rows = relation.getRows();
                 break;
-            case "JsonObject":
+            case "JsonElement":
                 jsonElement=getDataValue(JsonElement.class);
                 break;
             default:

@@ -18,15 +18,15 @@ public class JsonPresenter extends DataPresenterAbstractClass {
     }
     private TreeItem<String> convertJsonObjectToTreeItem(JsonElement jsonElement, String name) {
         TreeItem<String> rootItem = new TreeItem<>(name);
-        for (String key : jsonElement.getAsJsonObject().keySet()) {
-            JsonElement value = jsonElement.getAsJsonObject().get(key);
-            if (value.isJsonObject()) {
-                TreeItem<String> childItem = convertJsonObjectToTreeItem(value.getAsJsonObject(), key);
+        if (jsonElement.isJsonObject()) {
+            JsonObject jsonObject = jsonElement.getAsJsonObject();
+            for (String key : jsonObject.keySet()) {
+                JsonElement value = jsonObject.get(key);
+                TreeItem<String> childItem = convertJsonObjectToTreeItem(value, key);
                 rootItem.getChildren().add(childItem);
-            } else {
-                TreeItem<String> leafItem = new TreeItem<>(key + ": " + value.getAsString());
-                rootItem.getChildren().add(leafItem);
             }
+        } else {
+            rootItem.setValue(name + ": " + jsonElement.getAsString());
         }
         return rootItem;
     }

@@ -1,9 +1,8 @@
 package Refresher;
 
-import DTO.FlowDetails.FlowDetails;
 import JavaFx.ClientUtils;
-import Requester.Roles.RoleRequestImpl;
-import Utils.*;
+import Requester.Users.UsersRequesterImpl;
+import Utils.Utils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import javafx.application.Platform;
@@ -15,21 +14,22 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
-import java.util.Collection;
 import java.util.List;
 import java.util.TimerTask;
 import java.util.function.Consumer;
 
-public class RoleRefresher extends TimerTask {
-    private final Consumer<Collection<String>> consumer;
+public class isManagerRefresher extends TimerTask {
+    private final Consumer<Boolean> consumer;
+    private final String userName;
 
-    public RoleRefresher(Consumer<Collection<String>> consumer) {
+    public isManagerRefresher(Consumer<Boolean> consumer, String userName) {
         this.consumer = consumer;
+        this.userName = userName;
     }
 
     @Override
     public void run() {
-        Utils.runAsync(new RoleRequestImpl().getUserRoles(), new Callback() {
+        Utils.runAsync(new UsersRequesterImpl().isManager(userName), new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 System.out.println("error");
@@ -39,16 +39,17 @@ public class RoleRefresher extends TimerTask {
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try(ResponseBody body = response.body()) {
                     if (response.isSuccessful()) {
-                        Gson gson = Constants.GSON_INSTANCE;
-                        Type listType = new TypeToken<List<String>>() {
+                        Gson gson = new Gson();
+                        Type booleanType = new TypeToken<Boolean>() {
                         }.getType();
-                        List<String> roles = gson.fromJson(body.string(), listType);
-                        Platform.runLater(() -> consumer.accept(roles));
+                        Boolean isManager = gson.fromJson(body.string(), booleanType);
+                        Platform.runLater(() -> consumer.accept(isManager));
                     }
                 }catch (IOException e) {
                     System.out.println("Error processing response: " + e.getMessage());
                 }
             }
         }, ClientUtils.HTTP_CLIENT);
+
     }
 }

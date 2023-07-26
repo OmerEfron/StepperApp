@@ -82,6 +82,7 @@ public class Stepper implements Serializable {
         }
         for (Flow flow:flows) {
             FlowDefinition flowDefinition=new FlowDefinitionImpl(flow);
+            this.flows.add(flowDefinition);
             newFlows.add(flowDefinition);
             flowNames.add(flow.getName());
             flowsMap.put(flow.getName(), flowDefinition);

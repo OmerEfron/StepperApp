@@ -9,4 +9,5 @@ public interface UsersRequester {
     Request getUsersData(Map<String, Integer> version);
     Request addManager(String userName);
     Request removeManager(String userName);
+    Request isManager(String userName);
 }

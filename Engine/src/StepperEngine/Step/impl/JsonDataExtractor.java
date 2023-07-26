@@ -33,32 +33,35 @@ public class JsonDataExtractor extends StepDefinitionAbstract {
         JsonElement jsonElement = context.getDataValue(nameToAlias.get("JSON"), JsonElement.class);
         String jsonPath=context.getDataValue(nameToAlias.get("JSON_PATH"),String.class);
         String[] jsonPaths=jsonPath.split("\\|");
-        for(int i=0;i<jsonPaths.length;i++) {
-            try {
-                String extractedData = JsonPath.read(jsonElement.toString(), jsonPaths[i]).toString();
-                if(extractedData==""){
-                    context.addLog(stepName,"No value found for json path "+jsonPaths[i]);
-                }else {
-                    context.addLog(stepName,"Extracting data "+jsonPaths[i]+". Value:  "+extractedData);
-                    if (i + 1 != jsonPaths.length)
-                        extractedData += ",";
-                }
-                value += extractedData;
-            }catch (PathNotFoundException e) {
-                context.addLog(stepName, "No value found for json path " + jsonPaths[i]);
-            }
-        }
-
         if(jsonElement==null){
             context.setStepStatus(stepName,StepStatus.FAIL);
             invokeSummery="The json object dosent exsits";
-        } else if (jsonPath == null) {
-            context.setStepStatus(stepName, StepStatus.WARNING);
-            invokeSummery="There are no json path's";
         } else {
-            context.setStepStatus(stepName, StepStatus.SUCCESS);
-            invokeSummery="Reading data from json done successfully";
+            for (int i = 0; i < jsonPaths.length; i++) {
+                try {
+                    System.out.println(jsonPaths[i]);
+                    String extractedData = JsonPath.read(jsonElement.toString(), jsonPaths[i]).toString();
+                    if (extractedData == "") {
+                        context.addLog(stepName, "No value found for json path " + jsonPaths[i]);
+                    } else {
+                        context.addLog(stepName, "Extracting data " + jsonPaths[i] + ". Value:  " + extractedData);
+                        if (i + 1 != jsonPaths.length)
+                            extractedData += ",";
+                    }
+                    value += extractedData;
+                } catch (PathNotFoundException e) {
+                    context.addLog(stepName, "No value found for json path " + jsonPaths[i]);
+                }
+            }
+            if (jsonPath == null) {
+                context.setStepStatus(stepName, StepStatus.WARNING);
+                invokeSummery="There are no json path's";
+            } else {
+                context.setStepStatus(stepName, StepStatus.SUCCESS);
+                invokeSummery="Reading data from json done successfully";
+            }
         }
+
 
         context.setInvokeSummery(stepName, invokeSummery);
         context.storeValue(nameToAlias.get("VALUE"),value);

@@ -109,7 +109,7 @@ public class StepExecutionContextClass implements StepExecutionContext {
         if (theExeptedDataType == null){
             theExeptedDataType=dataTypes.get(customMapping.get(dataName));
         }
-        if (theExeptedDataType.dataDefinition().getType().isAssignableFrom(value.getClass())
+        if (value != null && theExeptedDataType.dataDefinition().getType().isAssignableFrom(value.getClass())
         && !theExeptedDataType.isInitial()) {
             dataValues.put(dataName, value);
             return true;
