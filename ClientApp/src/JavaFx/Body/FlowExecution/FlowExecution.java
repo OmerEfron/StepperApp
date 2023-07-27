@@ -42,9 +42,11 @@ import okhttp3.Response;
 import okhttp3.ResponseBody;
 import org.jetbrains.annotations.NotNull;
 
+
 import java.io.File;
 import java.io.IOException;
 import java.util.EnumSet;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -124,7 +126,7 @@ public class FlowExecution {
         public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
             if(response.isSuccessful()){
                 flowDetails = Constants.GSON_INSTANCE.fromJson(response.body().string(), FlowDetails.class);
-                updateFlowExecutionData();
+                Platform.runLater(()->updateContinuationInputs());
             }
             else {
                 System.out.println(response.body().string());
@@ -196,6 +198,30 @@ public class FlowExecution {
         CentralFlowName.setText(flowDetails.getFlowName());
         continuationChoiceBox.getItems().clear();
         makeExecutionButtonEnabled();
+        initContinuationButton();
+        setContinuation();
+
+    }
+    private void updateContinuationInputs() {
+        cleanUpScreen();
+        setFreeInputsDisplay();
+        Map<String,Object> freeInputs=new HashMap<>();
+        freeInputs=Utils.runSync(new ExecutionRequestImpl().getFreeInputs(currFlowExecutionUuid),freeInputs.getClass(),ClientUtils.HTTP_CLIENT);
+        for(Input input:flowDetails.getFreeInputs()){
+            if(freeInputs.containsKey(input.getFullQualifideName())) {
+                String val=freeInputs.get(input.getFullQualifideName()).toString();
+                if (input.getTypeName().equals("Number")) {
+                    double doubleValue = Double.parseDouble(val);
+                    Integer intValue = (int) doubleValue;
+                    val=intValue.toString();
+                }
+                addNewValue(input, val);
+                addInputToTable(input, val);
+            }
+
+        }
+        CentralFlowName.setText(flowDetails.getFlowName());
+        continuationChoiceBox.getItems().clear();
         initContinuationButton();
         setContinuation();
 

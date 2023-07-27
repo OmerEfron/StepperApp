@@ -80,10 +80,15 @@ public class StepperWithRolesAndUsers extends Stepper {
 //        return uuid;
 //    }
 
-    public String applyContinuation(String flowName, String uuid, RoleDefinition ... roles)throws FlowNotAllowedException{
+    public String applyContinuation(String flowName, String uuid,String userName,Boolean isManager, RoleDefinition ... roles)throws FlowNotAllowedException{
         Set<String> combinedFlows = getCombinedFlows(roles);
         if(combinedFlows.contains(flowName)){
-            return applyContinuation(flowName, uuid);
+            FlowExecution pastFlow=executionsMap.get(uuid);
+            FlowExecutionWithUser flowExecutionWithUser=new FlowExecutionWithUser(flowsMap.get(flowName),userName,isManager);
+            flowExecutionWithUser.applyContinuation(pastFlow);
+            executionsMap.put(flowExecutionWithUser.getUUID(),flowExecutionWithUser);
+            return flowExecutionWithUser.getUUID();
+            //return applyContinuation( uuid,flowName);
         }
         throw new FlowNotAllowedException(flowName);
     }

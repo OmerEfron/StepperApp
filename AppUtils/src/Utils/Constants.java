@@ -19,6 +19,8 @@ public class Constants {
     public final static String USERNAME_PARAMETER = "username";
     public final static String MANAGER = "/users/manager";
     public final static String IS_MANAGER="/users/isManager";
+    public static final String FREE_INPUTS = "/execution/continue/freeInputs";
+
     static {
         GsonBuilder gsonBuilder = new GsonBuilder();
         gsonBuilder.registerTypeAdapter(DataAndType.class, new DataAndType.DataAndTypeAdapter());

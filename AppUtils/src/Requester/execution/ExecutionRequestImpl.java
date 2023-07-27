@@ -12,7 +12,7 @@ public class ExecutionRequestImpl implements ExecutionRequest {
     private static final String STATUS_URL = Constants.BASE_URL + Constants.EXECUTION_STATUS_URL;
     private static final String RERUN_URL = Constants.BASE_URL + Constants.EXECUTION_RERUN_URL;
     private static final String DATA_URL = Constants.BASE_URL + Constants.EXECUTION_DATA_URL;
-
+    private static final String FREE_INPUTS_URL = Constants.BASE_URL + Constants.FREE_INPUTS;
     private static final String CONTINUATION_URL = Constants.BASE_URL + Constants.CONTINUATION_URL;
     @Override
     public Request isExecutionReadyRequest(String uuid) {
@@ -103,7 +103,6 @@ public class ExecutionRequestImpl implements ExecutionRequest {
         String url = urlBuilder.build().toString();
         return new Request.Builder()
                 .url(url)
-                .put(RequestBody.create(null, new byte[0]))
                 .build();
     }
 
@@ -112,6 +111,16 @@ public class ExecutionRequestImpl implements ExecutionRequest {
         return new Request.Builder()
                 .url(DATA_URL)
                 .get()
+                .build();
+    }
+
+    @Override
+    public Request getFreeInputs(String uuid) {
+        HttpUrl.Builder urlBuilder = HttpUrl.parse(FREE_INPUTS_URL).newBuilder();
+        urlBuilder.addQueryParameter("uuid", uuid);
+        String url = urlBuilder.build().toString();
+        return new Request.Builder()
+                .url(url)
                 .build();
     }
 }

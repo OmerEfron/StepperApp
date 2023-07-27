@@ -14,4 +14,6 @@ public interface ExecutionRequest {
     Request continuationRequest(String uuid, String flowToContinue);
     Request executionDataList();
     Request executionsHistoryRequest();
+
+    Request getFreeInputs(String uuid);
 }

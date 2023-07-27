@@ -33,7 +33,9 @@ public class ContinuationServlet extends HttpServlet {
                 String flowToContinue = paramMap.get(ServletUtils.FLOW_NAME_PARAMETER);
                 String username = SessionUtils.getUsername(req);
                 RoleDefinition[] userRolesAsArray = StepperUtils.getUserRolesAsArray(getServletContext(), username);
-                String newExecution = stepper.applyContinuation(uuid, flowToContinue, userRolesAsArray);
+                String newExecution = stepper.applyContinuation(
+                        flowToContinue,uuid,username,StepperUtils.isManager(getServletContext(),username), userRolesAsArray);
+
                 if (!userValidator.isFlowAllowed(flowToContinue)) {
                     ServletUtils.sendBadRequest(resp, String.format("user cannot execute flow %s", flowToContinue));
                 }
