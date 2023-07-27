@@ -105,14 +105,14 @@ public class FlowExecution {
 
         @Override
         public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-            if(response.isSuccessful()){
-                System.out.println("execution finished");
-            }else{
-                try (ResponseBody responseBody = response.body()) {
+            try (ResponseBody responseBody = response.body()) {
+                if(response.isSuccessful()) {
+                    System.out.println("execution finished");
+                } else{
                     System.out.println(responseBody.string());
-                }catch (IOException e) {
-                    System.out.println("Error processing response: " + e.getMessage());
                 }
+            }catch (IOException e) {
+                System.out.println("Error processing response: " + e.getMessage());
             }
         }
     };
@@ -124,12 +124,16 @@ public class FlowExecution {
 
         @Override
         public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-            if(response.isSuccessful()){
-                flowDetails = Constants.GSON_INSTANCE.fromJson(response.body().string(), FlowDetails.class);
-                Platform.runLater(()->updateContinuationInputs());
-            }
-            else {
-                System.out.println(response.body().string());
+
+            try (ResponseBody body = response.body()) {
+                if (response.isSuccessful()) {
+                    flowDetails = Constants.GSON_INSTANCE.fromJson(body.string(), FlowDetails.class);
+                    Platform.runLater(() -> updateContinuationInputs());
+                } else {
+                    System.out.println(body.string());
+                }
+            }catch (IOException e){
+                System.out.println("something wrong: "+e.getMessage());
             }
         }
     };
@@ -141,14 +145,17 @@ public class FlowExecution {
 
         @Override
         public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-            Platform.runLater(() -> {
-                try {
-                    currFlowExecutionUuid = Constants.GSON_INSTANCE.fromJson(response.body().string(), String.class);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-
-            });
+            if(response.isSuccessful()){
+                Platform.runLater(() -> {
+                    try (ResponseBody body = response.body();){
+                        currFlowExecutionUuid = Constants.GSON_INSTANCE.fromJson(body.string(), String.class);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                });
+            }else{
+                System.out.println("something went wrong....");
+            }
         }
     };
     private BodyController bodyController;
