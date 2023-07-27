@@ -1,9 +1,12 @@
 package JavaFx.Body.RolesManagement;
 
+import AdminUtils.AdminUtils;
 import DTO.FlowDetails.FlowDetails;
 import JavaFx.Body.AdminBodyController;
 import JavaFx.Body.UserManagement.UserManagement;
+import Requester.fileupload.FileUploadImpl;
 import Utils.Constants;
+import Utils.Utils;
 import javafx.animation.FadeTransition;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
@@ -29,6 +32,9 @@ import javafx.util.Duration;
 import users.roles.RoleImpl;
 import java.util.*;
 
+import static AdminUtils.AdminUtils.HTTP_CLIENT;
+import static AdminUtils.AdminUtils.ROLE_REQUEST;
+
 public class RolesManagement {
     @FXML private TableView<RoleImpl> RoleTable;
     @FXML private TableColumn<RoleImpl, String> roleNameCol;
@@ -48,6 +54,7 @@ public class RolesManagement {
     @FXML private ImageView removeFlowImage;
     @FXML private ListView<String> flowsAddListView;
     @FXML private ImageView addFlowImage;
+    @FXML private Button removeRoleButton;
 
 
     private BooleanProperty flowsEditListViewProperty=new SimpleBooleanProperty();
@@ -57,6 +64,8 @@ public class RolesManagement {
     private AdminBodyController adminBodyController;
     private RoleImpl newRole;
     private RoleImpl oldRole;
+    public static final String READ_ONLY_FLOWS = "Read Only Flows";
+    public static final String ALL_FLOWS_ROLE = "All flows";
 
     @FXML
     void initialize(){
@@ -65,6 +74,54 @@ public class RolesManagement {
         disappearNewRoleButton();
         setFlowsEditListView();
         setFlowsAddListView();
+        FileUploadImpl fileUpload = new FileUploadImpl();
+
+        if(Utils.runSync(fileUpload.isStepperIn(), Boolean.class, HTTP_CLIENT))
+        {
+            List<RoleImpl> roles= AdminUtils.getRoles(ROLE_REQUEST.getAllRoles(),HTTP_CLIENT);
+            setRoleTable(roles);
+        }
+    }
+
+    @FXML
+    void removeRoleAction(ActionEvent event) {
+        if(oldRole!= null){
+            if(usersListView.getItems().isEmpty() && canRoleBeChanged)
+                removeRole();
+            else
+                makeAlret();
+        }
+
+    }
+
+    private void makeAlret() {
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle("Warning");
+        alert.setHeaderText(null);
+        if(canRoleBeChanged)
+            alert.setContentText("First need to remove all users that related to role!");
+        else
+            alert.setContentText("This is a default role!\nCann't be removed!");
+        alert.showAndWait();
+    }
+
+    private void removeRole() {
+        cleanUpScreen();
+        adminBodyController.removeRole(oldRole);
+        RoleTable.getItems().remove(oldRole);
+    }
+
+    private void cleanUpScreen() {
+        disappearSaveButton();
+        roleName.setText("");
+        roleDiscription.setText("");
+        unableTextFields();
+        updateRoleNameInChangeSection("");
+        updateRoleDescriptionInChangeSection("");
+        canRoleBeChanged=false;
+        flowsListView.getItems().clear();
+        flowsEditListView.getItems().clear();
+        flowsAddListView.getItems().clear();
     }
 
     private void unableTextFields() {
@@ -92,7 +149,6 @@ public class RolesManagement {
     void newRole(ActionEvent event) {
         updateScreenToNewRole();
     }
-
 
     private void updateUserTable(String userName, String roleName,boolean add) {
         if(oldRole != null && oldRole.getName().equals(roleName)){
@@ -148,6 +204,8 @@ public class RolesManagement {
     void saveRole(MouseEvent event) {
 //        newRole.setFlows(new ArrayList<>(flowsEditListView.getItems()));
         if(oldRole!= null){
+            if(!Objects.equals(newRole.getName(), oldRole.getName()))
+                adminBodyController.changeRolesInUser(newRole.getName(),oldRole.getName());
             adminBodyController.changeRole(newRole,oldRole);
             RoleTable.getItems().remove(oldRole);
         }

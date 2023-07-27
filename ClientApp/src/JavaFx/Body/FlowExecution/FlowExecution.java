@@ -9,6 +9,8 @@ import JavaFx.Body.BodyController;
 import JavaFx.ClientUtils;
 import Requester.execution.ExecutionRequestImpl;
 import Requester.flow.FlowRequestImpl;
+import StepperEngine.DataDefinitions.Enumeration.MethodEnumerator;
+import StepperEngine.DataDefinitions.Enumeration.ProtocolEnumerator;
 import StepperEngine.DataDefinitions.Enumeration.ZipEnumerator;
 import StepperEngine.Flow.execute.StepData.StepExecuteData;
 import StepperEngine.Step.api.DataNecessity;
@@ -37,6 +39,7 @@ import javafx.util.Duration;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
+import okhttp3.ResponseBody;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -89,7 +92,7 @@ public class FlowExecution {
     @FXML private Label CentralFlowName;
     @FXML private TreeView<String> StepsTreeVIew;
     @FXML private VBox MainExecutionDataVbox;
-    @FXML private Button rerunButton;
+
 
 
     private final Callback executeCallback = new Callback() {
@@ -103,7 +106,11 @@ public class FlowExecution {
             if(response.isSuccessful()){
                 System.out.println("execution finished");
             }else{
-                System.out.println(response.body().string());
+                try (ResponseBody responseBody = response.body()) {
+                    System.out.println(responseBody.string());
+                }catch (IOException e) {
+                    System.out.println("Error processing response: " + e.getMessage());
+                }
             }
         }
     };
@@ -167,8 +174,8 @@ public class FlowExecution {
         applyContinuation(flowExecutionData.getUniqueExecutionId(),flowToContinue);
     }
 
-    @FXML
-    void rerunFlow(ActionEvent event) {
+    public void rerunFlow(FlowDetails flow) {
+        setScreenForExecute(flow);
         bodyController.rerunFlow(flowExecutionDataImp);
     }
 
@@ -178,29 +185,44 @@ public class FlowExecution {
         Utils.runAsync(new FlowRequestImpl().getFlowRequest(flowToContinue), setFlowDetailsCallback, ClientUtils.HTTP_CLIENT);
     }
 
-    public void runFlowAgain(FlowDetails flow, String UUID){
-        flowDetails=flow;
-        currFlowExecutionUuid=UUID;
-        updateFlowExecutionData();
+    public void runFlowAgain(FlowDetails flow,String oldUUID, String newUUID){
+        currFlowExecutionUuid=newUUID;
+        updateFlowExecutionData(oldUUID);
     }
 
     private void updateFlowExecutionData() {
         cleanUpScreen();
         setFreeInputsDisplay();
-        FlowExecutionData flowToRerunExecutionData = Utils.runSync(new ExecutionRequestImpl().executionRequest(currFlowExecutionUuid), FlowExecutionData.class, ClientUtils.HTTP_CLIENT);
-        Map<String, IOData> prevExecuteDataMap = flowToRerunExecutionData.getFreeInputs().stream()
-                .collect(Collectors.toMap(IOData::getFullQualifiedName, Function.identity()));
-        for(Input input:flowDetails.getFreeInputs()){
-            if(prevExecuteDataMap.containsKey(input.getFullQualifideName())) {
-                addNewValue(input, prevExecuteDataMap.get(input.getFullQualifideName()).toString());
-                addInputToTable(input, prevExecuteDataMap.get(input.getFullQualifideName()).toString());
-            }
-        }
         CentralFlowName.setText(flowDetails.getFlowName());
         continuationChoiceBox.getItems().clear();
+        makeExecutionButtonEnabled();
         initContinuationButton();
         setContinuation();
-        initRerunButton();
+
+    }
+
+    private void setPrevFreeInputs(String prevUUID) {
+        FlowExecutionData flowToRerunExecutionData = Utils.runSync(new ExecutionRequestImpl().executionRequest(prevUUID), FlowExecutionData.class, ClientUtils.HTTP_CLIENT);
+        Map<String, IOData> prevExecuteDataMap = flowToRerunExecutionData.getFreeInputs().stream()
+                .collect(Collectors.toMap(IOData::getFullQualifiedName, Function.identity()));
+        for (Input input : flowDetails.getFreeInputs()) {
+            if (prevExecuteDataMap.containsKey(input.getFullQualifideName())) {
+                String value = prevExecuteDataMap.get(input.getFullQualifideName()).getContent();
+                addNewValue(input, value);
+                addInputToTable(input, value);
+            }
+        }
+    }
+
+    private void updateFlowExecutionData(String prevUUID) {
+        cleanUpScreen();
+        setFreeInputsDisplay();
+        setPrevFreeInputs(prevUUID);
+        CentralFlowName.setText(flowDetails.getFlowName());
+        continuationChoiceBox.getItems().clear();
+        makeExecutionButtonEnabled();
+        initContinuationButton();
+        setContinuation();
     }
 
     @FXML
@@ -240,7 +262,6 @@ public class FlowExecution {
             flowExecutionDataImp=flowExecutionData;
             cleanUpExecutionDetails();
             setExecutionDetails();
-            makeRerunButtonEnabled();
         });
     }
 
@@ -282,18 +303,8 @@ public class FlowExecution {
     private void initButtons() {
         initExecuteButton();
         initContinuationButton();
-        initRerunButton();
-    }
-    private void initRerunButton()
-    {
-        rerunButton.opacityProperty().set(0.2);
-        rerunButton.cursorProperty().set(Cursor.DISAPPEAR);
     }
 
-    private void makeRerunButtonEnabled(){
-        rerunButton.opacityProperty().set(1);
-        rerunButton.cursorProperty().set(Cursor.HAND);
-    }
     private void initContinuationButton() {
         continuationButtonImage.opacityProperty().set(0.2);
         continuationButtonImage.cursorProperty().set(Cursor.DISAPPEAR);
@@ -319,11 +330,15 @@ public class FlowExecution {
     }
 
     public void setFlowToExecute(FlowDetails flow){
+        setScreenForExecute(flow);
+        Utils.runAsync(new ExecutionRequestImpl().createExecuteRequest(flow.getFlowName()), getNewExecutionCallback, ClientUtils.HTTP_CLIENT);
+    }
+
+    private void setScreenForExecute(FlowDetails flow) {
         cleanUpScreen();
         flowDetails = flow;
         CentralFlowName.setText(flowDetails.getFlowName());
         setFreeInputsDisplay();
-        Utils.runAsync(new ExecutionRequestImpl().createExecuteRequest(flow.getFlowName()), getNewExecutionCallback, ClientUtils.HTTP_CLIENT);
     }
 
 
@@ -350,18 +365,31 @@ public class FlowExecution {
         if(typeName.equals("Enumerator")){
             return getEnumeratorChoiceBox(input);
         }
-        else if(typeName.equals("File path") || typeName.equals("Folder path")){
+        else if(typeName.equals("File path") || typeName.equals("Folder path") || typeName.equals("JSON")){
             return getFileChooserButton(input);
-        }
-        else{
+        } else{
             return getTextFieldChooser(input);
         }
     }
 
     private ChoiceBox<String> getEnumeratorChoiceBox(Input input) {
-        ChoiceBox<String> choiceBox = new ChoiceBox<>(FXCollections.observableArrayList(EnumSet.allOf(ZipEnumerator.class).stream()
-                .map(Enum::toString)
-                .collect(Collectors.toList())));
+        ChoiceBox<String> someChoicebox=null;
+        if(input.getUserString().equals("Method")) {
+            someChoicebox = new ChoiceBox<>(FXCollections.observableArrayList(EnumSet.allOf(MethodEnumerator.class).stream()
+                    .map(Enum::toString)
+                    .collect(Collectors.toList())));
+
+        } else if (input.getUserString().equals("protocol")) {
+            someChoicebox = new ChoiceBox<>(FXCollections.observableArrayList(EnumSet.allOf(ProtocolEnumerator.class).stream()
+                    .map(Enum::toString)
+                    .collect(Collectors.toList())));
+
+        }else {
+            someChoicebox = new ChoiceBox<>(FXCollections.observableArrayList(EnumSet.allOf(ZipEnumerator.class).stream()
+                    .map(Enum::toString)
+                    .collect(Collectors.toList())));
+        }
+        ChoiceBox<String> choiceBox=someChoicebox;
         choiceBox.setOnAction(event -> {
             if(choiceBox.getValue() != null){
                 boolean isAdded = addNewValue(input, choiceBox.getValue());
@@ -391,8 +419,9 @@ public class FlowExecution {
         Tooltip.install(textField, newFile);
         if(input.getTypeName().equals("Folder path")){
             hBox.getChildren().add(folderChooserButton);
-        }
-        else {
+        } else if (input.getTypeName().equals("JSON")) {
+            hBox.getChildren().add(fileChooserButton);
+        } else {
             hBox.getChildren().add(textField);
             hBox.getChildren().add(fileChooserButton);
             hBox.getChildren().add(folderChooserButton);

@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 public class FlowExecutionData implements Serializable {
     private final String flowName;
     private final String userExecuted;
+    private final String manager;
     private final String uuid;
     private final String executionTime;
     private final String executionResult;
@@ -53,13 +54,18 @@ public class FlowExecutionData implements Serializable {
         hasContinuation=flowExecution.getFlowDefinition().hasContinuation();
         if(flowExecution instanceof FlowExecutionWithUser){
             userExecuted = ((FlowExecutionWithUser) flowExecution).getUserExecuting();
+            manager=  (((FlowExecutionWithUser) flowExecution).getIsManager() ? "manager" : "regular user");
         }else {
             userExecuted = null;
+            manager=null;
         }
     }
 
     public String getUserExecuted() {
         return userExecuted;
+    }
+    public String getManager() {
+        return manager;
     }
 
     public boolean isHasContinuation() {

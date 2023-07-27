@@ -40,7 +40,7 @@ public class ExecutionServlet extends HttpServlet {
         if(userValidator.isLoggedIn()) {
             if (flowName != null) {
                 if(userValidator.isFlowAllowed(flowName)) {
-                    String newExecution = stepper.createNewExecution(flowName, username);
+                    String newExecution = stepper.createNewExecution(flowName, username,StepperUtils.isManager(getServletContext(),username));
                     ServletUtils.sendResponse(newExecution, newExecution.getClass(), resp);
                 }else{
                     ServletUtils.sendFlowNotAllowedBadRequest(resp, username, flowName);

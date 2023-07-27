@@ -17,6 +17,7 @@
       </Label>
       <Label fx:id="userNameLabel" />
       <Label fx:id="userRolesLabel" />
+      <Label fx:id="isManagerLabel" />
       <HBox alignment="CENTER_RIGHT" spacing="10.0">
          <children>
             <Button id="rnd" fx:id="greenSytle" minWidth="-Infinity" mnemonicParsing="false" onAction="#greenSytleButton" text="green sytle">

@@ -35,7 +35,7 @@ public class DataPresentationImpl implements DataPresentation {
             case "RelationOfStringRows":
                 dataPresenter=new RelationStringPresenter(data);
                 break;
-            case "JsonObject":
+            case "JsonElement":
                 dataPresenter=new JsonPresenter(data);
                 break;
             default:

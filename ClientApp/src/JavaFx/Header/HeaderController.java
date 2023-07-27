@@ -3,6 +3,9 @@ package JavaFx.Header;
 
 import JavaFx.AppController;
 import Utils.Utils;
+import javafx.beans.binding.Bindings;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -20,6 +23,8 @@ public class HeaderController {
     @FXML
     private VBox headerComponent;
     @FXML
+    private Label isManagerLabel;
+    @FXML
     private Button greenSytle;
     @FXML
     private Button seaSytle;
@@ -31,9 +36,13 @@ public class HeaderController {
     @FXML
     private Label userRolesLabel;
 
+    private BooleanProperty managerLabel=new SimpleBooleanProperty(false);
 
     public void setMainController(AppController mainController) {
         this.mainController = mainController;
+        isManagerLabel.textProperty().bind(Bindings.when(managerLabel).
+                then("The user is manager")
+                .otherwise("The user is not manager"));
     }
 
     public void setUsernameLabel(String username){
@@ -76,6 +85,10 @@ public class HeaderController {
         String joinedRoles = String.join(",", roles);
         userRolesLabel.textProperty().setValue(joinedRoles);
     }
+    public void setIsManagerLabel(Boolean isManager){
+        if (managerLabel.get()!=isManager)
+            managerLabel.set(isManager);
 
+    }
 
 }

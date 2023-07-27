@@ -11,6 +11,8 @@ import java.io.File;
 public class FileUploadImpl implements FileUpload{
 
     private final static String UPLOAD_FILE_URL = Constants.BASE_URL + Constants.UPLOAD_FILE_URL;
+    private final static String FILE_PATH = Constants.BASE_URL + Constants.FILE_PATH;
+    private final static String IS_STEPPER_IN = Constants.BASE_URL + Constants.STEPPER_IN;
     @Override
     public Request fileUploadRequest(File file) {
         RequestBody body = new MultipartBody.Builder()
@@ -20,6 +22,22 @@ public class FileUploadImpl implements FileUpload{
         return new Request.Builder()
                 .url(UPLOAD_FILE_URL)
                 .post(body)
+                .build();
+    }
+
+    @Override
+    public Request getFilePath() {
+        return new Request.Builder()
+                .url(FILE_PATH)
+                .get()
+                .build();
+    }
+
+    @Override
+    public Request isStepperIn() {
+        return new Request.Builder()
+                .url(IS_STEPPER_IN)
+                .get()
                 .build();
     }
 }

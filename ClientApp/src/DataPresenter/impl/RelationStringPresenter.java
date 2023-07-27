@@ -2,7 +2,6 @@ package DataPresenter.impl;
 
 import DTO.FlowExecutionData.IOData;
 import DataPresenter.api.DataPresenterAbstractClass;
-import StepperEngine.DataDefinitions.Relation.RelationOfStringRows;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -18,9 +17,8 @@ public class RelationStringPresenter extends DataPresenterAbstractClass {
      */
     public RelationStringPresenter(IOData data){
         super(data);
-        RelationOfStringRows relation=data.getDataValue(RelationOfStringRows.class);
-        List<String> colNames=relation.getColNames();
-        List<List<String>> rows = relation.getRows();
+        List<String> colNames=data.getList();
+        List<List<String>> rows = data.getRows();
         List<TableColumn<List<String>, String>> tableColumns = createTableColumns(colNames);
         ObservableList<List<String>> rowData = FXCollections.observableArrayList(rows);
 

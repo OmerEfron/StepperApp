@@ -1,5 +1,7 @@
 package StepperEngine.Flow.api;
 
+import StepperEngine.DataDefinitions.Enumeration.MethodEnumerator;
+import StepperEngine.DataDefinitions.Enumeration.ProtocolEnumerator;
 import StepperEngine.DataDefinitions.Enumeration.ZipEnumerator;
 import StepperEngine.Flow.FlowBuildExceptions.FlowBuildException;
 import StepperEngine.StepperReader.XMLReadClasses.*;
@@ -7,6 +9,9 @@ import StepperEngine.Step.StepBuilder;
 import StepperEngine.Step.StepDefinitionRegistry;
 import StepperEngine.Step.api.DataDefinitionsDeclaration;
 import StepperEngine.Step.api.DataNecessity;
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonSyntaxException;
 import javafx.util.Pair;
 
 import java.io.Serializable;
@@ -211,7 +216,14 @@ public class FlowDefinitionImpl implements FlowDefinition, Serializable {
             } else if (dd.dataDefinition().getType().isAssignableFrom(Double.class)) {
                 value = Double.parseDouble(initialInputValue.getInitialValue());
             } else if (dd.dataDefinition().getType().isAssignableFrom(ZipEnumerator.class)) {
-                value = ZipEnumerator.valueOf(initialInputValue.getInitialValue());
+                value = ZipEnumerator.valueOf(initialInputValue.getInitialValue().toUpperCase());
+            } else if (dd.dataDefinition().getType().isAssignableFrom(ProtocolEnumerator.class)) {
+                value=ProtocolEnumerator.valueOf(initialInputValue.getInitialValue().toUpperCase());
+            }else if (dd.dataDefinition().getType().isAssignableFrom(MethodEnumerator.class)) {
+                value=MethodEnumerator.valueOf(initialInputValue.getInitialValue().toUpperCase());
+            } else if (dd.dataDefinition().getType().isAssignableFrom(JsonElement.class)) {
+                Gson gson=new Gson();
+                value=gson.fromJson(initialInputValue.getInitialValue(), JsonElement.class);
             } else {
                 value = initialInputValue.getInitialValue();
             }
@@ -219,14 +231,16 @@ public class FlowDefinitionImpl implements FlowDefinition, Serializable {
             steps.forEach(step -> step.getStepDefinition().getInputs().stream()
                     .filter(dd::equals)
                     .forEach(dataDefinition -> dataDefinition.setInitial(true)));
-        }catch (NumberFormatException n)
+        }
+        catch (NumberFormatException n)
         {
             problems.add("The initial input for "+ initialInputValue.getInputName()+ " , not the valid type!"
             +"\n need to enter "+ dd.dataDefinition().getType().getSimpleName());
         }
         catch (IllegalArgumentException e){
-            problems.add("The initial input for "+ initialInputValue.getInputName()+ " , not the valid type!"
-            +"\nThe value : " + initialInputValue.getInitialValue()+", need to be ZIP/UNZIP!");
+            problems.add("The initial input for "+ initialInputValue.getInputName()+ " , not the valid type!");
+        }catch (JsonSyntaxException e){
+            problems.add("The initial input for "+ initialInputValue.getInputName()+ " , not the valid json type!");
         }
     }
 

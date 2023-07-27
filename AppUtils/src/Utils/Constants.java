@@ -16,7 +16,9 @@ public class Constants {
     public static final String ADMIN_LOGIN_PAGE = "/admin/login";
     public static final String GET_USERS = "/users/getUsers";
     public static final String GET_USERS_DATA = "/users/getUsersData";
-
+    public final static String USERNAME_PARAMETER = "username";
+    public final static String MANAGER = "/users/manager";
+    public final static String IS_MANAGER="/users/isManager";
     static {
         GsonBuilder gsonBuilder = new GsonBuilder();
         gsonBuilder.registerTypeAdapter(DataAndType.class, new DataAndType.DataAndTypeAdapter());
@@ -40,8 +42,11 @@ public class Constants {
     public static final String UPLOAD_FILE_URL = "/upload-file";
     public static final String FLOWS_NAMES ="/flows_names";
     public final static String GET_ROLE="/role/getRoles";
+    public final static String REMOVE_ROLE="/role/removeRole";
     public final static String PUT_ROLE="/role/addRole";
     public final static String GET_USER_ROLES_URL = "/user/role";
+    public final static String STEPPER_IN = "/isStepperIn";
+    public final static String FILE_PATH = "/filePath";
 
     public final static String LOGOUT_URL = "/logout";
 

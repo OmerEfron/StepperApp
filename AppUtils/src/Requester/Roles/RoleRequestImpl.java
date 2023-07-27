@@ -7,10 +7,13 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import users.roles.RoleImpl;
 
+import static Utils.Constants.REMOVE_ROLE;
+
 public class RoleRequestImpl implements RoleRequest{
     private final String GET_ROLE_URL= Constants.BASE_URL+Constants.GET_ROLE;
     private final String PUT_ROLE_URL= Constants.BASE_URL+Constants.PUT_ROLE;
     private final String GET_USER_ROLES_URL = Constants.BASE_URL + Constants.GET_USER_ROLES_URL;
+    private final String REMOVE_ROLES_URL = Constants.BASE_URL + REMOVE_ROLE ;
     @Override
     public Request getAllRoles() {
         return new Request.Builder()
@@ -49,6 +52,17 @@ public class RoleRequestImpl implements RoleRequest{
         return new Request.Builder()
                 .url(PUT_ROLE_URL)
                 .put(requestBody)
+                .build();
+    }
+
+    @Override
+    public Request removeRole(String roleName) {
+        HttpUrl.Builder urlBuilder = HttpUrl.parse(REMOVE_ROLES_URL).newBuilder();
+        urlBuilder.addQueryParameter(Constants.ROLE_NAME_PARAMETER, roleName);
+        String url = urlBuilder.build().toString();
+        return new Request.Builder()
+                .delete()
+                .url(url)
                 .build();
     }
 

@@ -48,11 +48,12 @@ public class ExecutionDataServlet extends HttpServlet {
                 ServletUtils.sendResponse(flowExecutionDataList, flowExecutionDataList.getClass(), resp);
             } else { // the request is for all executions
                 List<FlowExecutionData> flowExecutionDataList = null;
-                if(userValidator.isAdmin()) {
+
+                if(userValidator.isAdmin() || userValidator.isManager()) {
                     flowExecutionDataList = stepper.getFlowExecutionDataList();
                 }
                 else{
-                    flowExecutionDataList = stepper.getFlowExecutionDataList(userRolesAsArray);
+                    flowExecutionDataList = stepper.getFlowExecutionDataList(username,userRolesAsArray);
                 }
                 ServletUtils.sendResponse(flowExecutionDataList, flowExecutionDataList.getClass(), resp);
             }

@@ -52,14 +52,5 @@
       </library>
     </orderEntry>
     <orderEntry type="module" module-name="Engine" />
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/../lib/okHttp/okio-2.8.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
   </component>
 </module>

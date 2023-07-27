@@ -31,9 +31,10 @@ public class StepperWithRolesAndUsers extends Stepper {
         return getFlowNames().stream().filter(combinedFlows::contains).collect(Collectors.toList());
     }
 
-    public List<FlowExecutionData> getFlowExecutionDataList(RoleDefinition ... roles) {
+    public List<FlowExecutionData> getFlowExecutionDataList(String userName,RoleDefinition ... roles) {
         Set<String> combinedFlows = getCombinedFlows(roles);
-        return getFlowExecutionDataList().stream().filter(flowExecutionData -> combinedFlows.contains(flowExecutionData.getFlowName())).collect(Collectors.toList());
+        return getFlowExecutionDataList().stream().filter(flowExecutionData -> (combinedFlows.contains(flowExecutionData.getFlowName())) && flowExecutionData.getUserExecuted().equals(userName))
+                .collect(Collectors.toList());
     }
 
     public List<FlowExecutionData> getFlowExecutionDataList(String username){
@@ -67,17 +68,17 @@ public class StepperWithRolesAndUsers extends Stepper {
         return flowSet;
     }
 
-    public String createNewExecutionWithUser(String flowName, String username){
-        String uuid;
-        if (flowsMap.get(flowName) != null) {
-            FlowExecution flowExecution = new FlowExecutionWithUser(flowsMap.get(flowName), username);
-            uuid = flowExecution.getUUID();
-            executionsMap.put(flowExecution.getUUID(), flowExecution);
-        } else {
-            uuid = null;
-        }
-        return uuid;
-    }
+//    public String createNewExecutionWithUser(String flowName, String username){
+//        String uuid;
+//        if (flowsMap.get(flowName) != null) {
+//            FlowExecution flowExecution = new FlowExecutionWithUser(flowsMap.get(flowName), username);
+//            uuid = flowExecution.getUUID();
+//            executionsMap.put(flowExecution.getUUID(), flowExecution);
+//        } else {
+//            uuid = null;
+//        }
+//        return uuid;
+//    }
 
     public String applyContinuation(String flowName, String uuid, RoleDefinition ... roles)throws FlowNotAllowedException{
         Set<String> combinedFlows = getCombinedFlows(roles);
@@ -96,10 +97,10 @@ public class StepperWithRolesAndUsers extends Stepper {
         return null;
     }
 
-    public String createNewExecution(String flowName, String username) {
+    public String createNewExecution(String flowName, String username,Boolean isManager) {
         FlowDefinition flowDefinition = flowsMap.get(flowName);
         if(flowDefinition != null){
-            FlowExecutionWithUser flowExecutionWithUser = new FlowExecutionWithUser(flowDefinition, username);
+            FlowExecutionWithUser flowExecutionWithUser = new FlowExecutionWithUser(flowDefinition, username,isManager);
             String uuid = flowExecutionWithUser.getUUID();
             executionsMap.put(uuid, flowExecutionWithUser);
             return uuid;

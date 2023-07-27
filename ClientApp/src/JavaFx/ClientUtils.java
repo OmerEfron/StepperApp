@@ -4,6 +4,8 @@ import Utils.SimpleCookieManager;
 import okhttp3.OkHttpClient;
 
 import java.util.function.Consumer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class ClientUtils {
 
@@ -16,7 +18,9 @@ public class ClientUtils {
                     .cookieJar(simpleCookieManager)
                     .followRedirects(false)
                     .build();
-
+    public ClientUtils(){
+        Logger.getLogger(OkHttpClient.class.getName()).setLevel(Level.FINE);
+    }
     public static void setCookieManagerLoggingFacility(Consumer<String> logConsumer) {
         simpleCookieManager.setLogData(logConsumer);
     }

@@ -94,7 +94,8 @@ public class AdminBodyController {
     }
 
     public void initStats(List<String> flowNames){
-        flowStatsController.initStats(flowNames);
+        if(!getStatsRefresherIn())
+            flowStatsController.initStats(flowNames);
     }
 
     public ExecutionData getFlowExecutionData(FlowExecutionData flow){
@@ -221,9 +222,21 @@ public class AdminBodyController {
     }
 
     public void updateUserAsManager(String userName) {
-
+        Utils.runAsync(AdminUtils.USERS_REQUESTER.addManager(userName),setNewRoleCallback,AdminUtils.HTTP_CLIENT);
     }
 
+    public void removeManager(String userName) {
+        Utils.runAsync(AdminUtils.USERS_REQUESTER.removeManager(userName),setNewRoleCallback,AdminUtils.HTTP_CLIENT);
+    }
+
+    public void removeRole(RoleImpl oldRole) {
+        Utils.runAsync(AdminUtils.ROLE_REQUEST.removeRole(oldRole.getName()),removeRoleCallback,AdminUtils.HTTP_CLIENT );
+        Platform.runLater(()-> userManagementController.removeRole(oldRole.getName()));
+    }
+
+    public void changeRolesInUser(String newRole, String oldRole) {
+        userManagementController.changeRoleName(newRole,oldRole);
+    }
     public final Callback setNewRoleCallback = new Callback() {
         @Override
         public void onFailure(@NotNull Call call, @NotNull IOException e) {
@@ -235,7 +248,15 @@ public class AdminBodyController {
             response.close();
         }
     };
+    public final Callback removeRoleCallback = new Callback() {
+        @Override
+        public void onFailure(@NotNull Call call, @NotNull IOException e) {
+            System.out.println("cannot go to server");
+        }
 
-
-
+        @Override
+        public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+            response.close();
+        }
+    };
 }

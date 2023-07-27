@@ -26,9 +26,10 @@
                <children>
                   <TableView fx:id="flowsExecutionTable" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="0.0" onMouseClicked="#setFlowExecutionDetails" prefHeight="200.0" prefWidth="871.0">
                     <columns>
-                      <TableColumn fx:id="flowsExecutionsNamesCol" prefWidth="299.0" text="Flow Name" />
-                      <TableColumn fx:id="flowsExecutionsTimeCol" prefWidth="234.0" text="Time" />
-                        <TableColumn fx:id="flowsExecutionsStatusCol" prefWidth="337.0" text="Execution Status" />
+                      <TableColumn fx:id="flowsExecutionsNamesCol" prefWidth="257.0" text="Flow Name" />
+                      <TableColumn fx:id="flowsExecutionsTimeCol" prefWidth="172.0" text="Time" />
+                        <TableColumn fx:id="flowsExecutionsStatusCol" prefWidth="225.0" text="Execution Status" />
+                        <TableColumn fx:id="UserNameCol" prefWidth="217.0" text="User Name" />
                     </columns>
                      <padding>
                         <Insets bottom="5.0" />

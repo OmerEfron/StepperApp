@@ -3,7 +3,6 @@ package DataPresenter.impl;
 
 import DTO.FlowExecutionData.IOData;
 import DataPresenter.api.DataPresenterAbstractClass;
-import StepperEngine.DataDefinitions.List.StringListDataDef;
 import javafx.geometry.Insets;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
@@ -14,8 +13,7 @@ public class ListStringPresenter extends DataPresenterAbstractClass {
 
     public ListStringPresenter(IOData data){
         super(data);
-        StringListDataDef stringListDataDef=data.getDataValue(StringListDataDef.class);
-        List<String> strings=stringListDataDef.getStringList();
+        List<String> strings=data.getList();
         GridPane gridPane =new GridPane();
         gridPane.setPadding(new Insets(5));
         gridPane.setHgap(5);

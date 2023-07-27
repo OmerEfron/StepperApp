@@ -6,11 +6,13 @@ import JavaFx.Body.BodyController;
 import JavaFx.Header.HeaderController;
 import JavaFx.Login.LoginController;
 import Refresher.RoleRefresher;
+import Refresher.isManagerRefresher;
 import Requester.login.LoginRequestImpl;
 import StepperEngine.Flow.FlowBuildExceptions.FlowBuildException;
 import StepperEngine.Stepper;
 import StepperEngine.StepperReader.Exception.ReaderException;
 import Utils.Utils;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -44,15 +46,21 @@ public class AppController {
     LoginController loginController;
     private TimerTask rolesRefresher;
     private Timer timer;
+    private TimerTask managerRefresher;
+    private Timer isManagerTimer;
     private final StepperDTO stepperDTO=new StepperDTO();
+    private String userName;
     private Stepper stepper;
     @FXML
     public void initialize() {
         headerComponentController.setMainController(this);
         bodyComponentController.setMainController(this);
-        headerComponentController.setUsernameLabel(getCurrUsername());
+        userName=getCurrUsername();
+        headerComponentController.setUsernameLabel(userName);
         rolesRefresher();
+        isManagerRefresher();
     }
+
 
     public void switchToMainApp() throws IOException {
         Stage stage = (Stage) bodyComponent.getScene().getWindow();
@@ -75,6 +83,15 @@ public class AppController {
         rolesRefresher = new RoleRefresher(this::setUserRoles);
         timer = new Timer();
         timer.schedule(rolesRefresher, 2000, 2000);
+    }
+    private void isManagerRefresher() {
+        managerRefresher=new isManagerRefresher(this::setManger,userName);
+        isManagerTimer=new Timer();
+        timer.schedule(managerRefresher,2000,2000);
+    }
+
+    public void setManger(Boolean isManager){
+        headerComponentController.setIsManagerLabel(isManager);
     }
 
     public Stepper getStepper() {

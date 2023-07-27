@@ -1,5 +1,6 @@
 package JavaFx.Main;
 
+import JavaFx.ClientUtils;
 import Requester.login.LogoutRequestImpl;
 import Utils.Utils;
 import javafx.application.Application;
@@ -17,6 +18,7 @@ public class ClientMain extends Application {
     private Scene scene;
     @Override
     public void start(Stage primaryStage) throws Exception {
+        ClientUtils clientUtils=new ClientUtils();
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("../Login/login.fxml"));
         Parent root = fxmlLoader.load();
         scene = new Scene(root);
