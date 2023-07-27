@@ -1,6 +1,5 @@
 package servlets.users;
 
-import DTO.ExecutionsStatistics.FlowExecutionStats;
 import DTO.UserData;
 import Managers.UserDataManager;
 import com.google.gson.Gson;
@@ -14,9 +13,7 @@ import utils.ServletUtils;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @WebServlet(name = "getAllUsersData", urlPatterns = "/users/getUsersData")
 public class GetUsersData extends HttpServlet {
@@ -42,7 +39,9 @@ public class GetUsersData extends HttpServlet {
                     userDataList.add(userDataManager.getUserData().get(userName));
                 }
             }
-            UsersAndVersion newData=new UsersAndVersion(userDataList,userVersion);
+            UsersAndVersion newData=new UsersAndVersion(userDataList,userVersion, userDataManager.getDeletedusers());
+            if(!userDataManager.getDeletedusers().isEmpty())
+                userDataManager.resetDeltedUsers();
             String jsonResponse = gson.toJson(newData);
             try (PrintWriter out = resp.getWriter()) {
                 out.print(jsonResponse);
@@ -55,10 +54,12 @@ public class GetUsersData extends HttpServlet {
 
         final private List<UserData> entries;
         final private  Map<String, Integer> userVersion;
+        final private Set<String> deletedusers;
 
-        public UsersAndVersion(List<UserData> entries, Map<String, Integer> userVersion) {
+        public UsersAndVersion(List<UserData> entries, Map<String, Integer> userVersion, Set<String> deletedusers) {
             this.entries = entries;
             this.userVersion = userVersion;
+            this.deletedusers = deletedusers;
         }
     }
 

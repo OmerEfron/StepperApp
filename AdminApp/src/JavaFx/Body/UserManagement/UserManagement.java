@@ -135,7 +135,6 @@ public class UserManagement {
         List<String>newUsersName=newUsers.stream()
                 .map(UserData::getUserName)
                 .collect(Collectors.toList());
-        setUsersListView(names);
 
         if(selectedName!=null && newUsersName.contains(selectedName)){
             for(UserData user :users){
@@ -145,6 +144,8 @@ public class UserManagement {
                     else
                         updateTextFileds(user);
             }
+        } else if (!names.contains(selectedName)) {
+
         }
 
     }

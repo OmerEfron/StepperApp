@@ -1,5 +1,6 @@
 package servlets.login;
 
+import Managers.UserDataManager;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -24,8 +25,10 @@ public class LogoutServlet extends HttpServlet {
                 ServletUtils.setAdminLoggedIn(false);
             }else{
                 UserManager userManager = ServletUtils.getUserManager(getServletContext());
+                UserDataManager userDataManager = ServletUtils.getUserDataManager(getServletContext());
                 String username = SessionUtils.getUsername(req);
                 userManager.removeUser(username);
+                userDataManager.removeUser(username);
             }
         }else{
             ServletUtils.sendNotLoggedInBadRequest(resp);

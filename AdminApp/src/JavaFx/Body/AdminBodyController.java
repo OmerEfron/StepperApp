@@ -141,7 +141,17 @@ public class AdminBodyController {
             Platform.runLater(()->{
                 userManagementController.updateNewData(userDataMap.values(),usersAndVersion.getEntries());
             });
+        }else if(!usersAndVersion.getDeletedusers().isEmpty()) {
+            usersDataRefresher.setUsersVersion(usersAndVersion.getUserVersion());
+            for(String userName:usersAndVersion.getDeletedusers()){
+                userDataMap.remove(userName);
+            }
+            Platform.runLater(() -> {
+
+                userManagementController.updateNewData(userDataMap.values(), usersAndVersion.getEntries());
+            });
         }
+
 
     }
     private void usersDataMapRefresher() {
