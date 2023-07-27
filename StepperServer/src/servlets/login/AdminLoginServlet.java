@@ -19,8 +19,9 @@ public class AdminLoginServlet extends HttpServlet {
         if(!ServletUtils.getIsAdminLoggedIn()) {
             req.getSession(true).setAttribute(USERNAME, ADMIN_USERNAME);
             ServletUtils.setAdminLoggedIn(true);
+            ServletUtils.sendResponse(Boolean.TRUE, Boolean.class, resp);
         }else{
-            ServletUtils.sendBadRequest(resp, "Admin is already logged in");
+            ServletUtils.sendResponse(Boolean.FALSE, Boolean.class, resp);
         }
     }
 }
