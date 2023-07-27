@@ -19,7 +19,7 @@ import java.util.Optional;
 
 public class HTTPCall extends StepDefinitionAbstract {
 
-    public final static OkHttpClient HTTP_CLIENT = new OkHttpClient();
+    public final OkHttpClient HTTP_CLIENT = new OkHttpClient();
 
     public HTTPCall (){
         super("HTTP Call",false);

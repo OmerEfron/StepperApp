@@ -174,8 +174,8 @@ public class FlowExecution {
         applyContinuation(flowExecutionData.getUniqueExecutionId(),flowToContinue);
     }
 
-    @FXML
-    void rerunFlow(ActionEvent event) {
+    public void rerunFlow(FlowDetails flow) {
+        setScreenForExecute(flow);
         bodyController.rerunFlow(flowExecutionDataImp);
     }
 
@@ -185,29 +185,44 @@ public class FlowExecution {
         Utils.runAsync(new FlowRequestImpl().getFlowRequest(flowToContinue), setFlowDetailsCallback, ClientUtils.HTTP_CLIENT);
     }
 
-    public void runFlowAgain(FlowDetails flow, String UUID){
-        flowDetails=flow;
-        currFlowExecutionUuid=UUID;
-        updateFlowExecutionData();
+    public void runFlowAgain(FlowDetails flow,String oldUUID, String newUUID){
+        currFlowExecutionUuid=newUUID;
+        updateFlowExecutionData(oldUUID);
     }
 
     private void updateFlowExecutionData() {
         cleanUpScreen();
         setFreeInputsDisplay();
-        FlowExecutionData flowToRerunExecutionData = Utils.runSync(new ExecutionRequestImpl().executionRequest(currFlowExecutionUuid), FlowExecutionData.class, ClientUtils.HTTP_CLIENT);
-        Map<String, IOData> prevExecuteDataMap = flowToRerunExecutionData.getFreeInputs().stream()
-                .collect(Collectors.toMap(IOData::getFullQualifiedName, Function.identity()));
-        for(Input input:flowDetails.getFreeInputs()){
-            if(prevExecuteDataMap.containsKey(input.getFullQualifideName())) {
-                addNewValue(input, prevExecuteDataMap.get(input.getFullQualifideName()).toString());
-                addInputToTable(input, prevExecuteDataMap.get(input.getFullQualifideName()).toString());
-            }
-        }
         CentralFlowName.setText(flowDetails.getFlowName());
         continuationChoiceBox.getItems().clear();
+        makeExecutionButtonEnabled();
         initContinuationButton();
         setContinuation();
 
+    }
+
+    private void setPrevFreeInputs(String prevUUID) {
+        FlowExecutionData flowToRerunExecutionData = Utils.runSync(new ExecutionRequestImpl().executionRequest(prevUUID), FlowExecutionData.class, ClientUtils.HTTP_CLIENT);
+        Map<String, IOData> prevExecuteDataMap = flowToRerunExecutionData.getFreeInputs().stream()
+                .collect(Collectors.toMap(IOData::getFullQualifiedName, Function.identity()));
+        for (Input input : flowDetails.getFreeInputs()) {
+            if (prevExecuteDataMap.containsKey(input.getFullQualifideName())) {
+                String value = prevExecuteDataMap.get(input.getFullQualifideName()).getContent();
+                addNewValue(input, value);
+                addInputToTable(input, value);
+            }
+        }
+    }
+
+    private void updateFlowExecutionData(String prevUUID) {
+        cleanUpScreen();
+        setFreeInputsDisplay();
+        setPrevFreeInputs(prevUUID);
+        CentralFlowName.setText(flowDetails.getFlowName());
+        continuationChoiceBox.getItems().clear();
+        makeExecutionButtonEnabled();
+        initContinuationButton();
+        setContinuation();
     }
 
     @FXML
@@ -315,11 +330,15 @@ public class FlowExecution {
     }
 
     public void setFlowToExecute(FlowDetails flow){
+        setScreenForExecute(flow);
+        Utils.runAsync(new ExecutionRequestImpl().createExecuteRequest(flow.getFlowName()), getNewExecutionCallback, ClientUtils.HTTP_CLIENT);
+    }
+
+    private void setScreenForExecute(FlowDetails flow) {
         cleanUpScreen();
         flowDetails = flow;
         CentralFlowName.setText(flowDetails.getFlowName());
         setFreeInputsDisplay();
-        Utils.runAsync(new ExecutionRequestImpl().createExecuteRequest(flow.getFlowName()), getNewExecutionCallback, ClientUtils.HTTP_CLIENT);
     }
 
 

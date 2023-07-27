@@ -12,7 +12,7 @@ import java.io.IOException;
 
 
 @WebServlet(name = "isStepperIn", urlPatterns = "/isStepperIn")
-public class isStepperInServlet extends HttpServlet {
+public class IsStepperInServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         boolean stepperIn = StepperUtils.isStepperIn(getServletContext());

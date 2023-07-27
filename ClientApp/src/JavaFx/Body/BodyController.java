@@ -80,7 +80,10 @@ public class BodyController {
         flowExecutionController.setFlowToExecute(flow);
         bodyComponent.getSelectionModel().select(flowExecutionTab);
     }
-
+    public void goToExecuteFlowTab(FlowDetails flow,String oldUUID, String newUUID) {
+        flowExecutionController.runFlowAgain(flow, oldUUID, newUUID);
+        bodyComponent.getSelectionModel().select(flowExecutionTab);
+    }
 
     public Stepper getStepper(){
         return mainController.getStepper();
@@ -132,12 +135,12 @@ public class BodyController {
         return Utils.runSync(new ExecutionRequestImpl().continuationRequest(uuidFlow, flowToContinue), String.class, ClientUtils.HTTP_CLIENT);
 //        return mainController.getStepper().applyContinuation(uuidFlow,flowToContinue);
     }
-    public void rerunFlow(FlowExecutionData flow){
-        bodyComponent.getSelectionModel().select(flowExecutionTab);
+    public void rerunFlow(FlowExecutionData flow) {
         FlowDetails flowDetails = Utils.runSync(new FlowRequestImpl().getFlowRequest(flow.getFlowName()), FlowDetails.class, ClientUtils.HTTP_CLIENT);
-        String uuid = Utils.runSync(new ExecutionRequestImpl().rerunRequest(flow.getUniqueExecutionId()), String.class, ClientUtils.HTTP_CLIENT);
-        if(uuid != null) {
-            flowExecutionController.runFlowAgain(flowDetails, uuid);
+        String oldUUID = flow.getUniqueExecutionId();
+        String newUUID = Utils.runSync(new ExecutionRequestImpl().rerunRequest(oldUUID), String.class, ClientUtils.HTTP_CLIENT);
+        if (newUUID != null) {
+            goToExecuteFlowTab(flowDetails,oldUUID, newUUID);
         }
     }
 

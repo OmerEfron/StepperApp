@@ -51,6 +51,7 @@ public class Stepper implements Serializable {
     private final Map<String, List<FlowExecutionData>> flowExecutionDataMap = new HashMap<>(); // flow name to his executions
     private ExecutorService executorService;
     private List<FlowExecutionData> flowExecutionDataList=new ArrayList<>();
+    private Map<String, FlowExecutionData> executionDataMap = new HashMap<>();
     private Map<String,FlowExecutionStats> flowExecutionStatsMap=new HashMap<>();
 
     public Stepper() {
@@ -202,11 +203,12 @@ public class Stepper implements Serializable {
     }
     public String reRunFlow(String pastFlowUUID){
         FlowExecution pastExecution=executionsMap.get(pastFlowUUID);
-        FlowExecution flowExecution=new FlowExecution(flowsMap.get(pastExecution.getFlowDefinition().getName()));
+        FlowExecutionData pastExe = getFlowExecutionData(pastFlowUUID);
+        FlowExecution flowExecution = new FlowExecutionWithUser(flowsMap.get(pastExe.getFlowName()), pastExe.getUserExecuted(), pastExe.getManager().equals("manager"));
         flowExecution.updateFreeInputsValue(pastExecution);
-        executionsMap.put(flowExecution.getUUID(),flowExecution);
-        return flowExecution.getUUID();
-
+        String uuid = flowExecution.getUUID();
+        executionsMap.put(uuid, flowExecution);
+        return uuid;
     }
     public List<String> getFlowNames() {
         return flowNames;
@@ -276,6 +278,7 @@ public class Stepper implements Serializable {
                     flowExecutionDataList.add(executionData);
                     flowExecutionDataMap.computeIfAbsent(executionData.getFlowName(), key -> new ArrayList<>()).add(executionData);
                     executionsPerFlow.get(executionData.getFlowName());
+                    executionDataMap.put(uuid, executionData);
                     flowExecutionStatsMap.put(executionData.getFlowName(),new FlowExecutionStats(flowExecution.getFlowDefinition(),executionsPerFlow.get(executionData.getFlowName())));
                 });
             } else
@@ -364,10 +367,9 @@ public class Stepper implements Serializable {
     }
 
     public FlowExecutionData getFlowExecutionData(String uuid){
-        FlowExecution flowExecution = executionsMap.get(uuid);
-        if(flowExecution!=null){
-            if(flowExecution.hasExecuted())
-                return new FlowExecutionData(flowExecution);
+        FlowExecutionData flowExecutionData = executionDataMap.get(uuid);
+        if(flowExecutionData!=null){
+            return flowExecutionData;
         }
         return null;
     }
